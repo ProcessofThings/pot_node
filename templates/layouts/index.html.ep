@@ -1,0 +1,101 @@
+!DOCTYPE html>
+<html>
+        <head>
+                <meta charset="utf-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <title>WebSocket Client</title>
+
+                <meta name="description" content="Source code generated using layoutit.com">
+                <meta name="author" content="LayoutIt!">
+
+                <link href="css/bootstrap.min.css" rel="stylesheet">
+                <link type="text/css" href="css/style.css" rel="stylesheet">
+
+        <link rel="shortcut icon" href="http://www.themezaa.com/html/leadgen/builder/elements/images/icon/favicon.png">
+        <link rel="stylesheet" href="css/animate.css">
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/font-awesome.css">
+        <link rel="stylesheet" href="css/themify-icons.css">
+        <link rel="stylesheet" href="css/owl_002.css">
+        <link rel="stylesheet" href="css/owl.css">
+        <link rel="stylesheet" href="css/magnific-popup.css">
+        <link rel="stylesheet" href="css/base.css">
+        <link rel="stylesheet" href="css/elements.css">
+        <link rel="stylesheet" href="css/responsive.css">
+
+
+        <style id="fit-vids-style">.fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}</style></head>
+        <body>
+        <div id="page" class="page"><header class="header-style15" id="header-section29">
+                <nav class="navbar bg-white tz-header-bg no-margin shrink-header">
+                    <div class="container navigation-menu">
+                        <div class="row">
+                            <!-- logo -->
+                            <div class="col-md-3 col-sm-4 col-xs-7">
+                                <a href="#home" class="inner-link"><img alt="" src="LeadGen%20-%20Multipurpose%20Landing%20Page%20Pack%20with%20Page%20Builder_files/logo.png" data-img-size="(W)163px X (H)40px"></a>
+                            </div>
+                            <!-- end logo -->
+                            <!-- social elements -->
+                            <div class="col-md-9 col-sm-8 col-xs-5 position-inherit xs-no-padding-left">
+                                <div class="social float-right text-dark-gray xs-no-margin-top xs-margin-bottom-5px margin-twelve-left">
+                                    <a href="#"><i class="fa fa-facebook tz-icon-color"></i></a>
+                                    <a href="#"><i class="fa fa-twitter tz-icon-color"></i></a>
+                                    <a href="#"><i class="fa fa-google-plus tz-icon-color"></i></a>
+                                    <a href="#"><i class="fa fa-linkedin tz-icon-color"></i></a>
+                                    <a href="#"><i class="fa fa-pinterest tz-icon-color"></i></a>
+                                </div>
+                                <div class="float-right alt-font text-dark-gray text-medium xs-text-extra-large">
+                                        <img id="qrcode">
+                                </div>
+                            </div>
+                            <!-- end social elements -->
+                        </div>
+                    </div>
+                </nav>
+            </header><section class="padding-110px-tb xs-padding-60px-tb bg-white builder-bg" id="content-section28">
+                <div class="container">
+                    <div class="row equalize xs-equalize-auto equalize-display-inherit">                        
+                        <div class="col-md-6 col-md-offset-1 col-sm-6 col-xs-12 xs-text-center xs-margin-nineteen-bottom display-table" style="height: 639px;">
+                            <div class="display-table-cell-vertical-middle">
+                                <!-- section title -->
+                                <h2 class="title-extra-large-2 sm-title-large xs-title-extra-large xs-title-large text-dark-gray width-90 sm-width-100 margin-eight-bottom tz-text sm-margin-ten-bottom alt-font">A digital studio crafting beautiful experiences.</h2>
+                                <!-- end section title -->
+                                <div class="title-small sm-text-extra-large text-medium-gray width-90 sm-width-100 margin-eight-bottom tz-text"><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the standard dummy text.</p></div>
+                                <div class="text-medium tz-text width-90 sm-width-100 margin-twelve-bottom sm-margin-ten-bottom"><p>Lorem
+ Ipsum is simply dummy text of the printing and typesetting industry. It
+ has survived not only five centuries, but also the leap into electronic
+ typesetting, remaining essentially unchanged. Lorem Ipsum has been the 
+industry's standard dummy text ever since the when an unknown.</p></div>
+                                <a class="btn btn-3d btn-large bg-fast-blue propClone text-white" href="#"><span class="tz-text">START YOUR FREE TRIAL</span></a>
+                            </div>
+                        </div>
+                        <div class="col-md-5 col-sm-6 col-xs-12 xs-text-center display-table" style="height: 639px;">
+                            <div class="display-table-cell-vertical-middle">
+                                <img alt="" src="LeadGen%20-%20Multipurpose%20Landing%20Page%20Pack%20with%20Page%20Builder_files/application-features-mobile03.png" data-img-size="(W)525px X (H)720px">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section></div><!-- /#page -->
+        <script type="text/javascript" src="js/jquery_006.js"></script>
+        <script type="text/javascript" src="js/jquery_002.js"></script>
+        <script type="text/javascript" src="js/smooth-scroll.js"></script>
+        <script type="text/javascript" src="js/bootstrap.js"></script>
+        <script type="text/javascript" src="js/wow.js"></script>
+        <script type="text/javascript" src="js/owl.js"></script>
+        <script type="text/javascript" src="js/imagesloaded.js"></script>
+        <script type="text/javascript" src="js/jquery_007.js"></script>
+        <script type="text/javascript" src="js/jquery_003.js"></script>
+        <script type="text/javascript" src="js/jquery_004.js"></script>
+        <script type="text/javascript" src="js/equalize.js"></script>
+        <script type="text/javascript" src="js/jquery_005.js"></script>
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/counter.js"></script>
+        <script type="text/javascript" src="js/twitterFetcher_min.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+        <script type="text/javascript" src="js/ws.js"></script>
+
+        </body>
+</html>
+

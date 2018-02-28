@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>PoT Node</title>
+
+        <meta name="description" content="Source code generated using layoutit.com">
+        <meta name="author" content="LayoutIt!">
+
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link type="text/css" href="css/style.css" rel="stylesheet">
+
+        <link rel="shortcut icon" href="images/fav.png">
+        <link rel="stylesheet" href="css/animate.css">
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/font-awesome.css">
+        <link rel="stylesheet" href="css/themify-icons.css">
+        <link rel="stylesheet" href="css/owl_002.css">
+        <link rel="stylesheet" href="css/owl.css">
+        <link rel="stylesheet" href="css/magnific-popup.css">
+        <link rel="stylesheet" href="css/base.css">
+        <link rel="stylesheet" href="css/elements.css">
+        <link rel="stylesheet" href="css/responsive.css">
+        
+        % foreach my $import (@$import_ref) {
+        <link rel="import" href="http://127.0.0.1:8080/ipfs/<%= $import %>">
+        % }
+        
+        <style id="fit-vids-style">.fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}</style>
+    </head>
+    <body>
+        <!-- #Page -->
+        <div id="page" class="page">
+            <header class="header-style15" id="header-section29">
+                <nav class="navbar bg-white tz-header-bg no-margin shrink-header">
+                    <div class="container navigation-menu">
+                        <div class="row">
+                            <!-- logo -->
+                            <div class="col-md-3 col-sm-4 col-xs-7">
+                                <a href="#home" class="inner-link"><img alt="" src="images/logo.png" data-img-size="(W)163px X (H)40px"></a>
+                            </div>
+                            <!-- end logo -->
+                            <!-- social elements -->
+                            <div class="col-md-9 col-sm-8 col-xs-5 position-inherit xs-no-padding-left">
+                                <div class="social float-right text-dark-gray xs-no-margin-top xs-margin-bottom-5px margin-twelve-left">
+                                    <a href="#"><i class="fa fa-facebook tz-icon-color"></i></a>
+                                    <a href="#"><i class="fa fa-twitter tz-icon-color"></i></a>
+                                    <a href="#"><i class="fa fa-google-plus tz-icon-color"></i></a>
+                                    <a href="#"><i class="fa fa-linkedin tz-icon-color"></i></a>
+                                    <a href="#"><i class="fa fa-pinterest tz-icon-color"></i></a>
+                                </div>
+                            </div>
+                            <!-- end social elements -->
+                        </div>
+                    </div>
+                </nav>
+            </header>
+             <!-- #loadTemplate -->
+            <div id="loadTemplate">
+                <!-- Template Loads Here -->
+            </div>
+            <!-- /#loadTemplate -->
+        </div>
+        <!-- /#page -->
+        <script type="text/javascript" src="js/jquery_006.js"></script>
+        <script type="text/javascript" src="js/jquery_002.js"></script>
+        <script type="text/javascript" src="js/smooth-scroll.js"></script>
+        <script type="text/javascript" src="js/bootstrap.js"></script>
+        <script type="text/javascript" src="js/wow.js"></script>
+        <script type="text/javascript" src="js/owl.js"></script>
+        <script type="text/javascript" src="js/imagesloaded.js"></script>
+        <script type="text/javascript" src="js/jquery_007.js"></script>
+        <script type="text/javascript" src="js/jquery_003.js"></script>
+        <script type="text/javascript" src="js/jquery_004.js"></script>
+        <script type="text/javascript" src="js/equalize.js"></script>
+        <script type="text/javascript" src="js/jquery_005.js"></script>
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/counter.js"></script>
+        <script type="text/javascript" src="js/twitterFetcher_min.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+        <script type="text/javascript" src="js/ws.js"></script>
+        <script type=”text/javascript”>
+            console.log("Page Loaded");
+            $(document).ready(loadContent);
+            function loadContent()
+            {
+                console.log("Page Loaded")
+                    var QueryURL = "http://127.0.0.1:8080/ipfs/QmTBpE7CBYPUYugi3M78DfokcNmzLpEiFReLmrbXEDnN6V";
+                $.getJSON(QueryURL, function(data){
+                    if (data && data != null && typeof data == "object" && data.contents && data.contents != null && typeof data.contents == "string")
+                        {
+                            if (data.length > 0)
+                                {
+                                // $(‘#queryResultContainer’).html($(ContentLocationInDOM, data));
+               
+                                $('#loadTemplate').html(data);
+                                }
+                        }
+                });
+            }
+        </script>
+    </body>
+</html>
+

@@ -1,0 +1,78 @@
+            <section class="padding-110px-tb bg-white builder-bg xs-padding-60px-tb feature-style-31" id="feature-section31">
+                <div class="container">
+                    <div class="row">
+                        <!-- section title -->
+                        <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                            <h2 class="section-title-large sm-section-title-medium xs-section-title-large text-dark-gray font-weight-700 alt-font margin-three-bottom xs-margin-fifteen-bottom tz-text">PROCESS OF THINGS
+</h2>
+                            <div class="text-medium width-60 margin-lr-auto md-width-70 sm-width-100 tz-text margin-thirteen-bottom xs-margin-nineteen-bottom">Web Interface provides additional information as you interact with the world around you.
+</div>
+                        </div>
+                        <!-- end section title -->
+                    </div>
+                    <div class="row">
+                        <!-- feature box -->
+                        <div class="col-md-4 col-sm-4 col-xs-12 xs-margin-fifteen-bottom">
+                            <div class="display-table margin-five-bottom width-100">
+                                <div class="text-sky-blue icon-style margin-seven-right display-table-cell-vertical-middle"><span class="fa title-extra-large-2 tz-icon-color fa-lock" style="color: rgb(50, 182, 230); font-size: 45px; background-color: rgba(0, 0, 0, 0);" id="ui-id-3"></span></div>
+                                <div class="display-table-cell-vertical-middle ">
+                                    <span class="text-medium text-medium-gray tz-text">Security</span>
+                                    <h3 class="text-large alt-font text-dark-gray position-relative top-minus3 tz-text">End to End Encryption
+</h3>
+                                </div>
+                            </div>
+                            <div class="text-medium width-95 xs-width-100 xs-margin-five-top tz-text"><p class="no-margin-bottom">Encrypt the Data, don't worry about the transport.&nbsp; POT use Public / Private key encryption to protect your data from End to End.
+</p></div>
+                        </div>
+                        <!-- end feature box -->
+                        <!-- feature box -->
+                        <div class="col-md-4 col-sm-4 col-xs-12 xs-margin-fifteen-bottom">
+                            <div class=" display-table margin-five-bottom width-100">
+                                <div class="text-sky-blue icon-style margin-seven-right display-table-cell-vertical-middle"><span class="fa title-extra-large-2 tz-icon-color fa-wechat" style="color: rgb(50, 182, 230); font-size: 45px; background-color: rgba(0, 0, 0, 0);" id="ui-id-4"></span></div>
+                                <div class="display-table-cell-vertical-middle ">
+                                    <span class="text-medium text-medium-gray tz-text">Social
+</span>
+                                    <h3 class="text-large alt-font text-dark-gray position-relative top-minus3 tz-text">Connect to People Around
+</h3>
+                                </div>
+                            </div>
+                            <div class="text-medium width-95 xs-width-100 xs-margin-five-top tz-text"><p class="no-margin-bottom">Create Groups,&nbsp; Find People with common interests around you,&nbsp; Stay in-touch with friends and family 
+</p></div>
+                        </div>
+                        <!-- end feature box -->
+                        <!-- feature box -->
+                        <div class="col-md-4 col-sm-4 col-xs-12 xs-margin-fifteen-bottom">
+                            <div class=" display-table margin-five-bottom width-100">
+                                <div class="text-sky-blue icon-style margin-seven-right display-table-cell-vertical-middle"><span class="fa title-extra-large-2 tz-icon-color fa-handshake-o" style="color: rgb(50, 182, 230); font-size: 45px; background-color: rgba(0, 0, 0, 0);" id="ui-id-5"></span></div>
+                                <div class="display-table-cell-vertical-middle ">
+                                    <span class="text-medium text-medium-gray tz-text">Connections</span>
+                                    <h3 class="text-large alt-font text-dark-gray position-relative top-minus3 tz-text">Keeping things Local
+</h3>
+                                </div>
+                            </div>
+                            <div class="text-medium width-95 xs-width-100 xs-margin-five-top tz-text"><p class="no-margin-bottom">PoT keeps things local, interacting with things that you have a personal contact with.
+</p></div>
+                        </div>
+                        <!-- end feature box -->
+                    </div>
+                </div>
+            </section>
+            <footer id="footer-section5" class="bg-light-gray builder-bg padding-top-50px sm-padding-top-30px xs-padding-30px-tb footer-style4">
+                <div class="container">
+                    <div class="row">
+                        <!-- logo -->
+                        <div class="col-lg-12 col-md-1 col-sm-12 col-xs-12 sm-text-center sm-margin-five-bottom display-table">
+                            <div class="display-table-cell-vertical-middle">
+                                <a href="#home" class="inner-link"><img src="http://127.0.0.1:8080/ipfs/QmXD6gxmTqjfcTCbNNghBZrV2yhiu7dc9221FwstPRCpKP" data-img-size="(W)163px X (H)39px" alt=""></a>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-1 col-sm-12 col-xs-12 text-center sm-text-center xs-margin-nine-bottom display-table">
+                            <div class="display-table-cell-vertical-middle">
+                                <span class="text-large font-weight-600 text-fast-blue alt-font margin-three-right display-inline-block vertical-align-middle xs-no-margin xs-margin-five-bottom tz-text">Scan something else and lets see where it goes.
+</span>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
