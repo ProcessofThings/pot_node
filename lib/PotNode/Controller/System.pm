@@ -12,11 +12,10 @@ sub start {
     my $ua  = Mojo::UserAgent->new;
 	my $html = $ua->get('http://127.0.0.1:8080/ipfs/QmTBpE7CBYPUYugi3M78DfokcNmzLpEiFReLmrbXEDnN6V')->res->dom->find('section')->first;
 	#b('foobarbaz')->b64_encode('')->say;
-	my $encodedfile = b($html)->html_unescape->url_escape->b64_encode();
+	my $encodedfile = b($html);
 	$c->app->log->debug("Encoded File : $encodedfile");
-#    $c->stash(
-#        import_ref => ['QmTBpE7CBYPUYugi3M78DfokcNmzLpEiFReLmrbXEDnN6V']
-#    );
+    $c->stash(import_ref => $encodedfile);
+    
     $c->render(template => 'system/start');
 };
 

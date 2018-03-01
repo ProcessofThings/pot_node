@@ -24,10 +24,6 @@
         <link rel="stylesheet" href="css/elements.css">
         <link rel="stylesheet" href="css/responsive.css">
         
-        % foreach my $import (@$import_ref) {
-        <link rel="import" href="http://127.0.0.1:8080/ipfs/<%= $import %>">
-        % }
-        
         <style id="fit-vids-style">.fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}</style>
     </head>
     <body>
@@ -59,7 +55,7 @@
             </header>
              <!-- #loadTemplate -->
             <div id="loadTemplate">
-                <!-- Template Loads Here -->
+                <%= $import_ref %>
             </div>
             <!-- /#loadTemplate -->
         </div>
@@ -80,27 +76,6 @@
         <script type="text/javascript" src="js/counter.js"></script>
         <script type="text/javascript" src="js/twitterFetcher_min.js"></script>
         <script type="text/javascript" src="js/main.js"></script>
-        <script type="text/javascript" src="js/ws.js"></script>
-        <script type=”text/javascript”>
-            console.log("Page Loaded");
-            $(document).ready(loadContent);
-            function loadContent()
-            {
-                console.log("Page Loaded")
-                    var QueryURL = "http://127.0.0.1:8080/ipfs/QmTBpE7CBYPUYugi3M78DfokcNmzLpEiFReLmrbXEDnN6V";
-                $.getJSON(QueryURL, function(data){
-                    if (data && data != null && typeof data == "object" && data.contents && data.contents != null && typeof data.contents == "string")
-                        {
-                            if (data.length > 0)
-                                {
-                                // $(‘#queryResultContainer’).html($(ContentLocationInDOM, data));
-               
-                                $('#loadTemplate').html(data);
-                                }
-                        }
-                });
-            }
-        </script>
     </body>
 </html>
 
