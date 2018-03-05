@@ -9,20 +9,20 @@
         <meta name="description" content="Source code generated using layoutit.com">
         <meta name="author" content="LayoutIt!">
 
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-        <link type="text/css" href="css/style.css" rel="stylesheet">
+        <link href="/css/bootstrap.min.css" rel="stylesheet">
+        <link type="text/css" href="/css/style.css" rel="stylesheet">
 
-        <link rel="shortcut icon" href="images/fav.png">
-        <link rel="stylesheet" href="css/animate.css">
-        <link rel="stylesheet" href="css/bootstrap.css">
-        <link rel="stylesheet" href="css/font-awesome.css">
-        <link rel="stylesheet" href="css/themify-icons.css">
-        <link rel="stylesheet" href="css/owl_002.css">
-        <link rel="stylesheet" href="css/owl.css">
-        <link rel="stylesheet" href="css/magnific-popup.css">
-        <link rel="stylesheet" href="css/base.css">
-        <link rel="stylesheet" href="css/elements.css">
-        <link rel="stylesheet" href="css/responsive.css">
+        <link rel="shortcut icon" href="/images/fav.png">
+        <link rel="stylesheet" href="/css/animate.css">
+        <link rel="stylesheet" href="/css/bootstrap.css">
+        <link rel="stylesheet" href="/css/font-awesome.css">
+        <link rel="stylesheet" href="/css/themify-icons.css">
+        <link rel="stylesheet" href="/css/owl_002.css">
+        <link rel="stylesheet" href="/css/owl.css">
+        <link rel="stylesheet" href="/css/magnific-popup.css">
+        <link rel="stylesheet" href="/css/base.css">
+        <link rel="stylesheet" href="/css/elements.css">
+        <link rel="stylesheet" href="/css/responsive.css">
         
         <style id="fit-vids-style">.fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}</style>
     </head>
@@ -35,7 +35,7 @@
                         <div class="row">
                             <!-- logo -->
                             <div class="col-md-3 col-sm-4 col-xs-7">
-                                <a href="#home" class="inner-link"><img alt="" src="images/logo.png" data-img-size="(W)163px X (H)40px"></a>
+                                <a href="#home" class="inner-link"><img alt="" src="/images/logo.png" data-img-size="(W)163px X (H)40px"></a>
                             </div>
                             <!-- end logo -->
                             <!-- social elements -->
@@ -60,22 +60,22 @@
             <!-- /#loadTemplate -->
         </div>
         <!-- /#page -->
-        <script type="text/javascript" src="js/jquery_006.js"></script>
-        <script type="text/javascript" src="js/jquery_002.js"></script>
-        <script type="text/javascript" src="js/smooth-scroll.js"></script>
-        <script type="text/javascript" src="js/bootstrap.js"></script>
-        <script type="text/javascript" src="js/wow.js"></script>
-        <script type="text/javascript" src="js/owl.js"></script>
-        <script type="text/javascript" src="js/imagesloaded.js"></script>
-        <script type="text/javascript" src="js/jquery_007.js"></script>
-        <script type="text/javascript" src="js/jquery_003.js"></script>
-        <script type="text/javascript" src="js/jquery_004.js"></script>
-        <script type="text/javascript" src="js/equalize.js"></script>
-        <script type="text/javascript" src="js/jquery_005.js"></script>
-        <script type="text/javascript" src="js/jquery.js"></script>
-        <script type="text/javascript" src="js/counter.js"></script>
-        <script type="text/javascript" src="js/twitterFetcher_min.js"></script>
-        <script type="text/javascript" src="js/main.js"></script>
+        <script type="text/javascript" src="/js/jquery_006.js"></script>
+        <script type="text/javascript" src="/js/jquery_002.js"></script>
+        <script type="text/javascript" src="/js/smooth-scroll.js"></script>
+        <script type="text/javascript" src="/js/bootstrap.js"></script>
+        <script type="text/javascript" src="/js/wow.js"></script>
+        <script type="text/javascript" src="/js/owl.js"></script>
+        <script type="text/javascript" src="/js/imagesloaded.js"></script>
+        <script type="text/javascript" src="/js/jquery_007.js"></script>
+        <script type="text/javascript" src="/js/jquery_003.js"></script>
+        <script type="text/javascript" src="/js/jquery_004.js"></script>
+        <script type="text/javascript" src="/js/equalize.js"></script>
+        <script type="text/javascript" src="/js/jquery_005.js"></script>
+        <script type="text/javascript" src="/js/jquery.js"></script>
+        <script type="text/javascript" src="/js/counter.js"></script>
+        <script type="text/javascript" src="/js/twitterFetcher_min.js"></script>
+        <script type="text/javascript" src="/js/main.js"></script>
     </body>
 </html>
 

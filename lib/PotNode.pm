@@ -24,6 +24,7 @@ sub startup {
   
   # These are system functions that are required by various API and Web Interfaces
   $r->get('/setup')->to('system#start');
+  $r->get('/setup/:html')->to('system#start');	
   $r->get('/genqrcode')->to('system#genqrcode');  # Generates QRCode VIA API
   $r->get('/genqrcode64')->to('system#genqrcode64');  #Generates Base64 QRCode pushing to websites
 

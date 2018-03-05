@@ -10,7 +10,12 @@ sub start {
     
     my $c = shift;
     my $ua  = Mojo::UserAgent->new;
-	my $html = $ua->get('http://127.0.0.1:8080/ipfs/QmTBpE7CBYPUYugi3M78DfokcNmzLpEiFReLmrbXEDnN6V')->res->dom->find('section')->first;
+    my $url = $c->param('html') || "index";
+	$url = 'http://127.0.0.1:8080/ipfs/QmX2We6Gcf9sBVcjLBHqPjUQjQuvA4UhqwSuyqvYSQfuyj/'.$url.'.html';
+	$c->app->log->debug("URL : $url");
+#	my $html = $ua->get('http://127.0.0.1:8080/ipfs/QmfQMb2jjboKYkk5f1DhmGXyxcwNtnFJzvj92WxLJjJjcS')->res->dom->find('section')->first;
+
+	my $html = $ua->get($url)->res->dom->find('div.container')->first;
 	#b('foobarbaz')->b64_encode('')->say;
 	my $encodedfile = b($html);
 	$c->app->log->debug("Encoded File : $encodedfile");
@@ -18,6 +23,23 @@ sub start {
     
     $c->render(template => 'system/start');
 };
+
+sub upload {
+    use Mojo::UserAgent;
+    use Mojo::ByteStream 'b';
+
+    my $c = shift;
+    my $ua  = Mojo::UserAgent->new;
+#       my $html = $ua->get('http://127.0.0.1:8080/ipfs/QmfQMb2jjboKYkk5f1DhmGXyxcwNtnFJzvj92WxLJjJjcS')->res->dom->find('section')->first;
+        my $html = $ua->get('http://127.0.0.1:8080/ipfs/Qmbb28sUkFdGz3YxquVkXbE2CrWBFBceJyKYa1ms1W48do')->res->body;
+        #b('foobarbaz')->b64_encode('')->say;
+        my $encodedfile = b($html);
+        $c->app->log->debug("Encoded File : $encodedfile");
+    $c->stash(import_ref => $encodedfile);
+
+    $c->render(template => 'system/start');
+};
+
 
 sub genqrcode {
     ## Generates QRCode
