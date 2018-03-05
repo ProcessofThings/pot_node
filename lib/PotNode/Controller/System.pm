@@ -41,6 +41,39 @@ sub upload {
 };
 
 
+sub createchain {
+    use Mojo::UserAgent;
+    use Data::UUID;
+    my $c = shift;
+    my $ua  = Mojo::UserAgent->new;
+    
+    if ($c->req->method('GET')) {
+        $c->render(template => 'system/createchain');
+    }
+    
+    if ($c->req->method('POST')) {
+        my $ug = Data::UUID->new;
+        my $uuid = $ug->to_string($ug->create());
+        $uuid =~ s/-//g;
+        my $param = $c->req->params->to_hash;
+        say $c->app->dumper($param);
+        my @optionlist;
+        push (@optionlist,"-chain-description=$param->{'name'}") if $param->{'name'};
+        push (@optionlist,"-anyone-can-connect=true") if $param->{'public'};
+        push (@optionlist,"-anyone-can-send=true,anyone-can-receive=true") if $param->{'sr'};
+        my $options = join(' ', @optionlist);
+        $c->app->log->debug("Options : $options");
+        
+        my $command = "/usr/local/bin/multichain-util create $uuid $options";
+        my $create = qx/$command/;
+        $c->app->log->debug("Create : $create");
+        
+    }
+    
+    
+};
+
+
 sub genqrcode {
     ## Generates QRCode
     ## 38mm Label needs size 3 Version 5 (default)
@@ -84,7 +117,6 @@ sub genqrcode {
 
 
 sub genqrcode64 {
-    my $c = shift;
     ## Generates QRCode
     ## 38mm Label needs size 3 Version 5 (default)
     ## 62mm With Text size 4 Version 5
