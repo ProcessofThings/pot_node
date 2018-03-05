@@ -15,24 +15,30 @@ sub startup {
   my $log = Mojo::Log->new(path => '/var/log/mojo.log', level => 'warn');
   
   Mojo::IOLoop->recurring(60 => sub {
+    ## recurring events
     my $loop = shift;
     my $path = "/home/node/.multichain/";
     my $process_chk_command;
     my $command;
-    my $startdaemon;
-    my @daemon;
     $self->app->log->debug("Recurring : Checking");
+
+    ## Checks the multichain directory for any active blockchains and checks if the daemon is running
+    
     opendir( my $DIR, $path );
     while ( my $entry = readdir $DIR ) {
+        ## Finds all directories and filters out all directories apart from those that contain HEX 32 chars
         next unless -d $path . '/' . $entry;
         next if $entry eq '.' or $entry eq '..';
         next if $entry !~ m/^\w{32}$/;
+        ## gets all process with exact match
         $command = 'pgrep -f "^multichaind '.$entry.' -daemon$"';
         $process_chk_command = qx/$command/;
+        ## Removes any \n\r
         $process_chk_command =~ s/\R//g;
         if ($process_chk_command ne '') {
             $self->app->log->debug("Running Process : $process_chk_command");
         } else {
+            ## launched the daemon using > /dev/null & to return control to mojolicious
             $command = "multichaind $entry -daemon > /dev/null &";
             system($command);
             $self->app->log->debug("Starting : $entry");
