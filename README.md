@@ -10,4 +10,6 @@ sudo su - node
 
 git clone https://github.com/ProcessofThings/ProcessOfThings.git pot_node
 
- 
+cd pot_node
+
+cpanm --installdeps .
