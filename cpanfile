@@ -1,4 +1,4 @@
-requires 'Mojolicious'
+requires 'Mojolicious';
 requires 'Mojo::Redis2';
 requires 'Imager::QRCode';
 requires 'Data::UUID';
