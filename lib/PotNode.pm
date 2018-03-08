@@ -15,12 +15,14 @@ sub startup {
   my $log = Mojo::Log->new(path => '/var/log/mojo.log', level => 'warn');
   
   Mojo::IOLoop->recurring(60 => sub {
+    use Mojo::UserAgent;
     ## recurring events
     my $loop = shift;
     my $path = "/home/node/.multichain/";
     my $process_chk_command;
     my $command;
     $self->app->log->debug("Recurring : Checking");
+    my $ua  = Mojo::UserAgent->new;
 
     ## Checks the multichain directory for any active blockchains and checks if the daemon is running
     
@@ -45,6 +47,13 @@ sub startup {
         }
     }
     closedir $DIR;
+    
+    $command = 'ipfs add -r -w -Q /home/node/pot_node';
+    my $value = qx/$command/;
+    $value =~ s/\R//g;
+    $self->app->log->debug("pot_node Hash : $value");
+    #my $res = $ua->get("http://127.0.0.1:5001/api/v0/pubsub/sub?arg=$value&discover=\1");
+    #$self->app->dumper($res);
   });
 
   # Router

@@ -8,7 +8,7 @@ First on linux machine with node install
 
 sudo su - node
 
-git clone https://github.com/ProcessofThings/ProcessOfThings.git pot_node
+git clone https://github.com/ProcessofThings/pot_node.git
 
 cd pot_node
 
