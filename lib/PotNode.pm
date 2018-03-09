@@ -11,8 +11,8 @@ sub startup {
   # Documentation browser under "/perldoc"
   $self->plugin('PODRenderer') if $config->{perldoc};
   $self->plugin('PotNode::Helpers');
-
-  my $log = Mojo::Log->new(path => '/var/log/mojo.log', level => 'warn');
+  
+  $self->log->path('/home/node/log/pot_node.log');
   
   Mojo::IOLoop->recurring(60 => sub {
     use Mojo::UserAgent;
