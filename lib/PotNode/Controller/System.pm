@@ -40,7 +40,6 @@ sub upload {
     $c->render(template => 'system/start');
 };
 
-
 sub createchain {
     use Mojo::UserAgent;
     use Data::UUID;
