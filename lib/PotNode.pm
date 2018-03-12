@@ -7,6 +7,7 @@ use Mojo::JSON qw(decode_json encode_json);
 sub startup {
   my $self = shift;
   my $redis = Mojo::Redis2->new;
+  my $uanb = Mojo::UserAgent->new;
 
   # Load configuration from hash returned by "my_app.conf"
   my $config = $self->plugin('Config');

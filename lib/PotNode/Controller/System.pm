@@ -3,16 +3,18 @@ use Mojo::Base 'Mojolicious::Controller';
 use PotNode::QRCode;
 use Mojo::URL;
 use Mojo::JSON qw(decode_json encode_json);
-
+use Mojo::IOLoop;
+use Mojo::UserAgent;
+use Mojo::ByteStream 'b';
+use Data::UUID;
 
 # This action will render a template
 
+  my $ua = Mojo::UserAgent->new;
+
 sub start {
-    use Mojo::UserAgent;
-    use Mojo::ByteStream 'b';
-    
     my $c = shift;
-    my $ua  = Mojo::UserAgent->new;
+#    my $ua  = Mojo::UserAgent->new;
     my $url = $c->param('html') || "index";
 	$url = 'http://127.0.0.1:8080/ipfs/QmX2We6Gcf9sBVcjLBHqPjUQjQuvA4UhqwSuyqvYSQfuyj/'.$url.'.html';
 	$c->app->log->debug("URL : $url");
@@ -29,7 +31,6 @@ sub start {
 
 
 sub check {
-    my $ua  = Mojo::UserAgent->new;
     my $redis = Mojo::Redis2->new;
     my $c = shift;
     my $path = "/home/node/.multichain/";
@@ -67,40 +68,52 @@ sub check {
             $value =~ s/\R//g;
             $c->app->log->debug("No Directories - Hash : $value");
             my $idinfo = $ua->get("http://127.0.0.1:5001/api/v0/id")->result->json;
-            my $delay = Mojo::IOLoop->delay;
             my @scanNetwork;
-            $delay->steps(
-                sub {
-                    my $delay = shift;
-                    my $network = $ua->get("http://127.0.0.1:5001/api/v0/dht/findprovs?arg=$value&num-providers=3")->result->body;
-                    my @ans = split(/\n/, $network);
+            my $network;
+            $c->render_later;
+            $ua->get("http://127.0.0.1:5001/api/v0/dht/findprovs?arg=$value&num-providers=3" => sub {
+                my ($self, $tx) = @_;
+                $c->app->log->debug("Starting");
+                $network = $tx->result->body;            
+                my @ans = split(/\n/, $network);
 
-                    foreach my $line ( @ans ) {
-                        my $data = decode_json($line);
-                        if ($data->{'Type'} eq '4') {
-                                my $values = $data->{'Responses'}->[0];
-                                if ($values->{'ID'} ne $idinfo->{'ID'}) {
-                                        foreach my $address ( @{$values->{'Addrs'}} ) {
-                                                my ($junk,$proto,$address,$trans,$port) = split('/', $address);
-                                                ## TODO : Add Support for IPv6
-                                                if ($proto eq 'ip4') {
-                                                        if ($address ne '127.0.0.1') {
-                                                                ## Only Add $address to Array if grep cannot find the address in the array
-                                                                $address = "http://$address/node/alive";
-                                                                push(@scanNetwork, $address) if ( ! grep(/^$address$/, @scanNetwork));
-                                                        }
-                                                }
+                foreach my $line ( @ans ) {
+                    my $data = decode_json($line);
+                    if ($data->{'Type'} eq '4') {
+                            my $values = $data->{'Responses'}->[0];
+                            if ($values->{'ID'} ne $idinfo->{'ID'}) {
+                                    foreach my $address ( @{$values->{'Addrs'}} ) {
+                                            my ($junk,$proto,$address,$trans,$port) = split('/', $address);
+                                            ## TODO : Add Support for IPv6
+                                            if ($proto eq 'ip4') {
+                                                    if ($address ne '127.0.0.1') {
+                                                            ## Only Add $address to Array if grep cannot find the address in the array
+                                                            $address = "http://$address/node/alive";
+                                                            $c->app->log->debug("Adding Address : $address");
+                                                            push(@scanNetwork, $address) if ( ! grep(/^$address$/, @scanNetwork));
+                                                    }
+                                            }
 
-                                        }
-                                }
-                        }
+                                    }
+                            }
                     }
                 }
-            );
-            $delay->wait;
-            
-            start_urls($ua, \@scanNetwork, \&get_callback);
-            
+                
+                $c->app->log->debug("Testing URLs");
+                
+#               start_urls($ua, \@scanNetwork, \&get_callback);
+
+                $c->render_later;
+                my $delay = Mojo::IOLoop->delay;
+                $delay->on(finish => sub{
+                    my $delay = shift;
+                    $c->app->log->debug("Scan Finished");
+                    $c->render_dumper($_);
+                });
+                $ua->get( $_ => $delay->begin ) for @scanNetwork;
+
+                
+            });
         }
         
         if (!$redis->exists("addpotnode")){
@@ -126,11 +139,8 @@ sub check {
 
 
 sub upload {
-    use Mojo::UserAgent;
-    use Mojo::ByteStream 'b';
-
     my $c = shift;
-    my $ua  = Mojo::UserAgent->new;
+#    my $ua  = Mojo::UserAgent->new;
 #       my $html = $ua->get('http://127.0.0.1:8080/ipfs/QmfQMb2jjboKYkk5f1DhmGXyxcwNtnFJzvj92WxLJjJjcS')->res->dom->find('section')->first;
         my $html = $ua->get('http://127.0.0.1:8080/ipfs/Qmbb28sUkFdGz3YxquVkXbE2CrWBFBceJyKYa1ms1W48do')->res->body;
         #b('foobarbaz')->b64_encode('')->say;
@@ -142,10 +152,8 @@ sub upload {
 };
 
 sub createchain {
-    use Mojo::UserAgent;
-    use Data::UUID;
     my $c = shift;
-    my $ua  = Mojo::UserAgent->new;
+ #   my $ua  = Mojo::UserAgent->new;
     
     if ($c->req->method('GET')) {
         $c->render(template => 'system/createchain');
@@ -180,7 +188,7 @@ sub genqrcode {
     ## 62mm With Text size 4 Version 5
     ## 62mm No Text size 5 60mmX60mm Version 5
     my $c = shift;
-    my $ua  = Mojo::UserAgent->new;
+    #my $ua  = Mojo::UserAgent->new;
     my $ug = Data::UUID->new;
     my $uuid = $ug->create();
     $uuid = $ug->to_string( $uuid );
@@ -242,21 +250,27 @@ sub genqrcode64 {
 
 
 sub start_urls {
-  my ($ua, $queue, $cb) = @_;
+    my ($ua, $queue, $cb) = @_;
 
-  # Limit parallel connections to 4
-  state $idle = 4;
-  state $delay = Mojo::IOLoop->delay(sub{say @$queue ? "Loop ended before queue depleated" : "Finished"});
+    
+    # Limit parallel connections to 4
+    state $idle = 4;
+    state $delay = Mojo::IOLoop->delay(
+        sub{
+            say @$queue ? "Loop ended before queue depleated" : "Finished"
+        }
+    );
 
   while ( $idle and my $url = shift @$queue ) {
     $idle--;
-    print "Starting $url, $idle idle\n\n";
-
+    
+    $ua->app->log->debug("Starting $url, $idle idle");
+    
     $delay->begin;
 
     $ua->get($url => sub{
       $idle++;
-      print "Got $url, $idle idle\n\n";
+      $ua->app->log->debug("Got $url, $idle idle");
       $cb->(@_, $queue);
 
       # refresh worker pool
