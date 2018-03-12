@@ -1,6 +1,9 @@
 package PotNode::Controller::System;
 use Mojo::Base 'Mojolicious::Controller';
 use PotNode::QRCode;
+use Mojo::URL;
+use Mojo::JSON qw(decode_json encode_json);
+
 
 # This action will render a template
 
@@ -23,6 +26,104 @@ sub start {
     
     $c->render(template => 'system/start');
 };
+
+
+sub check {
+    my $ua  = Mojo::UserAgent->new;
+    my $redis = Mojo::Redis2->new;
+    my $c = shift;
+    my $path = "/home/node/.multichain/";
+    my $process_chk_command;
+    my $command;
+    $c->app->log->debug("Recurring : Checking");
+    
+    if (!$redis->exists("checkprocess")){
+        $redis->setex('checkprocess',30, "yes");
+        my @dir_list = grep { /^\w{32}$/ } glob "$path*";
+        my $dircount = @dir_list;
+        $c->app->log->debug("Directories : $dircount");
+        ## Checks the multichain directory for any active blockchains and checks if the daemon is running
+        if ($dircount > 0) {
+            opendir( my $DIR, $path );
+            while ( my $entry = readdir $DIR ) {
+                ## Finds all directories and filters out all directories apart from those that contain HEX 32 chars
+                next unless -d $path . '/' . $entry;
+                next if $entry eq '.' or $entry eq '..';
+                next if $entry !~ m/^\w{32}$/;
+                if ( -f '/home/node/run/'.$entry.'.pid') {
+                    $c->app->log->debug("Running Process : $entry");
+                } else {
+                    ## launched the daemon using > /dev/null & to return control to mojolicious
+                    $command = "multichaind $entry -daemon -pid=/home/node/run/$entry.pid > /dev/null &";
+                    system($command);
+                    $c->app->log->debug("Starting : $entry");
+                }
+            }
+            
+            closedir $DIR;
+        } else {
+            $command = 'ipfs add -r -w -Q /home/node/pot_node';
+            my $value = qx/$command/;
+            $value =~ s/\R//g;
+            $c->app->log->debug("No Directories - Hash : $value");
+            my $idinfo = $ua->get("http://127.0.0.1:5001/api/v0/id")->result->json;
+            my $delay = Mojo::IOLoop->delay;
+            my @scanNetwork;
+            $delay->steps(
+                sub {
+                    my $delay = shift;
+                    my $network = $ua->get("http://127.0.0.1:5001/api/v0/dht/findprovs?arg=$value&num-providers=3")->result->body;
+                    my @ans = split(/\n/, $network);
+
+                    foreach my $line ( @ans ) {
+                        my $data = decode_json($line);
+                        if ($data->{'Type'} eq '4') {
+                                my $values = $data->{'Responses'}->[0];
+                                if ($values->{'ID'} ne $idinfo->{'ID'}) {
+                                        foreach my $address ( @{$values->{'Addrs'}} ) {
+                                                my ($junk,$proto,$address,$trans,$port) = split('/', $address);
+                                                ## TODO : Add Support for IPv6
+                                                if ($proto eq 'ip4') {
+                                                        if ($address ne '127.0.0.1') {
+                                                                ## Only Add $address to Array if grep cannot find the address in the array
+                                                                $address = "http://$address/node/alive";
+                                                                push(@scanNetwork, $address) if ( ! grep(/^$address$/, @scanNetwork));
+                                                        }
+                                                }
+
+                                        }
+                                }
+                        }
+                    }
+                }
+            );
+            $delay->wait;
+            
+            start_urls($ua, \@scanNetwork, \&get_callback);
+            
+        }
+        
+        if (!$redis->exists("addpotnode")){
+            $command = 'ipfs add -r -w -Q /home/node/pot_node';
+            my $value = qx/$command/;
+            $value =~ s/\R//g;
+            $c->app->log->debug("pot_node Hash : $value");
+            #my $res = $ua->get("http://127.0.0.1:5001/api/v0/pubsub/sub?arg=$value&discover=\1");
+            #$self->app->dumper($res);
+            $redis->setex('addpotnode',30, "yes");
+        }
+
+        $redis->del("checkprocess");
+    }
+    
+    if (!$redis->exists("myipfsid")){
+        my $idinfo = $ua->get("http://127.0.0.1:5001/api/v0/id")->result->json;
+        $c->app->log->debug("IPFS ID : $idinfo->{ID}");
+        $redis->set(myipfsid => encode_json($idinfo));
+    }
+    $c->render(text => 'Ok', status => 200);
+};
+
 
 sub upload {
     use Mojo::UserAgent;
@@ -138,5 +239,60 @@ sub genqrcode64 {
 
     $c->render(json => {'message' => 'Ok','image' => $mqr->to_png_base64("public/images/test.png")},status => 200);
 }
+
+
+sub start_urls {
+  my ($ua, $queue, $cb) = @_;
+
+  # Limit parallel connections to 4
+  state $idle = 4;
+  state $delay = Mojo::IOLoop->delay(sub{say @$queue ? "Loop ended before queue depleated" : "Finished"});
+
+  while ( $idle and my $url = shift @$queue ) {
+    $idle--;
+    print "Starting $url, $idle idle\n\n";
+
+    $delay->begin;
+
+    $ua->get($url => sub{
+      $idle++;
+      print "Got $url, $idle idle\n\n";
+      $cb->(@_, $queue);
+
+      # refresh worker pool
+      start_urls($ua, $queue, $cb);
+      $delay->wait;
+    });
+
+  }
+
+  # Start event loop if necessary
+  $delay->wait unless $delay->ioloop->is_running;
+}
+
+sub get_callback {
+    my ($ua, $tx, $queue) = @_;
+
+    # Parse only OK HTML responses
+
+    return unless
+        $tx->res->is_success;
+
+    # Request URL
+    my $url = $tx->req->url;
+    say "Processing $url";
+    parse_html($url, $tx, $queue);
+}
+
+sub parse_html {
+    my ($url, $tx, $queue) = @_;
+
+    print Dumper($tx);
+
+    say '';
+
+    return;
+}
+
 
 1;
