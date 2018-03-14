@@ -166,6 +166,7 @@ sub check {
                         if ($tx->res->is_success) {
                             ##TODO : on success then get pot port and join
                             my $responce = decode_json($tx->res->json);
+                            $c->debug($responce);
                             my $command = "multichaind $responce->{'address'} -daemon -pid=/home/node/run/$responce->{'id'}.pid > /dev/null &";
                             system($command);
                         }
