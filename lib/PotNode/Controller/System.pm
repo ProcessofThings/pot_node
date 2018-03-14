@@ -165,9 +165,9 @@ sub check {
                     foreach my $tx (@tx) {
                         if ($tx->res->is_success) {
                             ##TODO : on success then get pot port and join
-                            my $responce = decode_json($tx->res->body);
-#                           my $responce = decode_json($responce);
-                            $c->debug($responce);
+                            my $responce = decode_json($tx->res->json);
+                            my $command = "multichaind $responce->{'address'} -daemon -pid=/home/node/run/$responce->{'id'}.pid > /dev/null &";
+                            system($command);
                         }
                     }
                 });
