@@ -42,8 +42,8 @@ sub alive {
         
         $c->app->log->debug("Remote Address : $address $myaddress");
         $data->{'message'} = "Alive Request From $address";
-        $data->{'address'} = "$potchain->{'id'}\@$myaddress:$potchain->{'networkport'}";      
-        $c->render(json => encode_json($data));
+        $data->{'address'} = "$potchain->{'id'}@$myaddress:$potchain->{'networkport'}";      
+        $c->render(json => $data);
     }
 };
 

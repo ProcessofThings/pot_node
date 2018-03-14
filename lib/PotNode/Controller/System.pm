@@ -162,10 +162,12 @@ sub check {
                 $delay->on(finish => sub{
                     my ($delay, @tx) = @_;
                     $c->app->log->debug("Scan Finished");
-                    for my $tx (@tx) {
-                        if ($tx->is_success) {
+                    foreach my $tx (@tx) {
+                        if ($tx->res->is_success) {
                             ##TODO : on success then get pot port and join
-                            $c->app->log->debug("decode_json($tx->res->json)");
+                            my $responce = decode_json($tx->res->body);
+#                           my $responce = decode_json($responce);
+                            $c->debug($responce);
                         }
                     }
                 });
