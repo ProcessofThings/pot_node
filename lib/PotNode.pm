@@ -15,6 +15,7 @@ sub startup {
   # Documentation browser under "/perldoc"
   $self->plugin('PODRenderer') if $config->{perldoc};
   $self->plugin('PotNode::Helpers');
+  $self->plugin('DebugDumperHelper');
   $self->mode('development');
   
   $self->log->path('/home/node/log/pot_node.log');

@@ -8,3 +8,4 @@ requires 'Log::Any::Adapter';
 requires 'Mojo::UserAgent';
 requires 'Term::ANSIColor';
 requires 'YAML::Tiny';
+requires 'Config::IniFiles';

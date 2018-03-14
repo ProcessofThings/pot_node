@@ -1,12 +1,12 @@
 package PotNode::Controller::Node;
 use Mojo::Base 'Mojolicious::Controller';
-
+use Config::IniFiles;
+use Mojo::UserAgent;
+use Mojo::ByteStream 'b';
+use Mojo::JSON qw(decode_json encode_json);
 # This action will render a template
 
 sub join {
-    use Mojo::UserAgent;
-    use Mojo::ByteStream 'b';
-    
     my $c = shift;
     my $ua  = Mojo::UserAgent->new;
     my $json = $c->req->json;
@@ -28,9 +28,23 @@ sub join {
 
 sub alive {
     my $c = shift;
+    my $redis = Mojo::Redis2->new;
     my $address = $c->tx->remote_address;
-    $c->app->log->debug("Remote Address : $address");
-    $c->render(json => {'message' => "Alive Request From $address"});
+    my $myaddress = $c->req->url->to_abs->host;
+    if (!$redis->exists("potchain")){
+        $c->app->log->debug("/node/alive - Key Not Found");
+        $c->render(json => {'message' => "Alive Request From $address"});
+    } else {
+        my $potchain = decode_json($redis->get("potchain"));
+        my $data;
+        my $address = $c->tx->remote_address;
+        my $myaddress = $c->req->url->to_abs->host;
+        
+        $c->app->log->debug("Remote Address : $address $myaddress");
+        $data->{'message'} = "Alive Request From $address";
+        $data->{'address'} = "$potchain->{'id'}\@$myaddress:$potchain->{'networkport'}";      
+        $c->render(json => encode_json($data));
+    }
 };
 
 1;
