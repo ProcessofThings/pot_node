@@ -259,7 +259,10 @@ sub check {
                 ## TODO : Time Stamp Backup
                 $command = "cp -r $home $dir/backup/$currentversion";
                 my $cmdreturn = qx/$command/;
-                $command = "ipfs get -o=$dir $config->{'config'}->{'pot_node'}/pot_node";
+                $command = "rm -rf $home;ipfs get -o=$home $config->{'config'}->{'pot_node'}/pot_node;/home/node/perl5/perlbrew/perls/perl-5.24.3/bin/hypnotoad $home/script/pot_node";
+                $c->app->log->debug("Command : $command");
+                my @cmdreturn = qx/$command/;
+                $c->debug(@cmdreturn);
 #               my $cmdreturn = qx/$command/;
 #               $c->debug($cmdreturn);
 #               $command = "hypnotoad /home/node/pot_node/script/pot_node";
