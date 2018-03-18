@@ -9,4 +9,5 @@ requires 'Mojo::UserAgent';
 requires 'Term::ANSIColor';
 requires 'YAML::Tiny';
 requires 'Config::IniFiles';
-requires 'Mojolicious::Plugin::DebugDumperHelper'; 
+requires 'Mojolicious::Plugin::DebugDumperHelper';
+requires 'Mojolicious::Plugin::Crypto'; 
