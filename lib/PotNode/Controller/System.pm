@@ -5,6 +5,7 @@ use Mojo::URL;
 use Mojo::JSON qw(decode_json encode_json);
 use Mojo::IOLoop;
 use Mojo::UserAgent;
+use Mojo::Asset::File;
 use Mojo::ByteStream 'b';
 use Data::UUID;
 use Data::Dumper;
@@ -93,7 +94,7 @@ sub check {
                 $c->app->log->debug("Running Process : $entry");
             } else {
                 ## launched the daemon using > /dev/null & to return control to mojolicious
-                $command = "multichaind $entry -daemon -pid=/home/node/run/$entry.pid > /dev/null &";
+                $command = 'multichaind '.$entry.' -daemon -pid=/home/node/run/'.$entry.'.pid -walletnotifynew="curl -H \'Content-Type: application/json\' -d %j http://127.0.0.1:9090/system/alertnotify?name=%m\&txid=%s\&hex=%h\&seen=%c\&address=%a\&assets=%e" > /dev/null &';
                 system($command);
                 $c->app->log->debug("Starting : $entry");
             }
@@ -129,28 +130,28 @@ sub check {
                 my $count =  @ans;
                 $c->app->log->debug("Items : $count");
                 if ($count > 1) {
-                foreach my $line ( @ans ) {
-                        my $data = decode_json($line);
-                        if ($data->{'Type'} eq '4') {
-                                ## TODO IFPF: Create Test to check IPFS Format (Responce only ever contains a single array element ->[0]
-                                my $values = $data->{'Responses'}->[0];
-                                if ($values->{'ID'} ne $idinfo->{'ID'}) {
-                                        foreach my $address ( @{$values->{'Addrs'}} ) {
-                                                my ($junk,$proto,$address,$trans,$port) = split('/', $address);
-                                                ## TODO : Add Support for IPv6
-                                                if ($proto eq 'ip4') {
-                                                        if ($address ne '127.0.0.1') {
-                                                                ## Only Add $address to Array if grep cannot find the address in the array
-                                                                $address = "http://$address:9080/node/alive";
-                                                                $c->app->log->debug("Adding Address : $address");
-                                                                push(@scanNetwork, $address) if ( ! grep(/^$address$/, @scanNetwork));
-                                                        }
-                                                }
+                    foreach my $line ( @ans ) {
+                            my $data = decode_json($line);
+                            if ($data->{'Type'} eq '4') {
+                                    ## TODO IFPF: Create Test to check IPFS Format (Responce only ever contains a single array element ->[0]
+                                    my $values = $data->{'Responses'}->[0];
+                                    if ($values->{'ID'} ne $idinfo->{'ID'}) {
+                                            foreach my $address ( @{$values->{'Addrs'}} ) {
+                                                    my ($junk,$proto,$address,$trans,$port) = split('/', $address);
+                                                    ## TODO : Add Support for IPv6
+                                                    if ($proto eq 'ip4') {
+                                                            if ($address ne '127.0.0.1') {
+                                                                    ## Only Add $address to Array if grep cannot find the address in the array
+                                                                    $address = "http://$address:9080/node/alive";
+                                                                    $c->app->log->debug("Adding Address : $address");
+                                                                    push(@scanNetwork, $address) if ( ! grep(/^$address$/, @scanNetwork));
+                                                            }
+                                                    }
 
-                                        }
-                                }
-                        }
-                }
+                                            }
+                                    }
+                            }
+                    }
                 }
                 $delay->pass();
             },
@@ -194,13 +195,61 @@ sub check {
         
     }
     
+    if (!$redis->exists("config")){
+        if ($redis->exists("potchain")){
+            my $ug = Data::UUID->new;
+            my $potchain = decode_json($redis->get("potchain"));
+            my $cfg = Config::IniFiles->new(-file => "$potchain->{'path'}/multichain.conf",-fallback => "General",-commentchar => '#',-handle_trailing_comment => 1);
+            my $data;
+            $data->{'rpcuser'} = $cfg->val("General","rpcuser");
+            $data->{'rpcpassword'} = $cfg->val("General","rpcpassword");
+            $data->{'rpcport'} = $potchain->{'rpcport'};
+            $cfg->Delete;
+            my $URL = Mojo::URL->new("http://127.0.0.1:$data->{'rpcport'}")->userinfo("$data->{'rpcuser'}:$data->{'rpcpassword'}");
+            my $ua  = Mojo::UserAgent->new;
+            my $uuid = $ug->from_hexstring($potchain->{'id'});
+            $uuid = $ug->to_string($uuid);
+            my $result = $ua->get($URL => json => {"jsonrpc" => "1.0", "id" => "curltest","method" => "liststreamkeyitems", "params" =>  ["config","$uuid",\0,1,-1]})->result->json;
+            $result = $result->{'result'}->[0]->{'data'};
+            my ($config) = $c->app->decrypt_aes($result,$potchain->{'id'});
+            $redis->setex('config',1800, $config);
+            $c->app->log->debug("Blockchain Config Loaded");
+        } else {
+            $c->app->log->debug("Blockchain not loaded - Skipping Config Retreaval");
+        }
+    } else {
+        $c->app->log->debug("Blockchain Config Loaded - Skipping");
+    }
+    
     if (!$redis->exists("addpotnode")){
         $command = 'ipfs add -r -w -Q /home/node/pot_node';
         my $value = qx/$command/;
         $value =~ s/\R//g;
+        $c->app->log->debug("Version File checking for $value");
+        my $filename = '/home/node/version.txt';  
+        
+        my $count = qx/grep -c "$value" $filename/;
+        $count =~ s/\R//g;
+        if ($count eq '0') {
+            $command = "echo \"$value\" >> $filename";
+            qx/$command/;
+        } else {
+            $c->app->log->debug("Version Exists $value");
+        }
+  
+        if ($redis->exists("config")){
+            my $config = $redis->get("config");
+            $config = decode_json($config);
+            $count = qx/grep -c "$config->{'config'}->{'pot_node'}" $filename/;
+            $count =~ s/\R//g;
+            if ($count eq '0') {
+                $c->app->log->debug("Upgrading pot_node");
+                $command = "ipfs pin add $config->{'config'}->{'pot_node'}";
+                my $value = qx/$command/;
+                $c->debug($value);
+            }
+        }
         $c->app->log->debug("pot_node Hash : $value");
-        #my $res = $ua->get("http://127.0.0.1:5001/api/v0/pubsub/sub?arg=$value&discover=\1");
-        #$self->app->dumper($res);
         $redis->setex('addpotnode',30, "yes");
     }
 
@@ -214,14 +263,33 @@ sub check {
 };
 
 
+sub alertnotify {
+    my $c = shift;
+    my $params = $c->req->params->to_hash;
+    my $json = $c->req->json;
+    $c->debug($params);
+    $c->debug($json);
+    $c->render(text => 'Ok', status => 200);
+};
+
+sub blocknotify {
+    my $c = shift;
+    $c->debug($c);
+    $c->render(text => 'Ok', status => 200);
+};
+
+sub walletnotify {
+    my $c = shift;
+    $c->debug($c);
+    $c->render(text => 'Ok', status => 200);
+};
+
 sub upload {
     my $c = shift;
-#    my $ua  = Mojo::UserAgent->new;
-#       my $html = $ua->get('http://127.0.0.1:8080/ipfs/QmfQMb2jjboKYkk5f1DhmGXyxcwNtnFJzvj92WxLJjJjcS')->res->dom->find('section')->first;
-        my $html = $ua->get('http://127.0.0.1:8080/ipfs/Qmbb28sUkFdGz3YxquVkXbE2CrWBFBceJyKYa1ms1W48do')->res->body;
-        #b('foobarbaz')->b64_encode('')->say;
-        my $encodedfile = b($html);
-        $c->app->log->debug("Encoded File : $encodedfile");
+    my $html = $ua->get('http://127.0.0.1:8080/ipfs/Qmbb28sUkFdGz3YxquVkXbE2CrWBFBceJyKYa1ms1W48do')->res->body;
+    #b('foobarbaz')->b64_encode('')->say;
+    my $encodedfile = b($html);
+    $c->app->log->debug("Encoded File : $encodedfile");
     $c->stash(import_ref => $encodedfile);
 
     $c->render(template => 'system/start');
@@ -247,7 +315,7 @@ sub createchain {
         push (@optionlist,"-anyone-can-send=true,anyone-can-receive=true") if $param->{'sr'};
         my $options = join(' ', @optionlist);
         $c->app->log->debug("Options : $options");
-        
+        ## TODO : Get path using which
         my $command = "/usr/local/bin/multichain-util create $uuid $options";
         my $create = qx/$command/;
         $c->app->log->debug("Create : $create");

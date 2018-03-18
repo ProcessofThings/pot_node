@@ -16,6 +16,7 @@ sub startup {
   $self->plugin('PODRenderer') if $config->{perldoc};
   $self->plugin('PotNode::Helpers');
   $self->plugin('DebugDumperHelper');
+  $self->plugin('Crypto');
   $self->mode('development');
   
   $self->log->path('/home/node/log/pot_node.log');
@@ -43,6 +44,7 @@ sub startup {
   
   $auth->get('/')->to('start#setup');
   $auth->get('/system/check')->to('system#check');
+  $auth->any('/system/alertnotify')->to('system#alertnotify');
 
   # These are system functions that are required by various API and Web Interfaces
 
