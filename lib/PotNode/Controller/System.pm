@@ -43,6 +43,8 @@ sub check {
     my @config;
     my @rpc;
     my $sconfig;
+    my $home = $c->config->{home};
+    my $dir = $c->config->{dir};
     
     ## TODO : Multichain params (./multichain/DIR/params & RPC info from multichain.conf
     ## TODO : Find chain-description = pot
@@ -201,7 +203,7 @@ sub check {
             my $ug = Data::UUID->new;
             ## Get PoTChain basics from the 
             my $potchain = decode_json($redis->get("potchain"));
-            if (-f "/home/node/run/$potchain->{'id'}\.pid") {
+            if (-f "$dir/run/$potchain->{'id'}\.pid") {
                 my $cfg = Config::IniFiles->new(-file => "$potchain->{'path'}/multichain.conf",-fallback => "General",-commentchar => '#',-handle_trailing_comment => 1);
                 my $data;
                 $data->{'rpcuser'} = $cfg->val("General","rpcuser");
@@ -228,11 +230,12 @@ sub check {
     }
     
     if (!$redis->exists("addpotnode")){
-        $command = 'ipfs add -r -w -Q /home/node/pot_node';
+        $command = "ipfs add -r -w -Q $home";
         my $cmdreturn = qx/$command/;
         $cmdreturn =~ s/\R//g;
+        my $currentversion = $cmdreturn;
         $c->app->log->debug("Version File checking for $cmdreturn");
-        my $filename = '/home/node/version.txt';  
+        my $filename = "$dir/version.txt";  
         
         my $count = qx/grep -c "$cmdreturn" $filename/;
         $count =~ s/\R//g;
@@ -254,15 +257,14 @@ sub check {
                 my $cmdreturn = qx/$command/;
                 $c->debug($cmdreturn);
                 ## TODO : Time Stamp Backup
-                $command = "mv pot_node backup/pot_node";
+                $command = "cp -r $home $dir/backup/$currentversion";
                 my $cmdreturn = qx/$command/;
-                $c->debug($cmdreturn);
-                $command = "ipfs get $config->{'config'}->{'pot_node'}/pot_node";
-                my $cmdreturn = qx/$command/;
-                $c->debug($cmdreturn);
-                $command = "hypnotoad /home/node/pot_node/script/pot_node";
-                my $cmdreturn = qx/$command/;
-                $c->debug($cmdreturn);
+                $command = "ipfs get -o=$dir $config->{'config'}->{'pot_node'}/pot_node";
+#               my $cmdreturn = qx/$command/;
+#               $c->debug($cmdreturn);
+#               $command = "hypnotoad /home/node/pot_node/script/pot_node";
+#               my $cmdreturn = qx/$command/;
+#               $c->debug($cmdreturn);
                 
             }
         }
