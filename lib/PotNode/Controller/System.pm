@@ -195,9 +195,11 @@ sub check {
         
     }
     
+    ## Loads PoT Default Config from the Blockchain
     if (!$redis->exists("config")){
         if ($redis->exists("potchain")){
             my $ug = Data::UUID->new;
+            ## Get PoTChain basics from the 
             my $potchain = decode_json($redis->get("potchain"));
             my $cfg = Config::IniFiles->new(-file => "$potchain->{'path'}/multichain.conf",-fallback => "General",-commentchar => '#',-handle_trailing_comment => 1);
             my $data;
@@ -223,9 +225,9 @@ sub check {
     
     if (!$redis->exists("addpotnode")){
         $command = 'ipfs add -r -w -Q /home/node/pot_node';
-        my $value = qx/$command/;
-        $value =~ s/\R//g;
-        $c->app->log->debug("Version File checking for $value");
+        my $cmdreturn = qx/$command/;
+        $cmdreturn =~ s/\R//g;
+        $c->app->log->debug("Version File checking for $cmdreturn");
         my $filename = '/home/node/version.txt';  
         
         my $count = qx/grep -c "$value" $filename/;
@@ -245,11 +247,18 @@ sub check {
             if ($count eq '0') {
                 $c->app->log->debug("Upgrading pot_node");
                 $command = "ipfs pin add $config->{'config'}->{'pot_node'}";
-                my $value = qx/$command/;
-                $c->debug($value);
+                my $cmdreturn = qx/$command/;
+                $c->debug($cmdreturn);
+                $command = "ipfs get $config->{'config'}->{'pot_node'}/pot_node";
+                my $cmdreturn = qx/$command/;
+                $c->debug($cmdreturn);
+                $command = "hypnotoad /home/node/pot_node/script/pot_node";
+                my $cmdreturn = qx/$command/;
+                $c->debug($cmdreturn);
+                
             }
         }
-        $c->app->log->debug("pot_node Hash : $value");
+        $c->app->log->debug("pot_node Hash : $cmdreturn");
         $redis->setex('addpotnode',30, "yes");
     }
 
