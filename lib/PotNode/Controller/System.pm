@@ -230,13 +230,13 @@ sub check {
         $c->app->log->debug("Version File checking for $cmdreturn");
         my $filename = '/home/node/version.txt';  
         
-        my $count = qx/grep -c "$value" $filename/;
+        my $count = qx/grep -c "$cmdreturn" $filename/;
         $count =~ s/\R//g;
         if ($count eq '0') {
-            $command = "echo \"$value\" >> $filename";
+            $command = "echo \"$cmdreturn\" >> $filename";
             qx/$command/;
         } else {
-            $c->app->log->debug("Version Exists $value");
+            $c->app->log->debug("Version Exists $cmdreturn");
         }
   
         if ($redis->exists("config")){
