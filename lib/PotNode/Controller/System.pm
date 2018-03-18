@@ -201,21 +201,25 @@ sub check {
             my $ug = Data::UUID->new;
             ## Get PoTChain basics from the 
             my $potchain = decode_json($redis->get("potchain"));
-            my $cfg = Config::IniFiles->new(-file => "$potchain->{'path'}/multichain.conf",-fallback => "General",-commentchar => '#',-handle_trailing_comment => 1);
-            my $data;
-            $data->{'rpcuser'} = $cfg->val("General","rpcuser");
-            $data->{'rpcpassword'} = $cfg->val("General","rpcpassword");
-            $data->{'rpcport'} = $potchain->{'rpcport'};
-            $cfg->Delete;
-            my $URL = Mojo::URL->new("http://127.0.0.1:$data->{'rpcport'}")->userinfo("$data->{'rpcuser'}:$data->{'rpcpassword'}");
-            my $ua  = Mojo::UserAgent->new;
-            my $uuid = $ug->from_hexstring($potchain->{'id'});
-            $uuid = $ug->to_string($uuid);
-            my $result = $ua->get($URL => json => {"jsonrpc" => "1.0", "id" => "curltest","method" => "liststreamkeyitems", "params" =>  ["config","$uuid",\0,1,-1]})->result->json;
-            $result = $result->{'result'}->[0]->{'data'};
-            my ($config) = $c->app->decrypt_aes($result,$potchain->{'id'});
-            $redis->setex('config',1800, $config);
-            $c->app->log->debug("Blockchain Config Loaded");
+            if (-f "/home/node/run/$potchain->{'id'}\.pid") {
+                my $cfg = Config::IniFiles->new(-file => "$potchain->{'path'}/multichain.conf",-fallback => "General",-commentchar => '#',-handle_trailing_comment => 1);
+                my $data;
+                $data->{'rpcuser'} = $cfg->val("General","rpcuser");
+                $data->{'rpcpassword'} = $cfg->val("General","rpcpassword");
+                $data->{'rpcport'} = $potchain->{'rpcport'};
+                $cfg->Delete;
+                my $URL = Mojo::URL->new("http://127.0.0.1:$data->{'rpcport'}")->userinfo("$data->{'rpcuser'}:$data->{'rpcpassword'}");
+                my $ua  = Mojo::UserAgent->new;
+                my $uuid = $ug->from_hexstring($potchain->{'id'});
+                $uuid = $ug->to_string($uuid);
+                my $result = $ua->get($URL => json => {"jsonrpc" => "1.0", "id" => "curltest","method" => "liststreamkeyitems", "params" =>  ["config","$uuid",\0,1,-1]})->result->json;
+                $result = $result->{'result'}->[0]->{'data'};
+                my ($config) = $c->app->decrypt_aes($result,$potchain->{'id'});
+                $redis->setex('config',1800, $config);
+                $c->app->log->debug("Blockchain Config Loaded");
+            } else {
+                $c->app->log->debug("Waiting for Blockchain to start...");
+            }
         } else {
             $c->app->log->debug("Blockchain not loaded - Skipping Config Retreaval");
         }
@@ -247,6 +251,10 @@ sub check {
             if ($count eq '0') {
                 $c->app->log->debug("Upgrading pot_node");
                 $command = "ipfs pin add $config->{'config'}->{'pot_node'}";
+                my $cmdreturn = qx/$command/;
+                $c->debug($cmdreturn);
+                ## TODO : Time Stamp Backup
+                $command = "mv pot_node backup/pot_node";
                 my $cmdreturn = qx/$command/;
                 $c->debug($cmdreturn);
                 $command = "ipfs get $config->{'config'}->{'pot_node'}/pot_node";
