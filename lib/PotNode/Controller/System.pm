@@ -239,7 +239,6 @@ sub check {
                             my $end = $delay->begin;
                             $recurringId = Mojo::IOLoop->recurring(
                                 30 => sub {
-                                    ## TODO : Ciphertext error when no entry is found yet (takes time to sync
                                     $c->app->log->debug("Checking for Config for $uuid");
                                     my $result = $ua->get($URL => json => {"jsonrpc" => "1.0", "id" => "curltest","method" => "liststreamkeyitems", "params" =>  ["config","$uuid",\0,1,-1]})->result->json;
                                     $c->debug($result);
@@ -307,16 +306,11 @@ sub check {
                 ## TODO : Time Stamp Backup
                 $command = "cp -r $home $dir/backup/$currentversion";
                 my $cmdreturn = qx/$command/;
+                ## TODO : Which Hypnotoad remove static path
                 $command = "rm -rf $home;ipfs get -o=$home $config->{'config'}->{'pot_node'}/pot_node;/home/node/perl5/perlbrew/perls/perl-5.24.3/bin/hypnotoad $home/script/pot_node";
                 $c->app->log->debug("Command : $command");
                 my @cmdreturn = qx/$command/;
-                $c->debug(@cmdreturn);
-#               my $cmdreturn = qx/$command/;
-#               $c->debug($cmdreturn);
-#               $command = "hypnotoad /home/node/pot_node/script/pot_node";
-#               my $cmdreturn = qx/$command/;
-#               $c->debug($cmdreturn);
-                
+                $c->debug(@cmdreturn);             
             }
         }
         $c->app->log->debug("pot_node Hash : $cmdreturn");
