@@ -54,6 +54,8 @@ sub startup {
   $auth->get('/genqrcode')->to('system#genqrcode');  # Generates QRCode VIA API
   $auth->get('/genqrcode64')->to('system#genqrcode64');  #Generates Base64 QRCode pushing to websites
   
+  $auth->any(['GET', 'POST'] => '/explore/:method/:params')->to('explore#method');
+  
 }
 
 1;
