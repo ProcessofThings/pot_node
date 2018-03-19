@@ -293,7 +293,7 @@ sub check {
             $c->app->log->debug("Version Exists $cmdreturn");
         }
   
-        if ($redis->exists("config")){
+        if ($redis->exists("config")) {
             my $config = $redis->get("config");
             $config = decode_json($config);
             $count = qx/grep -c "$config->{'config'}->{'pot_node'}" $filename/;
@@ -373,6 +373,7 @@ sub createchain {
         $uuid =~ s/-//g;
         my $param = $c->req->params->to_hash;
         say $c->app->dumper($param);
+        ## Push setting based on what params are passed STATMENT if CONDITION (Only execute code if CONDITION is meet)
         my @optionlist;
         push (@optionlist,"-chain-description=$param->{'name'}") if $param->{'name'};
         push (@optionlist,"-anyone-can-connect=true") if $param->{'public'};
