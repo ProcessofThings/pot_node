@@ -203,22 +203,70 @@ sub check {
             my $ug = Data::UUID->new;
             ## Get PoTChain basics from the 
             my $potchain = decode_json($redis->get("potchain"));
+            ## Waits for the blochchain to begin
             if (-f "$dir/run/$potchain->{'id'}\.pid") {
-                my $cfg = Config::IniFiles->new(-file => "$potchain->{'path'}/multichain.conf",-fallback => "General",-commentchar => '#',-handle_trailing_comment => 1);
-                my $data;
-                $data->{'rpcuser'} = $cfg->val("General","rpcuser");
-                $data->{'rpcpassword'} = $cfg->val("General","rpcpassword");
-                $data->{'rpcport'} = $potchain->{'rpcport'};
-                $cfg->Delete;
-                my $URL = Mojo::URL->new("http://127.0.0.1:$data->{'rpcport'}")->userinfo("$data->{'rpcuser'}:$data->{'rpcpassword'}");
-                my $ua  = Mojo::UserAgent->new;
-                my $uuid = $ug->from_hexstring($potchain->{'id'});
-                $uuid = $ug->to_string($uuid);
-                my $result = $ua->get($URL => json => {"jsonrpc" => "1.0", "id" => "curltest","method" => "liststreamkeyitems", "params" =>  ["config","$uuid",\0,1,-1]})->result->json;
-                $result = $result->{'result'}->[0]->{'data'};
-                my ($config) = $c->app->decrypt_aes($result,$potchain->{'id'});
-                $redis->setex('config',1800, $config);
-                $c->app->log->debug("Blockchain Config Loaded");
+                ## Check if config Retreaval is underway to prevent second attempt (10mins)
+                if (!$redis->exists("setupconfig")){
+                    ## Set setupconfig to prevent additional requests
+                    $redis->setex('setupconfig',600, "started");
+                    my $cfg = Config::IniFiles->new(-file => "$potchain->{'path'}/multichain.conf",-fallback => "General",-commentchar => '#',-handle_trailing_comment => 1);
+                    my $data;
+                    $data->{'rpcuser'} = $cfg->val("General","rpcuser");
+                    $data->{'rpcpassword'} = $cfg->val("General","rpcpassword");
+                    $data->{'rpcport'} = $potchain->{'rpcport'};
+                    $cfg->Delete;
+                    my $URL = Mojo::URL->new("http://127.0.0.1:$data->{'rpcport'}")->userinfo("$data->{'rpcuser'}:$data->{'rpcpassword'}");
+                    ## Recurring ID holder for the recurring event.
+                    my $recurringId;
+                    ## Begin Non-Blocking Sequencial
+                    $c->render_later;
+                    my $delay = Mojo::IOLoop->delay;
+                    $delay->steps(
+                        sub {
+                            ## Subscribe to config
+                            my $delay = shift;
+                            $c->app->log->debug("Setting Up Global Config");
+                            $ua->get($URL => json => {"jsonrpc" => "1.0", "id" => "curltest","method" => "subscribe", "params" =>  ["config"]} => $delay->begin);
+                        },
+                        sub {
+                            my $delay = shift;
+                            $c->app->log->debug("Retreaving Config From Blockchain");
+                            ## Converts UUID HEX back to standard UUID format with -
+                            ## TODO : Blockchain ID using UUID cannot have the - maybe alter blockchain to allow this later date.
+                            my $uuid = $ug->from_hexstring($potchain->{'id'});
+                            $uuid = $ug->to_string($uuid);
+                            ## Recurring Loop returns to $end when finished passing $result to be passed onto the next step
+                            my $end = $delay->begin;
+                            $recurringId = Mojo::IOLoop->recurring(
+                                30 => sub {
+                                    ## TODO : Ciphertext error when no entry is found yet (takes time to sync
+                                    $c->app->log->debug("Checking for Config for $uuid");
+                                    my $result = $ua->get($URL => json => {"jsonrpc" => "1.0", "id" => "curltest","method" => "liststreamkeyitems", "params" =>  ["config","$uuid",\0,1,-1]})->result->json;
+                                    $c->debug($result);
+                                    $result = $result->{'result'}->[0]->{'data'};
+                                    if (defined($result)) {
+                                        $c->app->log->debug("Data Found");
+                                        ## First argument is left out unless you pass a 0 to $delay->begin, this is because most non-blocking methods will pass their object as the first parameter.
+                                        $end->(0,$result);
+                                    }
+                                }
+                            );
+                        },
+                        sub {
+                            my ($delay, $result) = @_;
+                            ## Recurring loop finished remove loop
+                            Mojo::IOLoop->remove($recurringId);
+                            $c->app->log->debug("Decrypting Data");
+                            my ($config) = $c->app->decrypt_aes($result,$potchain->{'id'});
+                            $redis->setex('config',1800, $config);
+                            ## Remove setupconfig once complete
+                            $redis->del('setupconfig');
+                            $c->app->log->debug("Blockchain Config Loaded");
+                        }
+                    )->wait;
+                } else {
+                    $c->app->log->debug("Config Retreaval Already Started...");
+                }
             } else {
                 $c->app->log->debug("Waiting for Blockchain to start...");
             }
