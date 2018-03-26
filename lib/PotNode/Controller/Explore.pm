@@ -9,7 +9,7 @@ use Mojo::Asset::File;
 use Mojo::ByteStream 'b';
 use Data::UUID;
 use Config::IniFiles;
-use MojoX::Multichain;
+use PotNode::Multichain;
 
 # This action will render a template
 
@@ -176,7 +176,7 @@ sub api {
         $config = decode_json($redis->get($config));
     }
     $url = "$config->{'rpcuser'}:$config->{'rpcpassword'}\@127.0.0.1:$config->{'rpcport'}";
-    $api =  MojoX::Multichain->new( url => $url );
+    $api =  PotNode::Multichain->new( url => $url );
     $page = $eventConfig->{'page'};
     $c->debug($eventConfig);
     ## Allow custom api requests
