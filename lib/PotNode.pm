@@ -17,9 +17,15 @@ sub startup {
   $self->plugin('PotNode::Helpers');
   $self->plugin('DebugDumperHelper');
   $self->plugin('Crypto');
+  $self->plugin('Renderer::WithoutCache');
   $self->mode('development');
   
   $self->log->path('/home/node/log/pot_node.log');
+  
+#  $self->secrets(['23898afh2k34ljglkashjdfoul2by34abdlfjh;lqademjbp32b4foasduyfhapsdfknh','29g927gjahsfdskjhgkbcnqi0akjsdh9ubkjsdldfjwkljhdlkfjowlskdflksdhf']);
+  $self->app->sessions->cookie_name('potnode-763248762384');
+  $self->app->sessions->default_expiration('3600');
+#  $self->app->renderer->cache->max_keys(0);
 
   # Router
   my $r = $self->routes;
@@ -53,6 +59,13 @@ sub startup {
   $auth->get('/setup/:html')->to('system#start');
   $auth->get('/genqrcode')->to('system#genqrcode');  # Generates QRCode VIA API
   $auth->get('/genqrcode64')->to('system#genqrcode64');  #Generates Base64 QRCode pushing to websites
+  
+  $auth->get('/explore')->to('explore#redirect');
+  $auth->get('/explore/blockchain')->to('explore#blockchain');
+  $auth->get('/explore/api')->to('explore#api');
+  $auth->get('/explore/:page')->to('explore#load');
+  $auth->get('/explore/set/:id')->to('explore#set');
+  $auth->any(['GET', 'POST'] => '/explore/:method/:params')->to('explore#method');
   
 }
 
