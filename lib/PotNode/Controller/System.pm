@@ -58,40 +58,22 @@ sub check {
     $c->app->log->debug("Directories : $dircount");
     ## Checks the multichain directory for any active blockchains and checks if the daemon is running
     if ($dircount > 0) {
-        if (!$redis->exists("potchain")){
-            ## This searches each PoT Multichain that is availiable for the one called with chain-description = pot it then offers this to other nodes wanting to connect
-            $c->debug(@dir_list);
-            foreach my $dir ( @dir_list ) {
-                my $config = $dir.'/params.dat';
-                my $rpc = $dir.'/multichain.conf';
-                @config = qx/grep -E "default-network-port|default-rpc-port|chain-name|chain-description" $config/;
-                @rpc = qx/grep -E "rpcuser|rpcpassword" $rpc/;
-                
-                if (grep(/^.*= pot/, @config)) {
-                    if ($dir =~ m/\w{32}$/) {
-                        $c->app->log->debug("PoT Blockchain found : $&");
-                        my $cfg = Config::IniFiles->new(-file => "$dir/params.dat",-fallback => "General",-commentchar => '#',-handle_trailing_comment => 1);
-                        my $data;
-                        $data->{'id'} = $&;
-                        $data->{'path'} = $dir;
-                        $data->{'networkport'} = $cfg->val("General","default-network-port");
-                        $data->{'rpcport'} = $cfg->val("General","default-rpc-port");
-                        $cfg->Delete;
-                        $c->app->log->debug("Data Before writing to Redis");
-                        $redis->setex('potchain',1800, encode_json($data));
-                    }
-                    
-                    $c->debug(@config);
-                }
-            }
+        my @blockchain = $c->get_blockchains;
+        $c->debug(@blockchain);
+        ## New Install or Restart Look for pot_config ( PoT is the Genisis Blockchain for the PoT Network all nodes require this )
+        if (!$redis->exists("pot_config")){
+            $c->app->log->debug("Loading Configs");
+            $c->load_blockchain_config(@blockchain);
         }
         
-        opendir( my $DIR, $path );
-        while ( my $entry = readdir $DIR ) {
+        foreach my $entry (@blockchain) {
+            ## Loads Config if a new blockchain is found
+            if (!$redis->exists($entry."_config")){
+                $c->app->log->debug("New Blockchain Found Loading Config");
+                $c->load_blockchain_config(@blockchain);
+            }
+            
             ## Finds all directories and filters out all directories apart from those that contain HEX 32 chars
-            next unless -d $path . '/' . $entry;
-            next if $entry eq '.' or $entry eq '..';
-            next if $entry !~ m/^\w{32}$/;
             if ( -f '/home/node/run/'.$entry.'.pid') {
                 $c->app->log->debug("Running Process : $entry");
             } else {
@@ -101,8 +83,6 @@ sub check {
                 $c->app->log->debug("Starting : $entry");
             }
         }
-        
-        closedir $DIR;
     } else {
         $command = 'ipfs add -r -w -Q /home/node/pot_node';
         my $value = qx/$command/;
@@ -199,22 +179,17 @@ sub check {
     
     ## Loads PoT Default Config from the Blockchain
     if (!$redis->exists("config")){
-        if ($redis->exists("potchain")){
+        if ($redis->exists("pot_config")){
             my $ug = Data::UUID->new;
             ## Get PoTChain basics from the 
-            my $potchain = decode_json($redis->get("potchain"));
+            my $pot_config = decode_json($redis->get("pot_config"));
             ## Waits for the blochchain to begin
-            if (-f "$dir/run/$potchain->{'id'}\.pid") {
+            if (-f "$dir/run/$pot_config->{'id'}\.pid") {
                 ## Check if config Retreaval is underway to prevent second attempt (10mins)
                 if (!$redis->exists("setupconfig")){
                     ## Set setupconfig to prevent additional requests
                     $redis->setex('setupconfig',600, "started");
-                    my $cfg = Config::IniFiles->new(-file => "$potchain->{'path'}/multichain.conf",-fallback => "General",-commentchar => '#',-handle_trailing_comment => 1);
-                    my $data;
-                    $data->{'rpcuser'} = $cfg->val("General","rpcuser");
-                    $data->{'rpcpassword'} = $cfg->val("General","rpcpassword");
-                    $data->{'rpcport'} = $potchain->{'rpcport'};
-                    $cfg->Delete;
+                    my $data = $c->get_rpc_config($pot_config->{'id'});
                     my $URL = Mojo::URL->new("http://127.0.0.1:$data->{'rpcport'}")->userinfo("$data->{'rpcuser'}:$data->{'rpcpassword'}");
                     ## Recurring ID holder for the recurring event.
                     my $recurringId;
@@ -233,7 +208,7 @@ sub check {
                             $c->app->log->debug("Retreaving Config From Blockchain");
                             ## Converts UUID HEX back to standard UUID format with -
                             ## TODO : Blockchain ID using UUID cannot have the - maybe alter blockchain to allow this later date.
-                            my $uuid = $ug->from_hexstring($potchain->{'id'});
+                            my $uuid = $ug->from_hexstring($pot_config->{'id'});
                             $uuid = $ug->to_string($uuid);
                             ## Recurring Loop returns to $end when finished passing $result to be passed onto the next step
                             my $end = $delay->begin;
@@ -256,7 +231,7 @@ sub check {
                             ## Recurring loop finished remove loop
                             Mojo::IOLoop->remove($recurringId);
                             $c->app->log->debug("Decrypting Data");
-                            my ($config) = $c->app->decrypt_aes($result,$potchain->{'id'});
+                            my ($config) = $c->app->decrypt_aes($result,$pot_config->{'id'});
                             $redis->setex('config',1800, $config);
                             ## Remove setupconfig once complete
                             $redis->del('setupconfig');
