@@ -74,8 +74,17 @@ sub check {
             }
             
             ## Finds all directories and filters out all directories apart from those that contain HEX 32 chars
+            ## Gets the PID id from the pid files and removes them if the process is not running
+            my $pid = "/home/node/run/$entry\.pid";
+            my $pidid = qx/cat $pid/;
+            if ($pidid =~ /\n$/) { chop $pidid; };
+            if (! -d "/proc/$pidid") {
+                $c->app->log->debug("Removing Stale PID files $pidid");
+                unlink $pid;
+            }
+            ## Checks if the pid file exists before trying to start the multichain daemon if it exists express the process id
             if ( -f '/home/node/run/'.$entry.'.pid') {
-                $c->app->log->debug("Running Process : $entry");
+                $c->app->log->debug("Running Process : $entry with PID : $pidid");
             } else {
                 ## launched the daemon using > /dev/null & to return control to mojolicious
                 $command = 'multichaind '.$entry.' -daemon -pid=/home/node/run/'.$entry.'.pid -walletnotifynew="curl -H \'Content-Type: application/json\' -d %j http://127.0.0.1:9090/system/alertnotify?name=%m\&txid=%s\&hex=%h\&seen=%c\&address=%a\&assets=%e" > /dev/null &';
@@ -184,7 +193,15 @@ sub check {
             ## Get PoTChain basics from the 
             my $pot_config = decode_json($redis->get("pot_config"));
             ## Waits for the blochchain to begin
-            if (-f "$dir/run/$pot_config->{'id'}\.pid") {
+
+            my $pid = "$dir/run/$pot_config->{'id'}\.pid";
+#            my $pidid = qx/cat $pid/;
+#            if (! -e "/proc/$pidid") {
+#                $c->app->log->debug("Removing Stale PID files");
+#                unlink $pid;
+#            }
+            
+            if (-f $pid) {
                 ## Check if config Retreaval is underway to prevent second attempt (10mins)
                 if (!$redis->exists("setupconfig")){
                     ## Set setupconfig to prevent additional requests

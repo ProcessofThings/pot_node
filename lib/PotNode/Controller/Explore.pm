@@ -27,8 +27,10 @@ sub load {
     my $sessionUuid;
     my $eventHash;
     my $eventConfig;
-    my $id = $redis->get('html_explore');
+    my $pot_config = decode_json($redis->get('config'));
+    $c->debug($pot_config);
     my $page = $c->req->param('page') || "index";
+    my $id = $pot_config->{'config'}->{'9090_layout'}->{'explore'};
     my $blockchain = $c->req->param('chain') || "none";
     my $allparams = $c->req->params->to_hash;
     
@@ -68,7 +70,9 @@ sub load {
     $c->stash(importData => $encodedfile);
 
     ## GET config file
-    my $config = $ua->get('http://127.0.0.1:8080/ipfs/'.$id.'/config.json')->result->body;
+    my $configurl = "http://127.0.0.1:8080/ipfs/$id/config.json";
+    $c->debug($configurl);
+    my $config = $ua->get($configurl)->result->body;
     if ($config =~ /\n$/) { chop $config; };
     $config = decode_json($config);
     $c->debug($config);

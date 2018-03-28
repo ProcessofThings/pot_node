@@ -37,7 +37,7 @@
                         <div class="row">
                             <!-- logo -->
                             <div class="col-md-3 col-sm-4 col-xs-7">
-                                <a href="#home" class="inner-link"><img alt="" src="/images/logo.png" data-img-size="(W)163px X (H)40px"></a>
+                                <a href="/" class="inner-link"><img alt="" src="/images/logo.png" data-img-size="(W)163px X (H)40px"></a>
                             </div>
                             <!-- end logo -->
                             <!-- social elements -->
