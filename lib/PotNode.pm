@@ -17,8 +17,6 @@ sub startup {
   $self->plugin('PotNode::Helpers');
   $self->plugin('DebugDumperHelper');
   $self->plugin('Crypto');
-  $self->plugin('Renderer::WithoutCache');
-  $self->plugin('proxy');
   $self->mode('development');
   
   $self->log->path('/home/node/log/pot_node.log');
