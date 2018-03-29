@@ -17,7 +17,6 @@ sub startup {
   $self->plugin('PotNode::Helpers');
   $self->plugin('DebugDumperHelper');
   $self->plugin('Crypto');
-  $self->plugin('Renderer::WithoutCache');
   $self->mode('development');
   
   $self->log->path('/home/node/log/pot_node.log');
@@ -44,11 +43,17 @@ sub startup {
     $c->app->log->debug("Requested Port Not Allowed ");
     return undef;
   });
+  
+  my $authPublic = $r->under ( sub {
+    my $c = shift;
+    return 1 if $c->tx->local_port eq '9080';
+    $c->app->log->debug("Requested Port Not Allowed ");
+    return undef;
+  });
 
   # These functions can only be access thought the local lan or via ssh tunnel from your computer
   # SSH Tunnel - ssh ipaddress -l username -L 9090:127.0.0.1:9090 
   
-  $auth->get('/')->to('start#setup');
   $auth->get('/system/check')->to('system#check');
   $auth->any('/system/alertnotify')->to('system#alertnotify');
 
@@ -66,6 +71,17 @@ sub startup {
   $auth->get('/explore/:page')->to('explore#load');
   $auth->get('/explore/set/:id')->to('explore#set');
   $auth->any(['GET', 'POST'] => '/explore/:method/:params')->to('explore#method');
+  
+  $auth->get('/developer')->to('developer#redirect');
+  $auth->get('/developer/blockchain')->to('developer#blockchain');
+  $auth->get('/developer/:page')->to('developer#load');
+  $auth->get('/developer/set/:id')->to('developer#set');
+  $auth->get('/developer/images/*')->to('developer#assets');
+  $auth->get('/developer/assets/*')->to('developer#assets');
+  
+  $auth->get('/')->to('private#redirect');
+  $auth->get('/assets/*')->to('private#assets');
+  $auth->get('/:page')->to('private#load');
   
 }
 
