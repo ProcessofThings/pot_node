@@ -31,19 +31,19 @@ sub alive {
     my $redis = Mojo::Redis2->new;
     my $address = $c->tx->remote_address;
     my $myaddress = $c->req->url->to_abs->host;
-    if (!$redis->exists("potchain")){
+    if (!$redis->exists("pot_config")){
         $c->app->log->debug("/node/alive - Key Not Found");
         $c->render(json => {'message' => "Alive Request From $address"});
     } else {
-        my $potchain = decode_json($redis->get("potchain"));
+        my $pot_config = decode_json($redis->get("pot_config"));
         my $data;
         my $address = $c->tx->remote_address;
         my $myaddress = $c->req->url->to_abs->host;
         
         $c->app->log->debug("Remote Address : $address $myaddress");
         $data->{'message'} = "Alive Request From $address";
-        $data->{'address'} = "$potchain->{'id'}".'@'."$myaddress:$potchain->{'networkport'}"; 
-        $data->{'id'} = $potchain->{'id'};
+        $data->{'address'} = "$pot_config->{'id'}".'@'."$myaddress:$pot_config->{'networkport'}"; 
+        $data->{'id'} = $pot_config->{'id'};
         $c->render(json => $data);
     }
 };
