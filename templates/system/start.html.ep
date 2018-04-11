@@ -1,77 +1,153 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>PoT Node</title>
-
-        <meta name="description" content="Source code generated using layoutit.com">
-        <meta name="author" content="LayoutIt!">
-
-        <link href="/css/bootstrap.min.css" rel="stylesheet">
-        <link type="text/css" href="/css/style.css" rel="stylesheet">
-
-        <link rel="shortcut icon" href="/images/fav.png">
-        <link rel="stylesheet" href="/css/animate.css">
-        <link rel="stylesheet" href="/css/bootstrap.css">
-        <link rel="stylesheet" href="/css/font-awesome.css">
-        <link rel="stylesheet" href="/css/themify-icons.css">
-        <link rel="stylesheet" href="/css/owl_002.css">
-        <link rel="stylesheet" href="/css/owl.css">
-        <link rel="stylesheet" href="/css/magnific-popup.css">
-        <link rel="stylesheet" href="/css/base.css">
-        <link rel="stylesheet" href="/css/elements.css">
-        <link rel="stylesheet" href="/css/responsive.css">
-        <script src="/js/jquery-3.3.1.min.js"></script>
-        <script type="text/javascript" src="/js/bootstrap.js"></script>
-        
-        <style id="fit-vids-style">.fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}</style>
+        <link href='/css/roboto.css' rel="stylesheet" type="text/css">
+        <link href='/css/icons.css' rel="stylesheet" type="text/css">
+        <link href="/css/vuetify.min.css" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
     </head>
     <body>
-        <!-- #Page -->
-        <div id="page" class="page">
-            <header class="header-style15" id="header-section29">
-                <nav class="navbar bg-white tz-header-bg no-margin shrink-header">
-                    <div class="container navigation-menu">
-                        <div class="row">
-                            <!-- logo -->
-                            <div class="col-md-3 col-sm-4 col-xs-7">
-                                <a href="/" class="inner-link"><img alt="" src="/images/logo.png" data-img-size="(W)163px X (H)40px"></a>
-                            </div>
-                            <!-- end logo -->
-                            <!-- social elements -->
-                            <div class="col-md-9 col-sm-8 col-xs-5 position-inherit xs-no-padding-left">
-                                <div class="social float-right text-dark-gray xs-no-margin-top xs-margin-bottom-5px margin-twelve-left">
-                                    <a href="#"><i class="fa fa-facebook tz-icon-color"></i></a>
-                                    <a href="#"><i class="fa fa-twitter tz-icon-color"></i></a>
-                                    <a href="#"><i class="fa fa-google-plus tz-icon-color"></i></a>
-                                    <a href="#"><i class="fa fa-linkedin tz-icon-color"></i></a>
-                                    <a href="#"><i class="fa fa-pinterest tz-icon-color"></i></a>
-                                </div>
-                            </div>
-                            <!-- end social elements -->
-                        </div>
-                    </div>
-                </nav>
-            </header>
-             <!-- #loadTemplate -->
-            <div id="loadTemplate">
+        <div id="app">
+            <v-app dark id="inspire">
+                <v-navigation-drawer
+                fixed
+                :clipped="$vuetify.breakpoint.mdAndUp"
+                app
+                v-model="drawer"
+                class="secondary"
+                >
+                    <v-list>
+                        <v-list-group
+                        v-model="item.active"
+                        v-for="item in navitems"
+                        :key="item.title"
+                        :prepend-icon="item.action"
+                        no-action
+                        >
+                        <v-list-tile slot="activator">
+                            <v-list-tile-content>
+                            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                            </v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile v-for="subItem in item.navitems" :key="subItem.title" @click="switchComponent(subItem.href)">
+                            <v-list-tile-content>
+                            <v-list-tile-title>{{ subItem.title }}</v-list-tile-title>
+                            </v-list-tile-content>
+                            <v-list-tile-action>
+                            <v-icon>{{ subItem.action }}</v-icon>
+                            </v-list-tile-action>
+                        </v-list-tile>
+                        </v-list-group>
+                    </v-list>
+                </v-navigation-drawer>
+                <v-toolbar
+                color="primary"
+                dark
+                app
+                :clipped-left="$vuetify.breakpoint.mdAndUp"
+                fixed
+                >
+                    <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
+                        <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+                        <span class="hidden-sm-and-down">
+                            <v-btn flat large>
+                                <v-avatar size="92px" tile>
+                                <img
+                                    src="/images/POTLOGOWHITE.svg"
+                                    alt="Process Of Things"
+                                >
+                                </v-avatar>
+                            </v-btn>
+                        </span>
+                    </v-toolbar-title>
+                    <v-text-field
+                        flat
+                        solo-inverted
+                        prepend-icon="search"
+                        label="Search"
+                        class="hidden-sm-and-down"
+                    ></v-text-field>
+                    <v-spacer></v-spacer>
+                    <v-btn icon>
+                        <v-icon>apps</v-icon>
+                    </v-btn>
+                    <v-btn icon>
+                        <v-icon>notifications</v-icon>
+                    </v-btn>
+                </v-toolbar>
+                <v-content>
+                       
+                        <component :is="currentView" keep-alive></component>
                         
-                <% if (defined($importData)) { %>
-                    <%= $importData %>
-                <% } %>
-                <% if (defined(stash("import_nav"))) { %>
-                    % if (my $import_nav = stash 'import_nav') {
-                        <%= $import_nav %>
-                    % }
-                <% } %>
-                <%= $import_template %>
 
-            </div>
-            <!-- /#loadTemplate -->
+                            <!-- #loadTemplate
+                            <div id="loadTemplate">
+                                        
+                                <% if (defined($importData)) { %>
+                                    <%= $importData %>
+                                <% } %>
+                                <% if (defined(stash("import_nav"))) { %>
+                                    % if (my $import_nav = stash 'import_nav') {
+                                        <%= $import_nav %>
+                                    % }
+                                <% } %>
+                                <%= $import_template %>
+
+                            </div>
+                             /#loadTemplate -->
+   
+                </v-content>
+            </v-app>
         </div>
-        <!-- /#page -->
+
+        <script src="/js/vue-2.5.16.js"></script>
+        <script src="/js/vuetify.js"></script>
+        <script src="https://unpkg.com/http-vue-loader"></script>
+        <script src="https://unpkg.com/vuex@2.0.0/dist/vuex.js"></script>
+        <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+        
+        <script>
+
+            const theme = {
+                primary: '#2d325a',
+                secondary: '#304b78',
+                accent: '#56bda2',
+                error: '#dbb13b',
+                warning: '#dbb13b'
+            }
+        
+            new Vue({ 
+                el: '#app',
+                data: {
+                    currentView: "mainPage",
+                    drawer: null,
+                    navitems: [{"action":"code","navitems":[{"title":"Create App"},{"title":"Your Apps"}],"title":"Developer"},{"action":"explore","navitems":[{"href":"explore","title":"Blockchains"},{"href":"my-component","title":"Node"},{"title":"Permissions"},{"title":"View Stream"}],"title":"Explore"}]
+                },
+                components: {
+                    mainPage: { template: "<div>Main page</div>" },                   
+                    explore: httpVueLoader('/vue/explore.vue'),
+                    'my-component': httpVueLoader('http://127.0.0.1:8080/ipfs/QmRNppixRR63hsWhc4ZKiFzu4ZYSupgLpWhMmJeUTSz9d3/my-component.vue')
+                },
+                methods: {
+                    switchComponent: function(compName){
+                        console.log(compName);
+                        this.currentView = compName;
+                        this.dialog = true;
+                    }
+                },
+                created() {
+                    this.$vuetify.theme = theme
+//                    fetch('/api')
+//                    .then(response => response.json())
+//                    .then(json => {
+//                        this.navitems = json.navitems
+//                    })
+                },
+                props: {
+                    source: String
+                }
+            })
+
+        </script>
     </body>
 </html>
-

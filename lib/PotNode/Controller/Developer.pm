@@ -29,8 +29,96 @@ sub load {
     my $pot_config = decode_json($redis->get('config'));
     my $import_nav;
     my $id;
+    my $appid;
     my $page = $c->req->param('page') || "index";
     my $id = $pot_config->{'config'}->{'9090_layout'}->{'developer'};
+    my $blockchain = $c->req->param('chain') || "none";
+    my $allparams = $c->req->params->to_hash;
+    
+    if ($redis->exists('html_developer')) {
+        $c->redirect_to('/developer/app/index.html');
+    }
+    
+    if ($blockchain eq "none") {
+        if ($c->session('blockchain') ne 'none') {
+            $blockchain = $c->session('blockchain');
+        }
+    }
+    if ($page ne "index") {
+        if ($c->session('blockchain') eq 'none') {
+            $c->redirect_to('/developer/index.html');
+        }
+    }
+
+
+    if ($c->req->param('chain')) {
+        $c->session(blockchain => $blockchain);
+    }
+    ## Setup Session UUID and Event UUID
+    ## These are combined to link and hashed to provide a uniquid that is used to link page config to data processing
+    
+    my $uuid = $c->app->uuid();
+    if (!$c->session('uuid')) {
+        $c->app->log->debug("Session Set : $uuid");
+        $sessionUuid = $uuid;
+        $c->session(uuid => $sessionUuid);
+    } else {
+        $sessionUuid = $c->session('uuid');
+        $c->app->log->debug("Session UUID Exists : $sessionUuid");
+    }
+    
+    ## Create Event Hash
+    $eventHash = $c->sha256_hex("$sessionUuid-$uuid");
+    $c->app->log->debug("Event Hash : $eventHash");
+
+    my $htmldata = "<div id=\"data\" data-eventHash=\"$eventHash\">";
+    my $encodedfile = b($htmldata);
+    $c->stash(importData => $encodedfile);
+
+    ## GET config file
+    my $config = $ua->get('http://127.0.0.1:8080/ipfs/'.$id.'/config.json')->result->body;
+    if ($config =~ /\n$/) { chop $config; };
+    $config = decode_json($config);
+    $c->debug($config);
+    $c->app->log->debug("Blockchain : $blockchain");
+    $eventConfig->{'blockchain'} = $blockchain;
+    $eventConfig->{'page'} = $page;
+    $eventConfig->{'config'} = $config;
+    $eventConfig->{'allparams'} = $allparams;
+    $redis->setex($eventHash,1800, encode_json($eventConfig));
+    
+	my $url = 'http://127.0.0.1:8080/ipfs/'.$id.'/'.$page.'.html';
+	$c->app->log->debug("URL : $url");
+#	$c->url_for('page', page => 'index.html')->to_abs;
+#	my $html = $ua->get('http://127.0.0.1:8080/ipfs/QmfQMb2jjboKYkk5f1DhmGXyxcwNtnFJzvj92WxLJjJjcS')->res->dom->find('section')->first;
+    my $html = $ua->get($url)->res->dom->find('div.template')->first;
+    my $encodedfile = b($html);
+    $c->stash(import_template => $encodedfile);
+
+    if ($config->{'component'}) {
+        while( my( $key, $value ) = each %{$config->{'component'}}){
+            my $url = 'http://127.0.0.1:8080/ipfs/'.$id.'/'.$value;
+            my $html = $ua->get($url)->res->dom->find('div.template')->first;
+            my $encodedfile = b($html);
+            my $importref = "import_$key";
+            $c->stash($importref => $encodedfile);
+        };
+    }
+    
+    $c->render(template => $config->{'template'});
+};
+
+sub loadApp {
+    my $c = shift;
+    my $sessionUuid;
+    my $eventHash;
+    my $eventConfig;
+    my $pot_config = decode_json($redis->get('config'));
+    my $import_nav;
+    my $id;
+    my $appid;
+    my $page = $c->req->param('page') || "index";
+    my $id = $redis->get('html_developer');
     my $blockchain = $c->req->param('chain') || "none";
     my $allparams = $c->req->params->to_hash;
     
@@ -102,6 +190,8 @@ sub load {
     $c->render(template => $config->{'template'});
 };
 
+
+
 sub assets {
     my $c = shift;
     my $url = $c->req->url->to_string;
@@ -131,8 +221,35 @@ sub assets {
 sub set {
     my $c = shift;
     my $id = $c->param('id');
+    $c->app->log->debug("Set APP Hash : $id");
     $redis->setex('html_developer',1800, $id);
-    $c->redirect_to('/developer/index.html');
+    $c->redirect_to('/developer/app/index.html');
+};
+
+
+sub createApp{
+    my $c = shift;
+    my $sessionUuid;
+    my $eventHash;
+    my $eventConfig;
+    my $pot_config = decode_json($redis->get('config'));
+    my $allparams = $c->req->params->to_hash;
+    my $jsonParams = $c->req->json;
+    my $ug = Data::UUID->new;
+
+    my $uuid = $c->app->uuid();
+
+    $jsonParams->{'containerid'} = $uuid;
+    
+    $c->debug($uuid);
+    
+    my $hex = $ug->from_string($uuid);
+    $hex = $ug->to_hexstring($hex);
+    $hex = substr($hex,2);
+    
+    $c->debug($hex);
+    $c->debug($jsonParams);
+    
 };
 
 1;

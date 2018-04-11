@@ -309,6 +309,44 @@ sub check {
         $redis->setex('addpotnode',30, "yes");
     }
 
+    ## Load 9090_layout
+    if ($redis->exists("config")) {
+        my @ipfsHash;
+        $c->app->log->debug("Checking for HTML changes 9090");
+        my $config = decode_json($redis->get("config"));
+        foreach my $item (@{$config->{'config'}->{'9090_layout'}}) {
+            $c->debug($item);
+            push @ipfsHash, $item->{'ipfs'};
+        }
+        my @navitems;
+        foreach my $ipfsHash (@ipfsHash) {
+            my $status = $ua->get("http://127.0.0.1:5001/api/v0/pin/ls?arg=$ipfsHash")->result->json;
+            if ($status->{'Keys'}->{$ipfsHash}->{'Type'} ne "recursive") {
+                $c->app->log->debug("Pinning App");
+                $ua->get("http://127.0.0.1:5001/api/v0/pin/add?arg=$ipfsHash");
+            }
+            $c->app->log->debug("Getting $ipfsHash/config.json");
+            my $config = $ua->get('http://127.0.0.1:8080/ipfs/'.$ipfsHash.'/config.json')->result->body;
+            if ($config =~ /\n$/) { chop $config; };
+            $config = decode_json($config);
+            if ($config->{'navitems'}) {
+                foreach my $item (@{$config->{'navitems'}}) {
+                    foreach my $option (@{$item->{'navitems'}}) {
+                        if ($option->{'href'}) {
+                            $option->{'href'} = $ipfsHash.$option->{'href'};
+                        }
+                    }
+                    $c->debug($item);
+                    push @navitems, $item;
+                }
+                
+            }
+            my $dataOut->{'navitems'} = \@navitems;
+            $redis->set(index => encode_json($dataOut));
+        }
+    };
+    
+    
     
     if (!$redis->exists("myipfsid")){
         my $idinfo = $ua->get("http://127.0.0.1:5001/api/v0/id")->result->json;

@@ -28,9 +28,17 @@ sub load {
     my $eventConfig;
     my $pot_config = decode_json($redis->get('config'));
     my $page = $c->req->param('page') || "main";
-    my $id = $pot_config->{'config'}->{'9090_layout'}->{$page};
+    my $id;
     my $blockchain = $c->req->param('chain') || "none";
     my $allparams = $c->req->params->to_hash;
+    
+    foreach my $item (@{$pot_config->{'config'}->{'9090_layout'}}) {
+        if($item->{'name'} eq $page) {
+            $id = $item->{'ipfs'};
+        } else {
+            $c->app->log->debug("Error Page name not found");
+        }
+    }
     
     if ($blockchain eq "none") {
         if ($c->session('blockchain') ne 'none') {
@@ -124,5 +132,14 @@ sub assets {
     });
 };
 
+sub api {
+    my $c = shift;
+    $c->res->headers->header('Access-Control-Allow-Origin' => '*');
+    $c->res->headers->header('Access-Control-Allow-Credentials' => 'true');
+    $c->res->headers->header('Pragma' => 'no-cache');
+    $c->res->headers->header('Cache-Control' => 'no-cache');
+    my $data = decode_json($redis->get('index'));
+    $c->render(json => $data);
+};
   
 1;

@@ -30,9 +30,17 @@ sub load {
     my $pot_config = decode_json($redis->get('config'));
     $c->debug($pot_config);
     my $page = $c->req->param('page') || "index";
-    my $id = $pot_config->{'config'}->{'9090_layout'}->{'explore'};
     my $blockchain = $c->req->param('chain') || "none";
     my $allparams = $c->req->params->to_hash;
+    my $id;
+    
+    foreach my $item (@{$pot_config->{'config'}->{'9090_layout'}}) {
+        if($item->{'name'} eq 'explore') {
+            $id = $item->{'ipfs'};
+        } else {
+            $c->app->log->debug("Error Page name not found");
+        }
+    }
     
     if ($blockchain eq "none") {
         if ($c->session('blockchain') ne 'none') {
@@ -91,13 +99,13 @@ sub load {
     my $encodedfile = b($html);
     $c->stash(import_template => $encodedfile);
 
-    while( my( $key, $value ) = each %{$config->{'component'}}){
-        my $url = 'http://127.0.0.1:8080/ipfs/'.$id.'/'.$value;
-        my $html = $ua->get($url)->res->dom->find('div.template')->first;
-        my $encodedfile = b($html);
-        my $importref = "import_$key";
-        $c->stash($importref => $encodedfile);
-    };
+#    while( my( $key, $value ) = each %{$config->{'component'}}){
+#        my $url = 'http://127.0.0.1:8080/ipfs/'.$id.'/'.$value;
+#        my $html = $ua->get($url)->res->dom->find('div.template')->first;
+#        my $encodedfile = b($html);
+#        my $importref = "import_$key";
+#        $c->stash($importref => $encodedfile);
+#    };
     
     $c->render(template => $config->{'template'});
 };
@@ -122,10 +130,10 @@ sub blockchain {
     my $blockchain;
     my $page;
         
-    $eventHash = $c->param('eventHash');
-    $c->app->log->debug("Event Hash : $eventHash");
-    $eventConfig = decode_json($redis->get($eventHash));
-    $blockchain = $eventConfig->{'blockchain'};
+##    $eventHash = $c->param('eventHash');
+##    $c->app->log->debug("Event Hash : $eventHash");
+##    $eventConfig = decode_json($redis->get($eventHash));
+##    $blockchain = $eventConfig->{'blockchain'};
     $page = $eventConfig->{'page'};
     my @blockchain = $c->get_blockchains;
     foreach my $blockchain (@blockchain) {
@@ -135,23 +143,27 @@ sub blockchain {
         push @{$dataIn}, decode_json($redis->get($blockchain.'_config'));
     }
     $c->debug($dataIn);
-    foreach my $item (@{$eventConfig->{'config'}->{$page}}) {
+#    foreach my $item (@{$eventConfig->{'config'}->{$page}}) {
         my $custData;
-        my $layout = $item->{'layout'};
-        my $dom = $item->{'dom'};
-        my $rawOut->{$dom} = $dataIn;
-        push @{$dataOut->{'raw'}}, $rawOut;
+#        my $layout = $item->{'layout'};
+#        my $dom = $item->{'dom'};
+#        my $rawOut->{$dom} = $dataIn;
+#        push @{$dataOut->{'raw'}}, $rawOut;
+			my @array;
         foreach my $arrayitem (@{$dataIn}) {
                 $c->debug($arrayitem);
-                my $mergeData = $c->app->mergeHTML($arrayitem,$layout);
-                $c->debug($custData);
-                $c->app->log->debug("DataIn ARRAY");
-                push @{$custData->{$dom}}, $mergeData;
+#                my $mergeData = $c->app->mergeHTML($arrayitem,$layout);
+ #               $c->debug($custData);
+#                $c->app->log->debug("DataIn ARRAY");
+				my $mergeData;
+				$mergeData->{'value'} = $arrayitem->{'id'};
+				$mergeData->{'text'} = $arrayitem->{'name'};
+				push @{$custData->{'blockchains'}}, $mergeData;
         }
-        push @{$dataOut->{'html'}}, $custData;
-    }
-    $c->debug($dataOut);
-    $c->render(json => $dataOut, status => 200);
+#        push @{$dataOut->{'html'}}, $custData;
+#    }
+    $c->debug($custData);
+    $c->render(json => $custData, status => 200);
 };
 
 sub api {

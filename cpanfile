@@ -12,3 +12,4 @@ requires 'Config::IniFiles';
 requires 'Mojolicious::Plugin::DebugDumperHelper';
 requires 'Mojolicious::Plugin::Crypto'; 
 requires 'Perl::Tidy';
+requires 'JavaScript::V8';
