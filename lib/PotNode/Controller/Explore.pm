@@ -166,6 +166,14 @@ sub blockchain {
     $c->render(json => $custData, status => 200);
 };
 
+
+sub apitest {
+	my $c = shift;
+	my $dataIn;
+	my $dataOut;
+	my $allparams = $c->req->params->to_hash;
+};
+
 sub api {
     my $c = shift;
     my $dataIn;

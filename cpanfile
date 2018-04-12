@@ -1,5 +1,6 @@
 requires 'Mojolicious';
 requires 'Mojo::Redis2';
+requires 'Mojolicious::Plugin::OpenAPI';
 requires 'Imager::QRCode';
 requires 'Data::UUID';
 requires 'File::Find::Object';
@@ -13,3 +14,5 @@ requires 'Mojolicious::Plugin::DebugDumperHelper';
 requires 'Mojolicious::Plugin::Crypto'; 
 requires 'Perl::Tidy';
 requires 'JavaScript::V8';
+requires 'OpenAPI::Client';
+requires 'YAML::XS'

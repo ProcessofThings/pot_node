@@ -78,23 +78,6 @@
                 <v-content>
                        
                         <component :is="currentView" keep-alive></component>
-                        
-
-                            <!-- #loadTemplate
-                            <div id="loadTemplate">
-                                        
-                                <% if (defined($importData)) { %>
-                                    <%= $importData %>
-                                <% } %>
-                                <% if (defined(stash("import_nav"))) { %>
-                                    % if (my $import_nav = stash 'import_nav') {
-                                        <%= $import_nav %>
-                                    % }
-                                <% } %>
-                                <%= $import_template %>
-
-                            </div>
-                             /#loadTemplate -->
    
                 </v-content>
             </v-app>
@@ -102,9 +85,8 @@
 
         <script src="/js/vue-2.5.16.js"></script>
         <script src="/js/vuetify.js"></script>
-        <script src="https://unpkg.com/http-vue-loader"></script>
-        <script src="https://unpkg.com/vuex@2.0.0/dist/vuex.js"></script>
-        <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+        <script src="/js/http-vue-loader.js"></script>
+        <script src="/js/vuex-2.0.0.js"></script>
         
         <script>
 
@@ -115,13 +97,39 @@
                 error: '#dbb13b',
                 warning: '#dbb13b'
             }
-        
+ 
+ 				const indexPage = {
+					state: {
+						count: 0,
+						loadedNavitems: [{"action":"code","navitems":[{"title":"Create App"},{"title":"Your Apps"}],"title":"Developer"},{"action":"explore","navitems":[{"href":"explore","title":"Blockchains"},{"href":"my-component","title":"Node"},{"title":"Permissions"},{"title":"View Stream"}],"title":"Explore"}]
+					},
+					mutations: {},
+					actions: {},
+					getters: {
+						loadedNavitems (state) {
+							return state.loadedNavitems
+						}
+					}
+				}
+ 
+            const store = new Vuex.Store({
+					modules: {
+						layout: indexPage
+					}
+				})
+				
+				    
             new Vue({ 
                 el: '#app',
                 data: {
                     currentView: "mainPage",
                     drawer: null,
-                    navitems: [{"action":"code","navitems":[{"title":"Create App"},{"title":"Your Apps"}],"title":"Developer"},{"action":"explore","navitems":[{"href":"explore","title":"Blockchains"},{"href":"my-component","title":"Node"},{"title":"Permissions"},{"title":"View Stream"}],"title":"Explore"}]
+                },
+                store,
+                computed: {
+						navitems () {
+							return this.$store.getters.loadedNavitems 
+						}
                 },
                 components: {
                     mainPage: { template: "<div>Main page</div>" },                   

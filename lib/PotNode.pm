@@ -17,6 +17,7 @@ sub startup {
   $self->plugin('PotNode::Helpers');
   $self->plugin('DebugDumperHelper');
   $self->plugin('Crypto');
+  $self->plugin(OpenAPI => {spec => $self->static->file("v1apimultichain.json")->path});
   $self->mode('development');
   
   $self->log->path('/home/node/log/pot_node.log');
@@ -82,10 +83,11 @@ sub startup {
   $auth->get('/developer/app/assets/*')->to('developer#assets');
   $auth->post('/developer/api/createApp')->to('developer#createApp');
   
-  $auth->get('/api')->to('private#api');
+#  $auth->get('/api')->to('private#api');
   $auth->get('/')->to('private#redirect');
   $auth->get('/assets/*')->to('private#assets');
   $auth->get('/:page')->to('private#load');
+  
   
 }
 
