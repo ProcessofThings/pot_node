@@ -87,8 +87,14 @@
         <script src="/js/vuetify.js"></script>
         <script src="/js/http-vue-loader.js"></script>
         <script src="/js/vuex-2.0.0.js"></script>
+        <script src="/js/axios.min.js"></script>
         
         <script>
+//            import axios as axios;
+        
+//            const instance = axios.create({
+//                baseURL: 'http://127.0.0.1:9090/v1/api'
+//            });
 
             const theme = {
                 primary: '#2d325a',
@@ -98,19 +104,19 @@
                 warning: '#dbb13b'
             }
  
- 				const indexPage = {
-					state: {
-						count: 0,
-						loadedNavitems: [{"action":"code","navitems":[{"title":"Create App"},{"title":"Your Apps"}],"title":"Developer"},{"action":"explore","navitems":[{"href":"explore","title":"Blockchains"},{"href":"my-component","title":"Node"},{"title":"Permissions"},{"title":"View Stream"}],"title":"Explore"}]
-					},
-					mutations: {},
-					actions: {},
-					getters: {
-						loadedNavitems (state) {
-							return state.loadedNavitems
-						}
-					}
-				}
+            const indexPage = {
+                state: {
+                    count: 0,
+                    loadedNavitems: [{"action":"code","navitems":[{"title":"Create App"},{"title":"Your Apps"}],"title":"Developer"},{"action":"explore","navitems":[{"href":"explore","title":"Blockchains"},{"href":"my-component","title":"Node"},{"title":"Permissions"},{"title":"View Stream"}],"title":"Explore"}]
+                },
+                mutations: {},
+                actions: {},
+                getters: {
+                    loadedNavitems (state) {
+                        return state.loadedNavitems
+                    }
+                }
+            }
  
             const store = new Vuex.Store({
 					modules: {

@@ -63,17 +63,22 @@
 
 store.registerModule('explore', { 
 	state: {
-		loadedBlockchains: [{"text":"testchain","value":"129FFFEE2DC011E8BC59DF39C410AFD3"},{"text":"pot","value":"C9AF3F5620B911E8A0510CD5963D4F80"}],
+		blockchains: [{"text":"testchain","value":"129FFFEE2DC011E8BC59DF39C410AFD3"},{"text":"pot","value":"C9AF3F5620B911E8A0510CD5963D4F80"}],
 		newMynode: '',
 		mynode: [],
+//		loadedBlockchains: false,
 		loadedMynode: false
 	},
 	mutations: {
 		setGetInfo (state, mynode) {
 			state.mynode = mynode
 		},
-		setloadedBlockchains (state, loadedBlockchains) {
-			state.loadedBlockchains = loadedBlockchains
+		loadedBlockchains (state, loadedBlockchains) {
+            const blockchains = {
+                data : loadedBlockchains,
+                changed : false
+            }
+            state.loadedBlockchains.unshift(blockchain)
 		},
 		clearGetInfo (state) {
 			state.newMynode = ''
@@ -83,11 +88,29 @@ store.registerModule('explore', {
 		}
 	},
 	actions: {
+        loadBlockchains ({ commit }) {
+            if (commit.state.loadedBlockchains == false) {
+                fetch('/multichain/blockchains')
+                    .then(response => response.json())
+                    .then(json => {
+                        context.commit('loadedBlockchains', json.result)
+                    })
+            }
+        },
 		loadGetInfo (context, blockChain) {
 			console.log(context)
 			if (context.state.loadedMynode == false) {
 				if (blockChain) {
-					fetch('/v1/api/multichain/getinfo/' + blockChain)
+                    axios.get('http://127.0.0.1:9090/v1/api/multichain/getinfo/' + blockChain)
+                        .then(res => {
+                            console.log(res);
+                            context.commit('setloadedMynode', true)
+							context.commit('setGetInfo', json.result)
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+					fetch('/multichain/getinfo/' + blockChain)
 						.then(response => response.json())
 						.then(json => {
 							context.commit('setloadedMynode', true)
@@ -104,6 +127,7 @@ store.registerModule('explore', {
 	},
 	getters: {
 		loadedBlockchains (state) {
+            console.log(state)
 			return state.loadedBlockchains
 		},
 		newMynode: state => state.newMynode,
@@ -151,7 +175,7 @@ module.exports = {
 		},
 		changedBlockchain () {
 			console.log("Changed Blockchain ID")
-			this.$store.commit('setloadedMynode', false)		
+//			this.$store.commit('setloadedMynode', false)		
 		}
 	},
 	created: function () {
