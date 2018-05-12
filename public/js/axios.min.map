@@ -1,0 +1,996 @@
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+  <link rel="dns-prefetch" href="https://assets-cdn.github.com">
+  <link rel="dns-prefetch" href="https://avatars0.githubusercontent.com">
+  <link rel="dns-prefetch" href="https://avatars1.githubusercontent.com">
+  <link rel="dns-prefetch" href="https://avatars2.githubusercontent.com">
+  <link rel="dns-prefetch" href="https://avatars3.githubusercontent.com">
+  <link rel="dns-prefetch" href="https://github-cloud.s3.amazonaws.com">
+  <link rel="dns-prefetch" href="https://user-images.githubusercontent.com/">
+
+
+
+  <link crossorigin="anonymous" media="all" rel="stylesheet" href="https://assets-cdn.github.com/assets/frameworks-592c4aa40e940d1b0607a3cf272916ff.css" />
+  <link crossorigin="anonymous" media="all" rel="stylesheet" href="https://assets-cdn.github.com/assets/github-fdbbae74da4136fd4258a92eb943be60.css" />
+  
+  
+  <link crossorigin="anonymous" media="all" rel="stylesheet" href="https://assets-cdn.github.com/assets/site-348211d27070b0d7bb5d31b1ac3d265b.css" />
+  
+
+  <meta name="viewport" content="width=device-width">
+  
+  <title>axios/axios.min.map at master · axios/axios · GitHub</title>
+    <meta name="description" content="GitHub is where people build software. More than 27 million people use GitHub to discover, fork, and contribute to over 80 million projects.">
+  <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="GitHub">
+  <link rel="fluid-icon" href="https://github.com/fluidicon.png" title="GitHub">
+  <meta property="fb:app_id" content="1401488693436528">
+
+    
+    <meta property="og:image" content="https://avatars1.githubusercontent.com/u/32372333?s=400&amp;v=4" /><meta property="og:site_name" content="GitHub" /><meta property="og:type" content="object" /><meta property="og:title" content="axios/axios" /><meta property="og:url" content="https://github.com/axios/axios" /><meta property="og:description" content="axios - Promise based HTTP client for the browser and node.js" />
+
+  <link rel="assets" href="https://assets-cdn.github.com/">
+  
+  <meta name="pjax-timeout" content="1000">
+  
+  <meta name="request-id" content="14BD:26DF:69896A:BDE569:5AD5DA3A" data-pjax-transient>
+
+
+  
+
+  <meta name="selected-link" value="repo_source" data-pjax-transient>
+
+    <meta name="google-site-verification" content="KT5gs8h0wvaagLKAVWq8bbeNwnZZK1r1XQysX3xurLU">
+  <meta name="google-site-verification" content="ZzhVyEFwb7w3e0-uOTltm8Jsck2F5StVihD0exw2fsA">
+  <meta name="google-site-verification" content="GXs5KoUUkNCoaAZn7wPN-t01Pywp9M3sEjnt_3_ZWPc">
+    <meta name="google-analytics" content="UA-3769691-2">
+
+<meta name="octolytics-host" content="collector.githubapp.com" /><meta name="octolytics-app-id" content="github" /><meta name="octolytics-event-url" content="https://collector.githubapp.com/github-external/browser_event" /><meta name="octolytics-dimension-request_id" content="14BD:26DF:69896A:BDE569:5AD5DA3A" /><meta name="octolytics-dimension-region_edge" content="iad" /><meta name="octolytics-dimension-region_render" content="iad" />
+<meta name="analytics-location" content="/&lt;user-name&gt;/&lt;repo-name&gt;/blob/show" data-pjax-transient="true" />
+
+
+
+
+  <meta class="js-ga-set" name="dimension1" content="Logged Out">
+
+
+  
+
+      <meta name="hostname" content="github.com">
+    <meta name="user-login" content="">
+
+      <meta name="expected-hostname" content="github.com">
+    <meta name="js-proxy-site-detection-payload" content="M2UwZmNhMmM1NjNhNzY3YTVlMmRlNmU0YzY3MTI3ZjI5NmQzZjZmNDQ3NGRiYjI2MmNlZGViZTk2N2Q5YjFkYnx7InJlbW90ZV9hZGRyZXNzIjoiMTA5LjE5OS4xNDQuMTY2IiwicmVxdWVzdF9pZCI6IjE0QkQ6MjZERjo2OTg5NkE6QkRFNTY5OjVBRDVEQTNBIiwidGltZXN0YW1wIjoxNTIzOTY0NDc0LCJob3N0IjoiZ2l0aHViLmNvbSJ9">
+
+    <meta name="enabled-features" content="UNIVERSE_BANNER,FREE_TRIALS,MARKETPLACE_INSIGHTS,MARKETPLACE_SELF_SERVE,MARKETPLACE_INSIGHTS_CONVERSION_PERCENTAGES">
+
+  <meta name="html-safe-nonce" content="a4017aa3307b52542426f06e11ec0227a99b4012">
+
+  <meta http-equiv="x-pjax-version" content="7351bb9624fb5828339a016d5593db21">
+  
+
+      <link href="https://github.com/axios/axios/commits/master.atom" rel="alternate" title="Recent Commits to axios:master" type="application/atom+xml">
+
+  <meta name="description" content="axios - Promise based HTTP client for the browser and node.js">
+  <meta name="go-import" content="github.com/axios/axios git https://github.com/axios/axios.git">
+
+  <meta name="octolytics-dimension-user_id" content="32372333" /><meta name="octolytics-dimension-user_login" content="axios" /><meta name="octolytics-dimension-repository_id" content="23088740" /><meta name="octolytics-dimension-repository_nwo" content="axios/axios" /><meta name="octolytics-dimension-repository_public" content="true" /><meta name="octolytics-dimension-repository_is_fork" content="false" /><meta name="octolytics-dimension-repository_network_root_id" content="23088740" /><meta name="octolytics-dimension-repository_network_root_nwo" content="axios/axios" /><meta name="octolytics-dimension-repository_explore_github_marketplace_ci_cta_shown" content="false" />
+
+
+    <link rel="canonical" href="https://github.com/axios/axios/blob/master/dist/axios.min.map" data-pjax-transient>
+
+
+  <meta name="browser-stats-url" content="https://api.github.com/_private/browser/stats">
+
+  <meta name="browser-errors-url" content="https://api.github.com/_private/browser/errors">
+
+  <link rel="mask-icon" href="https://assets-cdn.github.com/pinned-octocat.svg" color="#000000">
+  <link rel="icon" type="image/x-icon" class="js-site-favicon" href="https://assets-cdn.github.com/favicon.ico">
+
+<meta name="theme-color" content="#1e2327">
+
+
+
+<link rel="manifest" href="/manifest.json" crossOrigin="use-credentials">
+
+  </head>
+
+  <body class="logged-out env-production page-blob">
+    
+
+  <div class="position-relative js-header-wrapper ">
+    <a href="#start-of-content" tabindex="1" class="px-2 py-4 bg-blue text-white show-on-focus js-skip-to-content">Skip to content</a>
+    <div id="js-pjax-loader-bar" class="pjax-loader-bar"><div class="progress"></div></div>
+
+    
+    
+    
+
+
+
+        <header class="Header header-logged-out  position-relative f4 py-3" role="banner">
+  <div class="container-lg d-flex px-3">
+    <div class="d-flex flex-justify-between flex-items-center">
+      <a class="header-logo-invertocat my-0" href="https://github.com/" aria-label="Homepage" data-ga-click="(Logged out) Header, go to homepage, icon:logo-wordmark">
+        <svg height="32" class="octicon octicon-mark-github" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+      </a>
+
+    </div>
+
+    <div class="HeaderMenu HeaderMenu--bright d-flex flex-justify-between flex-auto">
+        <nav class="mt-0">
+          <ul class="d-flex list-style-none">
+              <li class="ml-2">
+                <a class="js-selected-navigation-item HeaderNavlink px-0 py-2 m-0" data-ga-click="Header, click, Nav menu - item:features" data-selected-links="/features /features/project-management /features/code-review /features/project-management /features/integrations /features" href="/features">
+                  Features
+</a>              </li>
+              <li class="ml-4">
+                <a class="js-selected-navigation-item HeaderNavlink px-0 py-2 m-0" data-ga-click="Header, click, Nav menu - item:business" data-selected-links="/business /business/security /business/customers /business" href="/business">
+                  Business
+</a>              </li>
+
+              <li class="ml-4">
+                <a class="js-selected-navigation-item HeaderNavlink px-0 py-2 m-0" data-ga-click="Header, click, Nav menu - item:explore" data-selected-links="/explore /trending /trending/developers /integrations /integrations/feature/code /integrations/feature/collaborate /integrations/feature/ship showcases showcases_search showcases_landing /explore" href="/explore">
+                  Explore
+</a>              </li>
+
+              <li class="ml-4">
+                    <a class="js-selected-navigation-item HeaderNavlink px-0 py-2 m-0" data-ga-click="Header, click, Nav menu - item:marketplace" data-selected-links=" /marketplace" href="/marketplace">
+                      Marketplace
+</a>              </li>
+              <li class="ml-4">
+                <a class="js-selected-navigation-item HeaderNavlink px-0 py-2 m-0" data-ga-click="Header, click, Nav menu - item:pricing" data-selected-links="/pricing /pricing/developer /pricing/team /pricing/business-hosted /pricing/business-enterprise /pricing" href="/pricing">
+                  Pricing
+</a>              </li>
+          </ul>
+        </nav>
+
+      <div class="d-flex">
+          <div class="d-lg-flex flex-items-center mr-3">
+            <div class="header-search scoped-search site-scoped-search js-site-search" role="search">
+  <!-- '"` --><!-- </textarea></xmp> --></option></form><form class="js-site-search-form" data-scoped-search-url="/axios/axios/search" data-unscoped-search-url="/search" action="/axios/axios/search" accept-charset="UTF-8" method="get"><input name="utf8" type="hidden" value="&#x2713;" />
+    <label class="form-control header-search-wrapper  js-chromeless-input-container">
+          <a class="header-search-scope no-underline" href="/axios/axios/blob/master/dist/axios.min.map">This repository</a>
+      <input type="text"
+        class="form-control header-search-input  js-site-search-focus js-site-search-field is-clearable"
+        data-hotkey="s,/"
+        name="q"
+        value=""
+        placeholder="Search"
+        aria-label="Search this repository"
+        data-unscoped-placeholder="Search GitHub"
+        data-scoped-placeholder="Search"
+        autocapitalize="off"
+        >
+        <input type="hidden" class="js-site-search-type-field" name="type" >
+    </label>
+</form></div>
+
+          </div>
+
+        <span class="d-inline-block">
+            <div class="HeaderNavlink px-0 py-2 m-0">
+              <a class="text-bold text-white no-underline" href="/login?return_to=%2Faxios%2Faxios%2Fblob%2Fmaster%2Fdist%2Faxios.min.map" data-ga-click="(Logged out) Header, clicked Sign in, text:sign-in">Sign in</a>
+                <span class="text-gray">or</span>
+                <a class="text-bold text-white no-underline" href="/join?source=header-repo" data-ga-click="(Logged out) Header, clicked Sign up, text:sign-up">Sign up</a>
+            </div>
+        </span>
+      </div>
+    </div>
+  </div>
+</header>
+
+  </div>
+
+  <div id="start-of-content" class="show-on-focus"></div>
+
+    <div id="js-flash-container">
+</div>
+
+
+
+  <div role="main" class="application-main ">
+        <div itemscope itemtype="http://schema.org/SoftwareSourceCode" class="">
+    <div id="js-repo-pjax-container" data-pjax-container >
+      
+
+
+
+
+
+  
+
+
+
+  <div class="pagehead repohead instapaper_ignore readability-menu experiment-repo-nav  ">
+    <div class="repohead-details-container clearfix container">
+
+      <ul class="pagehead-actions">
+  <li>
+      <a href="/login?return_to=%2Faxios%2Faxios"
+    class="btn btn-sm btn-with-count tooltipped tooltipped-n"
+    aria-label="You must be signed in to watch a repository" rel="nofollow">
+    <svg class="octicon octicon-eye" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8.06 2C3 2 0 8 0 8s3 6 8.06 6C13 14 16 8 16 8s-3-6-7.94-6zM8 12c-2.2 0-4-1.78-4-4 0-2.2 1.8-4 4-4 2.22 0 4 1.8 4 4 0 2.22-1.78 4-4 4zm2-4c0 1.11-.89 2-2 2-1.11 0-2-.89-2-2 0-1.11.89-2 2-2 1.11 0 2 .89 2 2z"/></svg>
+    Watch
+  </a>
+  <a class="social-count" href="/axios/axios/watchers"
+     aria-label="853 users are watching this repository">
+    853
+  </a>
+
+  </li>
+
+  <li>
+      <a href="/login?return_to=%2Faxios%2Faxios"
+    class="btn btn-sm btn-with-count tooltipped tooltipped-n"
+    aria-label="You must be signed in to star a repository" rel="nofollow">
+    <svg class="octicon octicon-star" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74z"/></svg>
+    Star
+  </a>
+
+    <a class="social-count js-social-count" href="/axios/axios/stargazers"
+      aria-label="39943 users starred this repository">
+      39,943
+    </a>
+
+  </li>
+
+  <li>
+      <a href="/login?return_to=%2Faxios%2Faxios"
+        class="btn btn-sm btn-with-count tooltipped tooltipped-n"
+        aria-label="You must be signed in to fork a repository" rel="nofollow">
+        <svg class="octicon octicon-repo-forked" viewBox="0 0 10 16" version="1.1" width="10" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z"/></svg>
+        Fork
+      </a>
+
+    <a href="/axios/axios/network" class="social-count"
+       aria-label="2828 users forked this repository">
+      2,828
+    </a>
+  </li>
+</ul>
+
+      <h1 class="public ">
+  <svg class="octicon octicon-repo" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"/></svg>
+  <span class="author" itemprop="author"><a class="url fn" rel="author" href="/axios">axios</a></span><!--
+--><span class="path-divider">/</span><!--
+--><strong itemprop="name"><a data-pjax="#js-repo-pjax-container" href="/axios/axios">axios</a></strong>
+
+</h1>
+
+    </div>
+    
+<nav class="reponav js-repo-nav js-sidenav-container-pjax container"
+     itemscope
+     itemtype="http://schema.org/BreadcrumbList"
+     role="navigation"
+     data-pjax="#js-repo-pjax-container">
+
+  <span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+    <a class="js-selected-navigation-item selected reponav-item" itemprop="url" data-hotkey="g c" data-selected-links="repo_source repo_downloads repo_commits repo_releases repo_tags repo_branches repo_packages /axios/axios" href="/axios/axios">
+      <svg class="octicon octicon-code" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M9.5 3L8 4.5 11.5 8 8 11.5 9.5 13 14 8 9.5 3zm-5 0L0 8l4.5 5L6 11.5 2.5 8 6 4.5 4.5 3z"/></svg>
+      <span itemprop="name">Code</span>
+      <meta itemprop="position" content="1">
+</a>  </span>
+
+    <span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+      <a itemprop="url" data-hotkey="g i" class="js-selected-navigation-item reponav-item" data-selected-links="repo_issues repo_labels repo_milestones /axios/axios/issues" href="/axios/axios/issues">
+        <svg class="octicon octicon-issue-opened" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z"/></svg>
+        <span itemprop="name">Issues</span>
+        <span class="Counter">175</span>
+        <meta itemprop="position" content="2">
+</a>    </span>
+
+  <span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+    <a data-hotkey="g p" itemprop="url" class="js-selected-navigation-item reponav-item" data-selected-links="repo_pulls checks /axios/axios/pulls" href="/axios/axios/pulls">
+      <svg class="octicon octicon-git-pull-request" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z"/></svg>
+      <span itemprop="name">Pull requests</span>
+      <span class="Counter">39</span>
+      <meta itemprop="position" content="3">
+</a>  </span>
+
+    <a data-hotkey="g b" class="js-selected-navigation-item reponav-item" data-selected-links="repo_projects new_repo_project repo_project /axios/axios/projects" href="/axios/axios/projects">
+      <svg class="octicon octicon-project" viewBox="0 0 15 16" version="1.1" width="15" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M10 12h3V2h-3v10zm-4-2h3V2H6v8zm-4 4h3V2H2v12zm-1 1h13V1H1v14zM14 0H1a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h13a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1z"/></svg>
+      Projects
+      <span class="Counter" >2</span>
+</a>
+    <a class="js-selected-navigation-item reponav-item" data-hotkey="g w" data-selected-links="repo_wiki /axios/axios/wiki" href="/axios/axios/wiki">
+      <svg class="octicon octicon-book" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M3 5h4v1H3V5zm0 3h4V7H3v1zm0 2h4V9H3v1zm11-5h-4v1h4V5zm0 2h-4v1h4V7zm0 2h-4v1h4V9zm2-6v9c0 .55-.45 1-1 1H9.5l-1 1-1-1H2c-.55 0-1-.45-1-1V3c0-.55.45-1 1-1h5.5l1 1 1-1H15c.55 0 1 .45 1 1zm-8 .5L7.5 3H2v9h6V3.5zm7-.5H9.5l-.5.5V12h6V3z"/></svg>
+      Wiki
+</a>
+
+  <a class="js-selected-navigation-item reponav-item" data-selected-links="repo_graphs repo_contributors dependency_graph pulse /axios/axios/pulse" href="/axios/axios/pulse">
+    <svg class="octicon octicon-graph" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M16 14v1H0V0h1v14h15zM5 13H3V8h2v5zm4 0H7V3h2v10zm4 0h-2V6h2v7z"/></svg>
+    Insights
+</a>
+
+</nav>
+
+
+  </div>
+
+<div class="container new-discussion-timeline experiment-repo-nav  ">
+  <div class="repository-content ">
+
+    
+  <a class="d-none js-permalink-shortcut" data-hotkey="y" href="/axios/axios/blob/0b3db5d87a60a1ad8b0dce9669dbc10483ec33da/dist/axios.min.map">Permalink</a>
+
+  <!-- blob contrib key: blob_contributors:v21:3f2ed56a3fca1212fd1e156fcb20de9e -->
+
+  <div class="file-navigation">
+    
+<div class="select-menu branch-select-menu js-menu-container js-select-menu float-left">
+  <button class=" btn btn-sm select-menu-button js-menu-target css-truncate" data-hotkey="w"
+    
+    type="button" aria-label="Switch branches or tags" aria-expanded="false" aria-haspopup="true">
+      <i>Branch:</i>
+      <span class="js-select-button css-truncate-target">master</span>
+  </button>
+
+  <div class="select-menu-modal-holder js-menu-content js-navigation-container" data-pjax>
+
+    <div class="select-menu-modal">
+      <div class="select-menu-header">
+        <svg class="octicon octicon-x js-menu-close" role="img" aria-label="Close" viewBox="0 0 12 16" version="1.1" width="12" height="16"><path fill-rule="evenodd" d="M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48z"/></svg>
+        <span class="select-menu-title">Switch branches/tags</span>
+      </div>
+
+      <div class="select-menu-filters">
+        <div class="select-menu-text-filter">
+          <input type="text" aria-label="Filter branches/tags" id="context-commitish-filter-field" class="form-control js-filterable-field js-navigation-enable" placeholder="Filter branches/tags">
+        </div>
+        <div class="select-menu-tabs">
+          <ul>
+            <li class="select-menu-tab">
+              <a href="#" data-tab-filter="branches" data-filter-placeholder="Filter branches/tags" class="js-select-menu-tab" role="tab">Branches</a>
+            </li>
+            <li class="select-menu-tab">
+              <a href="#" data-tab-filter="tags" data-filter-placeholder="Find a tag…" class="js-select-menu-tab" role="tab">Tags</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="select-menu-list select-menu-tab-bucket js-select-menu-tab-bucket" data-tab-filter="branches" role="menu">
+
+        <div data-filterable-for="context-commitish-filter-field" data-filterable-type="substring">
+
+
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+               href="/axios/axios/blob/0.6.0/dist/axios.min.map"
+               data-name="0.6.0"
+               data-skip-pjax="true"
+               rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target js-select-menu-filter-text">
+                0.6.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+               href="/axios/axios/blob/buildUrl/dist/axios.min.map"
+               data-name="buildUrl"
+               data-skip-pjax="true"
+               rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target js-select-menu-filter-text">
+                buildUrl
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+               href="/axios/axios/blob/feature/pass-agents-to-follow-redirects/dist/axios.min.map"
+               data-name="feature/pass-agents-to-follow-redirects"
+               data-skip-pjax="true"
+               rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target js-select-menu-filter-text">
+                feature/pass-agents-to-follow-redirects
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open selected"
+               href="/axios/axios/blob/master/dist/axios.min.map"
+               data-name="master"
+               data-skip-pjax="true"
+               rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target js-select-menu-filter-text">
+                master
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+               href="/axios/axios/blob/release/1.0.0/dist/axios.min.map"
+               data-name="release/1.0.0"
+               data-skip-pjax="true"
+               rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target js-select-menu-filter-text">
+                release/1.0.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+               href="/axios/axios/blob/umd/dist/axios.min.map"
+               data-name="umd"
+               data-skip-pjax="true"
+               rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target js-select-menu-filter-text">
+                umd
+              </span>
+            </a>
+        </div>
+
+          <div class="select-menu-no-results">Nothing to show</div>
+      </div>
+
+      <div class="select-menu-list select-menu-tab-bucket js-select-menu-tab-bucket" data-tab-filter="tags">
+        <div data-filterable-for="context-commitish-filter-field" data-filterable-type="substring">
+
+
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.18.0/dist/axios.min.map"
+              data-name="v0.18.0"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.18.0">
+                v0.18.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.17.1/dist/axios.min.map"
+              data-name="v0.17.1"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.17.1">
+                v0.17.1
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.17.0/dist/axios.min.map"
+              data-name="v0.17.0"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.17.0">
+                v0.17.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.16.2/dist/axios.min.map"
+              data-name="v0.16.2"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.16.2">
+                v0.16.2
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.16.1/dist/axios.min.map"
+              data-name="v0.16.1"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.16.1">
+                v0.16.1
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.16.0/dist/axios.min.map"
+              data-name="v0.16.0"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.16.0">
+                v0.16.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.15.3/dist/axios.min.map"
+              data-name="v0.15.3"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.15.3">
+                v0.15.3
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.15.2/dist/axios.min.map"
+              data-name="v0.15.2"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.15.2">
+                v0.15.2
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.15.1/dist/axios.min.map"
+              data-name="v0.15.1"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.15.1">
+                v0.15.1
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.15.0/dist/axios.min.map"
+              data-name="v0.15.0"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.15.0">
+                v0.15.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.14.0/dist/axios.min.map"
+              data-name="v0.14.0"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.14.0">
+                v0.14.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.13.1/dist/axios.min.map"
+              data-name="v0.13.1"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.13.1">
+                v0.13.1
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.13.0/dist/axios.min.map"
+              data-name="v0.13.0"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.13.0">
+                v0.13.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.12.0/dist/axios.min.map"
+              data-name="v0.12.0"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.12.0">
+                v0.12.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.11.1/dist/axios.min.map"
+              data-name="v0.11.1"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.11.1">
+                v0.11.1
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.11.0/dist/axios.min.map"
+              data-name="v0.11.0"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.11.0">
+                v0.11.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.10.0/dist/axios.min.map"
+              data-name="v0.10.0"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.10.0">
+                v0.10.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.9.1/dist/axios.min.map"
+              data-name="v0.9.1"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.9.1">
+                v0.9.1
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.9.0/dist/axios.min.map"
+              data-name="v0.9.0"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.9.0">
+                v0.9.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.8.1/dist/axios.min.map"
+              data-name="v0.8.1"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.8.1">
+                v0.8.1
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.8.0/dist/axios.min.map"
+              data-name="v0.8.0"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.8.0">
+                v0.8.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.7.0/dist/axios.min.map"
+              data-name="v0.7.0"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.7.0">
+                v0.7.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.6.0/dist/axios.min.map"
+              data-name="v0.6.0"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.6.0">
+                v0.6.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.5.4/dist/axios.min.map"
+              data-name="v0.5.4"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.5.4">
+                v0.5.4
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.5.3/dist/axios.min.map"
+              data-name="v0.5.3"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.5.3">
+                v0.5.3
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.5.2/dist/axios.min.map"
+              data-name="v0.5.2"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.5.2">
+                v0.5.2
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.5.1/dist/axios.min.map"
+              data-name="v0.5.1"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.5.1">
+                v0.5.1
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.5.0/dist/axios.min.map"
+              data-name="v0.5.0"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.5.0">
+                v0.5.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.4.2/dist/axios.min.map"
+              data-name="v0.4.2"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.4.2">
+                v0.4.2
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.4.1/dist/axios.min.map"
+              data-name="v0.4.1"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.4.1">
+                v0.4.1
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.4.0/dist/axios.min.map"
+              data-name="v0.4.0"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.4.0">
+                v0.4.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.3.1/dist/axios.min.map"
+              data-name="v0.3.1"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.3.1">
+                v0.3.1
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.3.0/dist/axios.min.map"
+              data-name="v0.3.0"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.3.0">
+                v0.3.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.2.2/dist/axios.min.map"
+              data-name="v0.2.2"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.2.2">
+                v0.2.2
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.2.1/dist/axios.min.map"
+              data-name="v0.2.1"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.2.1">
+                v0.2.1
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.2.0/dist/axios.min.map"
+              data-name="v0.2.0"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.2.0">
+                v0.2.0
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+              href="/axios/axios/tree/v0.1.0/dist/axios.min.map"
+              data-name="v0.1.0"
+              data-skip-pjax="true"
+              rel="nofollow">
+              <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"/></svg>
+              <span class="select-menu-item-text css-truncate-target" title="v0.1.0">
+                v0.1.0
+              </span>
+            </a>
+        </div>
+
+        <div class="select-menu-no-results">Nothing to show</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+    <div class="BtnGroup float-right">
+      <a href="/axios/axios/find/master"
+            class="js-pjax-capture-input btn btn-sm BtnGroup-item"
+            data-pjax
+            data-hotkey="t">
+        Find file
+      </a>
+      <clipboard-copy
+            for="blob-path"
+            aria-label="Copy file path to clipboard"
+            class="btn btn-sm BtnGroup-item tooltipped tooltipped-s"
+            copied-label="Copied!">
+        Copy path
+      </clipboard-copy>
+    </div>
+    <div id="blob-path" class="breadcrumb">
+      <span class="repo-root js-repo-root"><span class="js-path-segment"><a data-pjax="true" href="/axios/axios"><span>axios</span></a></span></span><span class="separator">/</span><span class="js-path-segment"><a data-pjax="true" href="/axios/axios/tree/master/dist"><span>dist</span></a></span><span class="separator">/</span><strong class="final-path">axios.min.map</strong>
+    </div>
+  </div>
+
+
+  <include-fragment src="/axios/axios/contributors/master/dist/axios.min.map" class="commit-tease">
+    <div>
+      Fetching contributors&hellip;
+    </div>
+
+    <div class="commit-tease-contributors">
+      <img alt="" class="loader-loading float-left" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32-EAF2F5.gif" width="16" height="16" />
+      <span class="loader-error">Cannot retrieve contributors at this time</span>
+    </div>
+</include-fragment>
+
+
+  <div class="file">
+    <div class="file-header">
+  <div class="file-actions">
+
+    <div class="BtnGroup">
+      <a id="raw-url" class="btn btn-sm BtnGroup-item" href="/axios/axios/raw/master/dist/axios.min.map">Raw</a>
+        <a class="btn btn-sm js-update-url-with-hash BtnGroup-item" data-hotkey="b" href="/axios/axios/blame/master/dist/axios.min.map">Blame</a>
+      <a rel="nofollow" class="btn btn-sm BtnGroup-item" href="/axios/axios/commits/master/dist/axios.min.map">History</a>
+    </div>
+
+
+        <button type="button" class="btn-octicon disabled tooltipped tooltipped-nw"
+          aria-label="You must be signed in to make or propose changes">
+          <svg class="octicon octicon-pencil" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M0 12v3h3l8-8-3-3-8 8zm3 2H1v-2h1v1h1v1zm10.3-9.3L12 6 9 3l1.3-1.3a.996.996 0 0 1 1.41 0l1.59 1.59c.39.39.39 1.02 0 1.41z"/></svg>
+        </button>
+        <button type="button" class="btn-octicon btn-octicon-danger disabled tooltipped tooltipped-nw"
+          aria-label="You must be signed in to make or propose changes">
+          <svg class="octicon octicon-trashcan" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M11 2H9c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1H2c-.55 0-1 .45-1 1v1c0 .55.45 1 1 1v9c0 .55.45 1 1 1h7c.55 0 1-.45 1-1V5c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1zm-1 12H3V5h1v8h1V5h1v8h1V5h1v8h1V5h1v9zm1-10H2V3h9v1z"/></svg>
+        </button>
+  </div>
+
+  <div class="file-info">
+      1 lines (1 sloc)
+      <span class="file-info-divider"></span>
+    105 KB
+  </div>
+</div>
+
+    
+
+  <div itemprop="text" class="blob-wrapper data type-text">
+      <table class="highlight tab-size js-file-line-container" data-tab-size="8">
+      <tr>
+        <td id="L1" class="blob-num js-line-number" data-line-number="1"></td>
+        <td id="LC1" class="blob-code blob-code-inner js-file-line">{&quot;version&quot;:3,&quot;sources&quot;:[&quot;webpack:///webpack/universalModuleDefinition&quot;,&quot;webpack:///axios.min.js&quot;,&quot;webpack:///webpack/bootstrap dad8263224c86c166a30&quot;,&quot;webpack:///./index.js&quot;,&quot;webpack:///./lib/axios.js&quot;,&quot;webpack:///./lib/utils.js&quot;,&quot;webpack:///./lib/helpers/bind.js&quot;,&quot;webpack:///./~/is-buffer/index.js&quot;,&quot;webpack:///./lib/core/Axios.js&quot;,&quot;webpack:///./lib/defaults.js&quot;,&quot;webpack:///./lib/helpers/normalizeHeaderName.js&quot;,&quot;webpack:///./lib/adapters/xhr.js&quot;,&quot;webpack:///./lib/core/settle.js&quot;,&quot;webpack:///./lib/core/createError.js&quot;,&quot;webpack:///./lib/core/enhanceError.js&quot;,&quot;webpack:///./lib/helpers/buildURL.js&quot;,&quot;webpack:///./lib/helpers/parseHeaders.js&quot;,&quot;webpack:///./lib/helpers/isURLSameOrigin.js&quot;,&quot;webpack:///./lib/helpers/btoa.js&quot;,&quot;webpack:///./lib/helpers/cookies.js&quot;,&quot;webpack:///./lib/core/InterceptorManager.js&quot;,&quot;webpack:///./lib/core/dispatchRequest.js&quot;,&quot;webpack:///./lib/core/transformData.js&quot;,&quot;webpack:///./lib/cancel/isCancel.js&quot;,&quot;webpack:///./lib/helpers/isAbsoluteURL.js&quot;,&quot;webpack:///./lib/helpers/combineURLs.js&quot;,&quot;webpack:///./lib/cancel/Cancel.js&quot;,&quot;webpack:///./lib/cancel/CancelToken.js&quot;,&quot;webpack:///./lib/helpers/spread.js&quot;],&quot;names&quot;:[&quot;root&quot;,&quot;factory&quot;,&quot;exports&quot;,&quot;module&quot;,&quot;define&quot;,&quot;amd&quot;,&quot;this&quot;,&quot;modules&quot;,&quot;__webpack_require__&quot;,&quot;moduleId&quot;,&quot;installedModules&quot;,&quot;id&quot;,&quot;loaded&quot;,&quot;call&quot;,&quot;m&quot;,&quot;c&quot;,&quot;p&quot;,&quot;createInstance&quot;,&quot;defaultConfig&quot;,&quot;context&quot;,&quot;Axios&quot;,&quot;instance&quot;,&quot;bind&quot;,&quot;prototype&quot;,&quot;request&quot;,&quot;utils&quot;,&quot;extend&quot;,&quot;defaults&quot;,&quot;axios&quot;,&quot;create&quot;,&quot;instanceConfig&quot;,&quot;merge&quot;,&quot;Cancel&quot;,&quot;CancelToken&quot;,&quot;isCancel&quot;,&quot;all&quot;,&quot;promises&quot;,&quot;Promise&quot;,&quot;spread&quot;,&quot;default&quot;,&quot;isArray&quot;,&quot;val&quot;,&quot;toString&quot;,&quot;isArrayBuffer&quot;,&quot;isFormData&quot;,&quot;FormData&quot;,&quot;isArrayBufferView&quot;,&quot;result&quot;,&quot;ArrayBuffer&quot;,&quot;isView&quot;,&quot;buffer&quot;,&quot;isString&quot;,&quot;isNumber&quot;,&quot;isUndefined&quot;,&quot;isObject&quot;,&quot;isDate&quot;,&quot;isFile&quot;,&quot;isBlob&quot;,&quot;isFunction&quot;,&quot;isStream&quot;,&quot;pipe&quot;,&quot;isURLSearchParams&quot;,&quot;URLSearchParams&quot;,&quot;trim&quot;,&quot;str&quot;,&quot;replace&quot;,&quot;isStandardBrowserEnv&quot;,&quot;navigator&quot;,&quot;product&quot;,&quot;window&quot;,&quot;document&quot;,&quot;forEach&quot;,&quot;obj&quot;,&quot;fn&quot;,&quot;i&quot;,&quot;l&quot;,&quot;length&quot;,&quot;key&quot;,&quot;Object&quot;,&quot;hasOwnProperty&quot;,&quot;assignValue&quot;,&quot;arguments&quot;,&quot;a&quot;,&quot;b&quot;,&quot;thisArg&quot;,&quot;isBuffer&quot;,&quot;args&quot;,&quot;Array&quot;,&quot;apply&quot;,&quot;constructor&quot;,&quot;isSlowBuffer&quot;,&quot;readFloatLE&quot;,&quot;slice&quot;,&quot;_isBuffer&quot;,&quot;interceptors&quot;,&quot;InterceptorManager&quot;,&quot;response&quot;,&quot;dispatchRequest&quot;,&quot;config&quot;,&quot;url&quot;,&quot;method&quot;,&quot;toLowerCase&quot;,&quot;chain&quot;,&quot;undefined&quot;,&quot;promise&quot;,&quot;resolve&quot;,&quot;interceptor&quot;,&quot;unshift&quot;,&quot;fulfilled&quot;,&quot;rejected&quot;,&quot;push&quot;,&quot;then&quot;,&quot;shift&quot;,&quot;data&quot;,&quot;setContentTypeIfUnset&quot;,&quot;headers&quot;,&quot;value&quot;,&quot;getDefaultAdapter&quot;,&quot;adapter&quot;,&quot;XMLHttpRequest&quot;,&quot;process&quot;,&quot;normalizeHeaderName&quot;,&quot;DEFAULT_CONTENT_TYPE&quot;,&quot;Content-Type&quot;,&quot;transformRequest&quot;,&quot;JSON&quot;,&quot;stringify&quot;,&quot;transformResponse&quot;,&quot;parse&quot;,&quot;e&quot;,&quot;timeout&quot;,&quot;xsrfCookieName&quot;,&quot;xsrfHeaderName&quot;,&quot;maxContentLength&quot;,&quot;validateStatus&quot;,&quot;status&quot;,&quot;common&quot;,&quot;Accept&quot;,&quot;normalizedName&quot;,&quot;name&quot;,&quot;toUpperCase&quot;,&quot;settle&quot;,&quot;buildURL&quot;,&quot;parseHeaders&quot;,&quot;isURLSameOrigin&quot;,&quot;createError&quot;,&quot;btoa&quot;,&quot;reject&quot;,&quot;requestData&quot;,&quot;requestHeaders&quot;,&quot;loadEvent&quot;,&quot;xDomain&quot;,&quot;XDomainRequest&quot;,&quot;onprogress&quot;,&quot;ontimeout&quot;,&quot;auth&quot;,&quot;username&quot;,&quot;password&quot;,&quot;Authorization&quot;,&quot;open&quot;,&quot;params&quot;,&quot;paramsSerializer&quot;,&quot;readyState&quot;,&quot;responseURL&quot;,&quot;indexOf&quot;,&quot;responseHeaders&quot;,&quot;getAllResponseHeaders&quot;,&quot;responseData&quot;,&quot;responseType&quot;,&quot;responseText&quot;,&quot;statusText&quot;,&quot;onerror&quot;,&quot;cookies&quot;,&quot;xsrfValue&quot;,&quot;withCredentials&quot;,&quot;read&quot;,&quot;setRequestHeader&quot;,&quot;onDownloadProgress&quot;,&quot;addEventListener&quot;,&quot;onUploadProgress&quot;,&quot;upload&quot;,&quot;cancelToken&quot;,&quot;cancel&quot;,&quot;abort&quot;,&quot;send&quot;,&quot;enhanceError&quot;,&quot;message&quot;,&quot;code&quot;,&quot;error&quot;,&quot;Error&quot;,&quot;encode&quot;,&quot;encodeURIComponent&quot;,&quot;serializedParams&quot;,&quot;parts&quot;,&quot;v&quot;,&quot;toISOString&quot;,&quot;join&quot;,&quot;ignoreDuplicateOf&quot;,&quot;parsed&quot;,&quot;split&quot;,&quot;line&quot;,&quot;substr&quot;,&quot;concat&quot;,&quot;resolveURL&quot;,&quot;href&quot;,&quot;msie&quot;,&quot;urlParsingNode&quot;,&quot;setAttribute&quot;,&quot;protocol&quot;,&quot;host&quot;,&quot;search&quot;,&quot;hash&quot;,&quot;hostname&quot;,&quot;port&quot;,&quot;pathname&quot;,&quot;charAt&quot;,&quot;originURL&quot;,&quot;test&quot;,&quot;userAgent&quot;,&quot;createElement&quot;,&quot;location&quot;,&quot;requestURL&quot;,&quot;E&quot;,&quot;input&quot;,&quot;block&quot;,&quot;charCode&quot;,&quot;String&quot;,&quot;output&quot;,&quot;idx&quot;,&quot;map&quot;,&quot;chars&quot;,&quot;charCodeAt&quot;,&quot;write&quot;,&quot;expires&quot;,&quot;path&quot;,&quot;domain&quot;,&quot;secure&quot;,&quot;cookie&quot;,&quot;Date&quot;,&quot;toGMTString&quot;,&quot;match&quot;,&quot;RegExp&quot;,&quot;decodeURIComponent&quot;,&quot;remove&quot;,&quot;now&quot;,&quot;handlers&quot;,&quot;use&quot;,&quot;eject&quot;,&quot;h&quot;,&quot;throwIfCancellationRequested&quot;,&quot;throwIfRequested&quot;,&quot;transformData&quot;,&quot;isAbsoluteURL&quot;,&quot;combineURLs&quot;,&quot;baseURL&quot;,&quot;reason&quot;,&quot;fns&quot;,&quot;__CANCEL__&quot;,&quot;relativeURL&quot;,&quot;executor&quot;,&quot;TypeError&quot;,&quot;resolvePromise&quot;,&quot;token&quot;,&quot;source&quot;,&quot;callback&quot;,&quot;arr&quot;],&quot;mappings&quot;:&quot;CAAA,SAAAA,EAAAC,GACA,gBAAAC,UAAA,gBAAAC,QACAA,OAAAD,QAAAD,IACA,kBAAAG,gBAAAC,IACAD,UAAAH,GACA,gBAAAC,SACAA,QAAA,MAAAD,IAEAD,EAAA,MAAAC,KACCK,KAAA,WACD,MCAgB,UAAUC,GCN1B,QAAAC,GAAAC,GAGA,GAAAC,EAAAD,GACA,MAAAC,GAAAD,GAAAP,OAGA,IAAAC,GAAAO,EAAAD,IACAP,WACAS,GAAAF,EACAG,QAAA,EAUA,OANAL,GAAAE,GAAAI,KAAAV,EAAAD,QAAAC,IAAAD,QAAAM,GAGAL,EAAAS,QAAA,EAGAT,EAAAD,QAvBA,GAAAQ,KAqCA,OATAF,GAAAM,EAAAP,EAGAC,EAAAO,EAAAL,EAGAF,EAAAQ,EAAA,GAGAR,EAAA,KDgBM,SAAUL,EAAQD,EAASM,GEtDjCL,EAAAD,QAAAM,EAAA,IF4DM,SAAUL,EAAQD,EAASM,GG5DjC,YAaA,SAAAS,GAAAC,GACA,GAAAC,GAAA,GAAAC,GAAAF,GACAG,EAAAC,EAAAF,EAAAG,UAAAC,QAAAL,EAQA,OALAM,GAAAC,OAAAL,EAAAD,EAAAG,UAAAJ,GAGAM,EAAAC,OAAAL,EAAAF,GAEAE,EArBA,GAAAI,GAAAjB,EAAA,GACAc,EAAAd,EAAA,GACAY,EAAAZ,EAAA,GACAmB,EAAAnB,EAAA,GAsBAoB,EAAAX,EAAAU,EAGAC,GAAAR,QAGAQ,EAAAC,OAAA,SAAAC,GACA,MAAAb,GAAAQ,EAAAM,MAAAJ,EAAAG,KAIAF,EAAAI,OAAAxB,EAAA,IACAoB,EAAAK,YAAAzB,EAAA,IACAoB,EAAAM,SAAA1B,EAAA,IAGAoB,EAAAO,IAAA,SAAAC,GACA,MAAAC,SAAAF,IAAAC,IAEAR,EAAAU,OAAA9B,EAAA,IAEAL,EAAAD,QAAA0B,EAGAzB,EAAAD,QAAAqC,QAAAX,GHmEM,SAAUzB,EAAQD,EAASM,GItHjC,YAiBA,SAAAgC,GAAAC,GACA,yBAAAC,EAAA7B,KAAA4B,GASA,QAAAE,GAAAF,GACA,+BAAAC,EAAA7B,KAAA4B,GASA,QAAAG,GAAAH,GACA,yBAAAI,WAAAJ,YAAAI,UASA,QAAAC,GAAAL,GACA,GAAAM,EAMA,OAJAA,GADA,mBAAAC,0BAAA,OACAA,YAAAC,OAAAR,GAEA,GAAAA,EAAA,QAAAA,EAAAS,iBAAAF,aAWA,QAAAG,GAAAV,GACA,sBAAAA,GASA,QAAAW,GAAAX,GACA,sBAAAA,GASA,QAAAY,GAAAZ,GACA,yBAAAA,GASA,QAAAa,GAAAb,GACA,cAAAA,GAAA,gBAAAA,GASA,QAAAc,GAAAd,GACA,wBAAAC,EAAA7B,KAAA4B,GASA,QAAAe,GAAAf,GACA,wBAAAC,EAAA7B,KAAA4B,GASA,QAAAgB,GAAAhB,GACA,wBAAAC,EAAA7B,KAAA4B,GASA,QAAAiB,GAAAjB,GACA,4BAAAC,EAAA7B,KAAA4B,GASA,QAAAkB,GAAAlB,GACA,MAAAa,GAAAb,IAAAiB,EAAAjB,EAAAmB,MASA,QAAAC,GAAApB,GACA,yBAAAqB,kBAAArB,YAAAqB,iBASA,QAAAC,GAAAC,GACA,MAAAA,GAAAC,QAAA,WAAAA,QAAA,WAgBA,QAAAC,KACA,0BAAAC,YAAA,gBAAAA,UAAAC,WAIA,mBAAAC,SACA,mBAAAC,WAgBA,QAAAC,GAAAC,EAAAC,GAEA,UAAAD,GAAA,mBAAAA,GAUA,GALA,gBAAAA,KAEAA,OAGAhC,EAAAgC,GAEA,OAAAE,GAAA,EAAAC,EAAAH,EAAAI,OAAmCF,EAAAC,EAAOD,IAC1CD,EAAA5D,KAAA,KAAA2D,EAAAE,KAAAF,OAIA,QAAAK,KAAAL,GACAM,OAAAvD,UAAAwD,eAAAlE,KAAA2D,EAAAK,IACAJ,EAAA5D,KAAA,KAAA2D,EAAAK,KAAAL,GAuBA,QAAAzC,KAEA,QAAAiD,GAAAvC,EAAAoC,GACA,gBAAA9B,GAAA8B,IAAA,gBAAApC,GACAM,EAAA8B,GAAA9C,EAAAgB,EAAA8B,GAAApC,GAEAM,EAAA8B,GAAApC,EAIA,OATAM,MASA2B,EAAA,EAAAC,EAAAM,UAAAL,OAAuCF,EAAAC,EAAOD,IAC9CH,EAAAU,UAAAP,GAAAM,EAEA,OAAAjC,GAWA,QAAArB,GAAAwD,EAAAC,EAAAC,GAQA,MAPAb,GAAAY,EAAA,SAAA1C,EAAAoC,GACAO,GAAA,kBAAA3C,GACAyC,EAAAL,GAAAvD,EAAAmB,EAAA2C,GAEAF,EAAAL,GAAApC,IAGAyC,EApRA,GAAA5D,GAAAd,EAAA,GACA6E,EAAA7E,EAAA,GAMAkC,EAAAoC,OAAAvD,UAAAmB,QAgRAvC,GAAAD,SACAsC,UACAG,gBACA0C,WACAzC,aACAE,oBACAK,WACAC,WACAE,WACAD,cACAE,SACAC,SACAC,SACAC,aACAC,WACAE,oBACAK,uBACAK,UACAxC,QACAL,SACAqC,SJ8HM,SAAU5D,EAAQD,GK3axB,YAEAC,GAAAD,QAAA,SAAAuE,EAAAW,GACA,kBAEA,OADAE,GAAA,GAAAC,OAAAN,UAAAL,QACAF,EAAA,EAAmBA,EAAAY,EAAAV,OAAiBF,IACpCY,EAAAZ,GAAAO,UAAAP,EAEA,OAAAD,GAAAe,MAAAJ,EAAAE,MLobM,SAAUnF,EAAQD,GM/axB,QAAAmF,GAAAb,GACA,QAAAA,EAAAiB,aAAA,kBAAAjB,GAAAiB,YAAAJ,UAAAb,EAAAiB,YAAAJ,SAAAb,GAIA,QAAAkB,GAAAlB,GACA,wBAAAA,GAAAmB,aAAA,kBAAAnB,GAAAoB,OAAAP,EAAAb,EAAAoB,MAAA;;;;;;AAVAzF,EAAAD,QAAA,SAAAsE,GACA,aAAAA,IAAAa,EAAAb,IAAAkB,EAAAlB,QAAAqB,aN6cM,SAAU1F,EAAQD,EAASM,GOvdjC,YAYA,SAAAY,GAAAU,GACAxB,KAAAqB,SAAAG,EACAxB,KAAAwF,cACAtE,QAAA,GAAAuE,GACAC,SAAA,GAAAD,IAdA,GAAApE,GAAAnB,EAAA,GACAiB,EAAAjB,EAAA,GACAuF,EAAAvF,EAAA,IACAyF,EAAAzF,EAAA,GAoBAY,GAAAG,UAAAC,QAAA,SAAA0E,GAGA,gBAAAA,KACAA,EAAAzE,EAAAM,OACAoE,IAAAlB,UAAA,IACKA,UAAA,KAGLiB,EAAAzE,EAAAM,MAAAJ,GAAkCyE,OAAA,OAAc9F,KAAAqB,SAAAuE,GAChDA,EAAAE,OAAAF,EAAAE,OAAAC,aAGA,IAAAC,IAAAL,EAAAM,QACAC,EAAAnE,QAAAoE,QAAAP,EAUA,KARA5F,KAAAwF,aAAAtE,QAAA+C,QAAA,SAAAmC,GACAJ,EAAAK,QAAAD,EAAAE,UAAAF,EAAAG,YAGAvG,KAAAwF,aAAAE,SAAAzB,QAAA,SAAAmC,GACAJ,EAAAQ,KAAAJ,EAAAE,UAAAF,EAAAG,YAGAP,EAAA1B,QACA4B,IAAAO,KAAAT,EAAAU,QAAAV,EAAAU,QAGA,OAAAR,IAIA/E,EAAA8C,SAAA,0CAAA6B,GAEAhF,EAAAG,UAAA6E,GAAA,SAAAD,EAAAD,GACA,MAAA5F,MAAAkB,QAAAC,EAAAM,MAAAmE,OACAE,SACAD,YAKA1E,EAAA8C,SAAA,+BAAA6B,GAEAhF,EAAAG,UAAA6E,GAAA,SAAAD,EAAAc,EAAAf,GACA,MAAA5F,MAAAkB,QAAAC,EAAAM,MAAAmE,OACAE,SACAD,MACAc,aAKA9G,EAAAD,QAAAkB,GP8dM,SAAUjB,EAAQD,EAASM,GQ5iBjC,YASA,SAAA0G,GAAAC,EAAAC,IACA3F,EAAA4B,YAAA8D,IAAA1F,EAAA4B,YAAA8D,EAAA,mBACAA,EAAA,gBAAAC,GAIA,QAAAC,KACA,GAAAC,EAQA,OAPA,mBAAAC,gBAEAD,EAAA9G,EAAA,GACG,mBAAAgH,WAEHF,EAAA9G,EAAA,IAEA8G,EAtBA,GAAA7F,GAAAjB,EAAA,GACAiH,EAAAjH,EAAA,GAEAkH,GACAC,eAAA,qCAqBAhG,GACA2F,QAAAD,IAEAO,kBAAA,SAAAX,EAAAE,GAEA,MADAM,GAAAN,EAAA,gBACA1F,EAAAmB,WAAAqE,IACAxF,EAAAkB,cAAAsE,IACAxF,EAAA4D,SAAA4B,IACAxF,EAAAkC,SAAAsD,IACAxF,EAAA+B,OAAAyD,IACAxF,EAAAgC,OAAAwD,GAEAA,EAEAxF,EAAAqB,kBAAAmE,GACAA,EAAA/D,OAEAzB,EAAAoC,kBAAAoD,IACAC,EAAAC,EAAA,mDACAF,EAAAvE,YAEAjB,EAAA6B,SAAA2D,IACAC,EAAAC,EAAA,kCACAU,KAAAC,UAAAb,IAEAA,IAGAc,mBAAA,SAAAd,GAEA,mBAAAA,GACA,IACAA,EAAAY,KAAAG,MAAAf,GACO,MAAAgB,IAEP,MAAAhB,KAOAiB,QAAA,EAEAC,eAAA,aACAC,eAAA,eAEAC,kBAAA,EAEAC,eAAA,SAAAC,GACA,MAAAA,IAAA,KAAAA,EAAA,KAIA5G,GAAAwF,SACAqB,QACAC,OAAA,sCAIAhH,EAAA8C,SAAA,gCAAA6B,GACAzE,EAAAwF,QAAAf,QAGA3E,EAAA8C,SAAA,+BAAA6B,GACAzE,EAAAwF,QAAAf,GAAA3E,EAAAM,MAAA2F,KAGAvH,EAAAD,QAAAyB,GRmjBM,SAAUxB,EAAQD,EAASM,GSlpBjC,YAEA,IAAAiB,GAAAjB,EAAA,EAEAL,GAAAD,QAAA,SAAAiH,EAAAuB,GACAjH,EAAA8C,QAAA4C,EAAA,SAAAC,EAAAuB,GACAA,IAAAD,GAAAC,EAAAC,gBAAAF,EAAAE,gBACAzB,EAAAuB,GAAAtB,QACAD,GAAAwB,QT4pBM,SAAUxI,EAAQD,EAASM,GUpqBjC,YAEA,IAAAiB,GAAAjB,EAAA,GACAqI,EAAArI,EAAA,GACAsI,EAAAtI,EAAA,IACAuI,EAAAvI,EAAA,IACAwI,EAAAxI,EAAA,IACAyI,EAAAzI,EAAA,IACA0I,EAAA,mBAAA7E,gBAAA6E,MAAA7E,OAAA6E,KAAA5H,KAAA+C,SAAA7D,EAAA,GAEAL,GAAAD,QAAA,SAAAgG,GACA,UAAA7D,SAAA,SAAAoE,EAAA0C,GACA,GAAAC,GAAAlD,EAAAe,KACAoC,EAAAnD,EAAAiB,OAEA1F,GAAAmB,WAAAwG,UACAC,GAAA,eAGA,IAAA7H,GAAA,GAAA+F,gBACA+B,EAAA,qBACAC,GAAA,CAiBA,IAXA,mBAAAlF,UACAA,OAAAmF,gBAAA,mBAAAhI,IACAwH,EAAA9C,EAAAC,OACA3E,EAAA,GAAA6C,QAAAmF,eACAF,EAAA,SACAC,GAAA,EACA/H,EAAAiI,WAAA,aACAjI,EAAAkI,UAAA,cAIAxD,EAAAyD,KAAA,CACA,GAAAC,GAAA1D,EAAAyD,KAAAC,UAAA,GACAC,EAAA3D,EAAAyD,KAAAE,UAAA,EACAR,GAAAS,cAAA,SAAAZ,EAAAU,EAAA,IAAAC,GA+DA,GA5DArI,EAAAuI,KAAA7D,EAAAE,OAAAwC,cAAAE,EAAA5C,EAAAC,IAAAD,EAAA8D,OAAA9D,EAAA+D,mBAAA,GAGAzI,EAAA0G,QAAAhC,EAAAgC,QAGA1G,EAAA8H,GAAA,WACA,GAAA9H,IAAA,IAAAA,EAAA0I,YAAAX,KAQA,IAAA/H,EAAA+G,QAAA/G,EAAA2I,aAAA,IAAA3I,EAAA2I,YAAAC,QAAA,WAKA,GAAAC,GAAA,yBAAA7I,GAAAuH,EAAAvH,EAAA8I,yBAAA,KACAC,EAAArE,EAAAsE,cAAA,SAAAtE,EAAAsE,aAAAhJ,EAAAwE,SAAAxE,EAAAiJ,aACAzE,GACAiB,KAAAsD,EAEAhC,OAAA,OAAA/G,EAAA+G,OAAA,IAAA/G,EAAA+G,OACAmC,WAAA,OAAAlJ,EAAA+G,OAAA,aAAA/G,EAAAkJ,WACAvD,QAAAkD,EACAnE,SACA1E,UAGAqH,GAAApC,EAAA0C,EAAAnD,GAGAxE,EAAA,OAIAA,EAAAmJ,QAAA,WAGAxB,EAAAF,EAAA,gBAAA/C,EAAA,KAAA1E,IAGAA,EAAA,MAIAA,EAAAkI,UAAA,WACAP,EAAAF,EAAA,cAAA/C,EAAAgC,QAAA,cAAAhC,EAAA,eACA1E,IAGAA,EAAA,MAMAC,EAAAyC,uBAAA,CACA,GAAA0G,GAAApK,EAAA,IAGAqK,GAAA3E,EAAA4E,iBAAA9B,EAAA9C,EAAAC,OAAAD,EAAAiC,eACAyC,EAAAG,KAAA7E,EAAAiC,gBACA5B,MAEAsE,KACAxB,EAAAnD,EAAAkC,gBAAAyC,GAuBA,GAlBA,oBAAArJ,IACAC,EAAA8C,QAAA8E,EAAA,SAAA5G,EAAAoC,GACA,mBAAAuE,IAAA,iBAAAvE,EAAAwB,oBAEAgD,GAAAxE,GAGArD,EAAAwJ,iBAAAnG,EAAApC,KAMAyD,EAAA4E,kBACAtJ,EAAAsJ,iBAAA,GAIA5E,EAAAsE,aACA,IACAhJ,EAAAgJ,aAAAtE,EAAAsE,aACO,MAAAvC,GAGP,YAAA/B,EAAAsE,aACA,KAAAvC,GAMA,kBAAA/B,GAAA+E,oBACAzJ,EAAA0J,iBAAA,WAAAhF,EAAA+E,oBAIA,kBAAA/E,GAAAiF,kBAAA3J,EAAA4J,QACA5J,EAAA4J,OAAAF,iBAAA,WAAAhF,EAAAiF,kBAGAjF,EAAAmF,aAEAnF,EAAAmF,YAAA7E,QAAAO,KAAA,SAAAuE,GACA9J,IAIAA,EAAA+J,QACApC,EAAAmC,GAEA9J,EAAA,QAIA+E,SAAA6C,IACAA,EAAA,MAIA5H,EAAAgK,KAAApC,OV6qBM,SAAUjJ,EAAQD,EAASM,GW91BjC,YAEA,IAAAyI,GAAAzI,EAAA,GASAL,GAAAD,QAAA,SAAAuG,EAAA0C,EAAAnD,GACA,GAAAsC,GAAAtC,EAAAE,OAAAoC,cAEAtC,GAAAuC,QAAAD,MAAAtC,EAAAuC,QAGAY,EAAAF,EACA,mCAAAjD,EAAAuC,OACAvC,EAAAE,OACA,KACAF,EAAAxE,QACAwE,IAPAS,EAAAT,KX+2BM,SAAU7F,EAAQD,EAASM,GY93BjC,YAEA,IAAAiL,GAAAjL,EAAA,GAYAL,GAAAD,QAAA,SAAAwL,EAAAxF,EAAAyF,EAAAnK,EAAAwE,GACA,GAAA4F,GAAA,GAAAC,OAAAH,EACA,OAAAD,GAAAG,EAAA1F,EAAAyF,EAAAnK,EAAAwE,KZs4BM,SAAU7F,EAAQD,Gat5BxB,YAYAC,GAAAD,QAAA,SAAA0L,EAAA1F,EAAAyF,EAAAnK,EAAAwE,GAOA,MANA4F,GAAA1F,SACAyF,IACAC,EAAAD,QAEAC,EAAApK,UACAoK,EAAA5F,WACA4F,Ib85BM,SAAUzL,EAAQD,EAASM,Gcj7BjC,YAIA,SAAAsL,GAAArJ,GACA,MAAAsJ,oBAAAtJ,GACAwB,QAAA,aACAA,QAAA,aACAA,QAAA,YACAA,QAAA,aACAA,QAAA,YACAA,QAAA,aACAA,QAAA,aAVA,GAAAxC,GAAAjB,EAAA,EAoBAL,GAAAD,QAAA,SAAAiG,EAAA6D,EAAAC,GAEA,IAAAD,EACA,MAAA7D,EAGA,IAAA6F,EACA,IAAA/B,EACA+B,EAAA/B,EAAAD,OACG,IAAAvI,EAAAoC,kBAAAmG,GACHgC,EAAAhC,EAAAtH,eACG,CACH,GAAAuJ,KAEAxK,GAAA8C,QAAAyF,EAAA,SAAAvH,EAAAoC,GACA,OAAApC,GAAA,mBAAAA,KAIAhB,EAAAe,QAAAC,GACAoC,GAAA,KAEApC,MAGAhB,EAAA8C,QAAA9B,EAAA,SAAAyJ,GACAzK,EAAA8B,OAAA2I,GACAA,IAAAC,cACS1K,EAAA6B,SAAA4I,KACTA,EAAArE,KAAAC,UAAAoE,IAEAD,EAAAnF,KAAAgF,EAAAjH,GAAA,IAAAiH,EAAAI,SAIAF,EAAAC,EAAAG,KAAA,KAOA,MAJAJ,KACA7F,MAAAiE,QAAA,mBAAA4B,GAGA7F,Idy7BM,SAAUhG,EAAQD,EAASM,Gez/BjC,YAEA,IAAAiB,GAAAjB,EAAA,GAIA6L,GACA,6DACA,kEACA,gEACA,qCAgBAlM,GAAAD,QAAA,SAAAiH,GACA,GACAtC,GACApC,EACAiC,EAHA4H,IAKA,OAAAnF,IAEA1F,EAAA8C,QAAA4C,EAAAoF,MAAA,eAAAC,GAKA,GAJA9H,EAAA8H,EAAApC,QAAA,KACAvF,EAAApD,EAAAsC,KAAAyI,EAAAC,OAAA,EAAA/H,IAAA2B,cACA5D,EAAAhB,EAAAsC,KAAAyI,EAAAC,OAAA/H,EAAA,IAEAG,EAAA,CACA,GAAAyH,EAAAzH,IAAAwH,EAAAjC,QAAAvF,IAAA,EACA,MAEA,gBAAAA,EACAyH,EAAAzH,IAAAyH,EAAAzH,GAAAyH,EAAAzH,OAAA6H,QAAAjK,IAEA6J,EAAAzH,GAAAyH,EAAAzH,GAAAyH,EAAAzH,GAAA,KAAApC,OAKA6J,GAnBiBA,IfohCX,SAAUnM,EAAQD,EAASM,GgBpjCjC,YAEA,IAAAiB,GAAAjB,EAAA,EAEAL,GAAAD,QACAuB,EAAAyC,uBAIA,WAWA,QAAAyI,GAAAxG,GACA,GAAAyG,GAAAzG,CAWA,OATA0G,KAEAC,EAAAC,aAAA,OAAAH,GACAA,EAAAE,EAAAF,MAGAE,EAAAC,aAAA,OAAAH,IAIAA,KAAAE,EAAAF,KACAI,SAAAF,EAAAE,SAAAF,EAAAE,SAAA/I,QAAA,YACAgJ,KAAAH,EAAAG,KACAC,OAAAJ,EAAAI,OAAAJ,EAAAI,OAAAjJ,QAAA,aACAkJ,KAAAL,EAAAK,KAAAL,EAAAK,KAAAlJ,QAAA,YACAmJ,SAAAN,EAAAM,SACAC,KAAAP,EAAAO,KACAC,SAAA,MAAAR,EAAAQ,SAAAC,OAAA,GACAT,EAAAQ,SACA,IAAAR,EAAAQ,UAhCA,GAEAE,GAFAX,EAAA,kBAAAY,KAAAtJ,UAAAuJ,WACAZ,EAAAxI,SAAAqJ,cAAA,IA2CA,OARAH,GAAAb,EAAAtI,OAAAuJ,SAAAhB,MAQA,SAAAiB,GACA,GAAAvB,GAAA7K,EAAA0B,SAAA0K,GAAAlB,EAAAkB,IACA,OAAAvB,GAAAU,WAAAQ,EAAAR,UACAV,EAAAW,OAAAO,EAAAP,SAKA,WACA,kBACA,chB8jCM,SAAU9M,EAAQD,GiB9nCxB,YAMA,SAAA4N,KACAxN,KAAAoL,QAAA,uCAMA,QAAAxC,GAAA6E,GAGA,IAEA,GAAAC,GAAAC,EAJAjK,EAAAkK,OAAAH,GACAI,EAAA,GAGAC,EAAA,EAAAC,EAAAC,EAIAtK,EAAAuJ,OAAA,EAAAa,KAAAC,EAAA,IAAAD,EAAA,GAEAD,GAAAE,EAAAd,OAAA,GAAAS,GAAA,EAAAI,EAAA,KACA,CAEA,GADAH,EAAAjK,EAAAuK,WAAAH,GAAA,KACAH,EAAA,IACA,SAAAH,EAEAE,MAAA,EAAAC,EAEA,MAAAE,GA5BA,GAAAG,GAAA,mEAKAR,GAAAvM,UAAA,GAAAsK,OACAiC,EAAAvM,UAAAoK,KAAA,EACAmC,EAAAvM,UAAAoH,KAAA,wBAwBAxI,EAAAD,QAAAgJ,GjBqoCM,SAAU/I,EAAQD,EAASM,GkBxqCjC,YAEA,IAAAiB,GAAAjB,EAAA,EAEAL,GAAAD,QACAuB,EAAAyC,uBAGA,WACA,OACAsK,MAAA,SAAA7F,EAAAvB,EAAAqH,EAAAC,EAAAC,EAAAC,GACA,GAAAC,KACAA,GAAA/H,KAAA6B,EAAA,IAAAoD,mBAAA3E,IAEA3F,EAAA2B,SAAAqL,IACAI,EAAA/H,KAAA,cAAAgI,MAAAL,GAAAM,eAGAtN,EAAA0B,SAAAuL,IACAG,EAAA/H,KAAA,QAAA4H,GAGAjN,EAAA0B,SAAAwL,IACAE,EAAA/H,KAAA,UAAA6H,GAGAC,KAAA,GACAC,EAAA/H,KAAA,UAGAxC,SAAAuK,SAAAzC,KAAA,OAGArB,KAAA,SAAApC,GACA,GAAAqG,GAAA1K,SAAAuK,OAAAG,MAAA,GAAAC,QAAA,aAA0DtG,EAAA,aAC1D,OAAAqG,GAAAE,mBAAAF,EAAA,UAGAG,OAAA,SAAAxG,GACArI,KAAAkO,MAAA7F,EAAA,GAAAmG,KAAAM,MAAA,YAMA,WACA,OACAZ,MAAA,aACAzD,KAAA,WAA6B,aAC7BoE,OAAA,kBlBkrCM,SAAUhP,EAAQD,EAASM,GmBnuCjC,YAIA,SAAAuF,KACAzF,KAAA+O,YAHA,GAAA5N,GAAAjB,EAAA,EAcAuF,GAAAxE,UAAA+N,IAAA,SAAA1I,EAAAC,GAKA,MAJAvG,MAAA+O,SAAAvI,MACAF,YACAC,aAEAvG,KAAA+O,SAAAzK,OAAA,GAQAmB,EAAAxE,UAAAgO,MAAA,SAAA5O,GACAL,KAAA+O,SAAA1O,KACAL,KAAA+O,SAAA1O,GAAA,OAYAoF,EAAAxE,UAAAgD,QAAA,SAAAE,GACAhD,EAAA8C,QAAAjE,KAAA+O,SAAA,SAAAG,GACA,OAAAA,GACA/K,EAAA+K,MAKArP,EAAAD,QAAA6F,GnB0uCM,SAAU5F,EAAQD,EAASM,GoB7xCjC,YAYA,SAAAiP,GAAAvJ,GACAA,EAAAmF,aACAnF,EAAAmF,YAAAqE,mBAZA,GAAAjO,GAAAjB,EAAA,GACAmP,EAAAnP,EAAA,IACA0B,EAAA1B,EAAA,IACAmB,EAAAnB,EAAA,GACAoP,EAAApP,EAAA,IACAqP,EAAArP,EAAA,GAiBAL,GAAAD,QAAA,SAAAgG,GACAuJ,EAAAvJ,GAGAA,EAAA4J,UAAAF,EAAA1J,EAAAC,OACAD,EAAAC,IAAA0J,EAAA3J,EAAA4J,QAAA5J,EAAAC,MAIAD,EAAAiB,QAAAjB,EAAAiB,YAGAjB,EAAAe,KAAA0I,EACAzJ,EAAAe,KACAf,EAAAiB,QACAjB,EAAA0B,kBAIA1B,EAAAiB,QAAA1F,EAAAM,MACAmE,EAAAiB,QAAAqB,WACAtC,EAAAiB,QAAAjB,EAAAE,YACAF,EAAAiB,aAGA1F,EAAA8C,SACA,qDACA,SAAA6B,SACAF,GAAAiB,QAAAf,IAIA,IAAAkB,GAAApB,EAAAoB,SAAA3F,EAAA2F,OAEA,OAAAA,GAAApB,GAAAa,KAAA,SAAAf,GAUA,MATAyJ,GAAAvJ,GAGAF,EAAAiB,KAAA0I,EACA3J,EAAAiB,KACAjB,EAAAmB,QACAjB,EAAA6B,mBAGA/B,GACG,SAAA+J,GAcH,MAbA7N,GAAA6N,KACAN,EAAAvJ,GAGA6J,KAAA/J,WACA+J,EAAA/J,SAAAiB,KAAA0I,EACAI,EAAA/J,SAAAiB,KACA8I,EAAA/J,SAAAmB,QACAjB,EAAA6B,qBAKA1F,QAAA8G,OAAA4G,OpBsyCM,SAAU5P,EAAQD,EAASM,GqBz3CjC,YAEA,IAAAiB,GAAAjB,EAAA,EAUAL,GAAAD,QAAA,SAAA+G,EAAAE,EAAA6I,GAMA,MAJAvO,GAAA8C,QAAAyL,EAAA,SAAAvL,GACAwC,EAAAxC,EAAAwC,EAAAE,KAGAF,IrBi4CM,SAAU9G,EAAQD,GsBn5CxB,YAEAC,GAAAD,QAAA,SAAAkH,GACA,SAAAA,MAAA6I,ctB25CM,SAAU9P,EAAQD,GuB95CxB,YAQAC,GAAAD,QAAA,SAAAiG,GAIA,sCAAAsH,KAAAtH,KvBs6CM,SAAUhG,EAAQD,GwBl7CxB,YASAC,GAAAD,QAAA,SAAA4P,EAAAI,GACA,MAAAA,GACAJ,EAAA7L,QAAA,eAAAiM,EAAAjM,QAAA,WACA6L,IxB07CM,SAAU3P,EAAQD,GyBt8CxB,YAQA,SAAA8B,GAAA0J,GACApL,KAAAoL,UAGA1J,EAAAT,UAAAmB,SAAA,WACA,gBAAApC,KAAAoL,QAAA,KAAApL,KAAAoL,QAAA,KAGA1J,EAAAT,UAAA0O,YAAA,EAEA9P,EAAAD,QAAA8B,GzB68CM,SAAU7B,EAAQD,EAASM,G0B/9CjC,YAUA,SAAAyB,GAAAkO,GACA,qBAAAA,GACA,SAAAC,WAAA,+BAGA,IAAAC,EACA/P,MAAAkG,QAAA,GAAAnE,SAAA,SAAAoE,GACA4J,EAAA5J,GAGA,IAAA6J,GAAAhQ,IACA6P,GAAA,SAAAzE,GACA4E,EAAAP,SAKAO,EAAAP,OAAA,GAAA/N,GAAA0J,GACA2E,EAAAC,EAAAP,WA1BA,GAAA/N,GAAAxB,EAAA,GAiCAyB,GAAAV,UAAAmO,iBAAA,WACA,GAAApP,KAAAyP,OACA,KAAAzP,MAAAyP,QAQA9N,EAAAsO,OAAA,WACA,GAAAjF,GACAgF,EAAA,GAAArO,GAAA,SAAAlB,GACAuK,EAAAvK,GAEA,QACAuP,QACAhF,WAIAnL,EAAAD,QAAA+B,G1Bs+CM,SAAU9B,EAAQD,G2B9hDxB,YAsBAC,GAAAD,QAAA,SAAAsQ,GACA,gBAAAC,GACA,MAAAD,GAAAhL,MAAA,KAAAiL&quot;,&quot;file&quot;:&quot;axios.min.js&quot;,&quot;sourcesContent&quot;:[&quot;(function webpackUniversalModuleDefinition(root, factory) {\n\tif(typeof exports === &#39;object&#39; &amp;&amp; typeof module === &#39;object&#39;)\n\t\tmodule.exports = factory();\n\telse if(typeof define === &#39;function&#39; &amp;&amp; define.amd)\n\t\tdefine([], factory);\n\telse if(typeof exports === &#39;object&#39;)\n\t\texports[\&quot;axios\&quot;] = factory();\n\telse\n\t\troot[\&quot;axios\&quot;] = factory();\n})(this, function() {\nreturn \n\n\n// WEBPACK FOOTER //\n// webpack/universalModuleDefinition&quot;,&quot;(function webpackUniversalModuleDefinition(root, factory) {\n\tif(typeof exports === &#39;object&#39; &amp;&amp; typeof module === &#39;object&#39;)\n\t\tmodule.exports = factory();\n\telse if(typeof define === &#39;function&#39; &amp;&amp; define.amd)\n\t\tdefine([], factory);\n\telse if(typeof exports === &#39;object&#39;)\n\t\texports[\&quot;axios\&quot;] = factory();\n\telse\n\t\troot[\&quot;axios\&quot;] = factory();\n})(this, function() {\nreturn /******/ (function(modules) { // webpackBootstrap\n/******/ \t// The module cache\n/******/ \tvar installedModules = {};\n/******/\n/******/ \t// The require function\n/******/ \tfunction __webpack_require__(moduleId) {\n/******/\n/******/ \t\t// Check if module is in cache\n/******/ \t\tif(installedModules[moduleId])\n/******/ \t\t\treturn installedModules[moduleId].exports;\n/******/\n/******/ \t\t// Create a new module (and put it into the cache)\n/******/ \t\tvar module = installedModules[moduleId] = {\n/******/ \t\t\texports: {},\n/******/ \t\t\tid: moduleId,\n/******/ \t\t\tloaded: false\n/******/ \t\t};\n/******/\n/******/ \t\t// Execute the module function\n/******/ \t\tmodules[moduleId].call(module.exports, module, module.exports, __webpack_require__);\n/******/\n/******/ \t\t// Flag the module as loaded\n/******/ \t\tmodule.loaded = true;\n/******/\n/******/ \t\t// Return the exports of the module\n/******/ \t\treturn module.exports;\n/******/ \t}\n/******/\n/******/\n/******/ \t// expose the modules object (__webpack_modules__)\n/******/ \t__webpack_require__.m = modules;\n/******/\n/******/ \t// expose the module cache\n/******/ \t__webpack_require__.c = installedModules;\n/******/\n/******/ \t// __webpack_public_path__\n/******/ \t__webpack_require__.p = \&quot;\&quot;;\n/******/\n/******/ \t// Load entry module and return exports\n/******/ \treturn __webpack_require__(0);\n/******/ })\n/************************************************************************/\n/******/ ([\n/* 0 */\n/***/ (function(module, exports, __webpack_require__) {\n\n\tmodule.exports = __webpack_require__(1);\n\n/***/ }),\n/* 1 */\n/***/ (function(module, exports, __webpack_require__) {\n\n\t&#39;use strict&#39;;\n\t\n\tvar utils = __webpack_require__(2);\n\tvar bind = __webpack_require__(3);\n\tvar Axios = __webpack_require__(5);\n\tvar defaults = __webpack_require__(6);\n\t\n\t/**\n\t * Create an instance of Axios\n\t *\n\t * @param {Object} defaultConfig The default config for the instance\n\t * @return {Axios} A new instance of Axios\n\t */\n\tfunction createInstance(defaultConfig) {\n\t  var context = new Axios(defaultConfig);\n\t  var instance = bind(Axios.prototype.request, context);\n\t\n\t  // Copy axios.prototype to instance\n\t  utils.extend(instance, Axios.prototype, context);\n\t\n\t  // Copy context to instance\n\t  utils.extend(instance, context);\n\t\n\t  return instance;\n\t}\n\t\n\t// Create the default instance to be exported\n\tvar axios = createInstance(defaults);\n\t\n\t// Expose Axios class to allow class inheritance\n\taxios.Axios = Axios;\n\t\n\t// Factory for creating new instances\n\taxios.create = function create(instanceConfig) {\n\t  return createInstance(utils.merge(defaults, instanceConfig));\n\t};\n\t\n\t// Expose Cancel &amp; CancelToken\n\taxios.Cancel = __webpack_require__(23);\n\taxios.CancelToken = __webpack_require__(24);\n\taxios.isCancel = __webpack_require__(20);\n\t\n\t// Expose all/spread\n\taxios.all = function all(promises) {\n\t  return Promise.all(promises);\n\t};\n\taxios.spread = __webpack_require__(25);\n\t\n\tmodule.exports = axios;\n\t\n\t// Allow use of default import syntax in TypeScript\n\tmodule.exports.default = axios;\n\n\n/***/ }),\n/* 2 */\n/***/ (function(module, exports, __webpack_require__) {\n\n\t&#39;use strict&#39;;\n\t\n\tvar bind = __webpack_require__(3);\n\tvar isBuffer = __webpack_require__(4);\n\t\n\t/*global toString:true*/\n\t\n\t// utils is a library of generic helper functions non-specific to axios\n\t\n\tvar toString = Object.prototype.toString;\n\t\n\t/**\n\t * Determine if a value is an Array\n\t *\n\t * @param {Object} val The value to test\n\t * @returns {boolean} True if value is an Array, otherwise false\n\t */\n\tfunction isArray(val) {\n\t  return toString.call(val) === &#39;[object Array]&#39;;\n\t}\n\t\n\t/**\n\t * Determine if a value is an ArrayBuffer\n\t *\n\t * @param {Object} val The value to test\n\t * @returns {boolean} True if value is an ArrayBuffer, otherwise false\n\t */\n\tfunction isArrayBuffer(val) {\n\t  return toString.call(val) === &#39;[object ArrayBuffer]&#39;;\n\t}\n\t\n\t/**\n\t * Determine if a value is a FormData\n\t *\n\t * @param {Object} val The value to test\n\t * @returns {boolean} True if value is an FormData, otherwise false\n\t */\n\tfunction isFormData(val) {\n\t  return (typeof FormData !== &#39;undefined&#39;) &amp;&amp; (val instanceof FormData);\n\t}\n\t\n\t/**\n\t * Determine if a value is a view on an ArrayBuffer\n\t *\n\t * @param {Object} val The value to test\n\t * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false\n\t */\n\tfunction isArrayBufferView(val) {\n\t  var result;\n\t  if ((typeof ArrayBuffer !== &#39;undefined&#39;) &amp;&amp; (ArrayBuffer.isView)) {\n\t    result = ArrayBuffer.isView(val);\n\t  } else {\n\t    result = (val) &amp;&amp; (val.buffer) &amp;&amp; (val.buffer instanceof ArrayBuffer);\n\t  }\n\t  return result;\n\t}\n\t\n\t/**\n\t * Determine if a value is a String\n\t *\n\t * @param {Object} val The value to test\n\t * @returns {boolean} True if value is a String, otherwise false\n\t */\n\tfunction isString(val) {\n\t  return typeof val === &#39;string&#39;;\n\t}\n\t\n\t/**\n\t * Determine if a value is a Number\n\t *\n\t * @param {Object} val The value to test\n\t * @returns {boolean} True if value is a Number, otherwise false\n\t */\n\tfunction isNumber(val) {\n\t  return typeof val === &#39;number&#39;;\n\t}\n\t\n\t/**\n\t * Determine if a value is undefined\n\t *\n\t * @param {Object} val The value to test\n\t * @returns {boolean} True if the value is undefined, otherwise false\n\t */\n\tfunction isUndefined(val) {\n\t  return typeof val === &#39;undefined&#39;;\n\t}\n\t\n\t/**\n\t * Determine if a value is an Object\n\t *\n\t * @param {Object} val The value to test\n\t * @returns {boolean} True if value is an Object, otherwise false\n\t */\n\tfunction isObject(val) {\n\t  return val !== null &amp;&amp; typeof val === &#39;object&#39;;\n\t}\n\t\n\t/**\n\t * Determine if a value is a Date\n\t *\n\t * @param {Object} val The value to test\n\t * @returns {boolean} True if value is a Date, otherwise false\n\t */\n\tfunction isDate(val) {\n\t  return toString.call(val) === &#39;[object Date]&#39;;\n\t}\n\t\n\t/**\n\t * Determine if a value is a File\n\t *\n\t * @param {Object} val The value to test\n\t * @returns {boolean} True if value is a File, otherwise false\n\t */\n\tfunction isFile(val) {\n\t  return toString.call(val) === &#39;[object File]&#39;;\n\t}\n\t\n\t/**\n\t * Determine if a value is a Blob\n\t *\n\t * @param {Object} val The value to test\n\t * @returns {boolean} True if value is a Blob, otherwise false\n\t */\n\tfunction isBlob(val) {\n\t  return toString.call(val) === &#39;[object Blob]&#39;;\n\t}\n\t\n\t/**\n\t * Determine if a value is a Function\n\t *\n\t * @param {Object} val The value to test\n\t * @returns {boolean} True if value is a Function, otherwise false\n\t */\n\tfunction isFunction(val) {\n\t  return toString.call(val) === &#39;[object Function]&#39;;\n\t}\n\t\n\t/**\n\t * Determine if a value is a Stream\n\t *\n\t * @param {Object} val The value to test\n\t * @returns {boolean} True if value is a Stream, otherwise false\n\t */\n\tfunction isStream(val) {\n\t  return isObject(val) &amp;&amp; isFunction(val.pipe);\n\t}\n\t\n\t/**\n\t * Determine if a value is a URLSearchParams object\n\t *\n\t * @param {Object} val The value to test\n\t * @returns {boolean} True if value is a URLSearchParams object, otherwise false\n\t */\n\tfunction isURLSearchParams(val) {\n\t  return typeof URLSearchParams !== &#39;undefined&#39; &amp;&amp; val instanceof URLSearchParams;\n\t}\n\t\n\t/**\n\t * Trim excess whitespace off the beginning and end of a string\n\t *\n\t * @param {String} str The String to trim\n\t * @returns {String} The String freed of excess whitespace\n\t */\n\tfunction trim(str) {\n\t  return str.replace(/^\\s*/, &#39;&#39;).replace(/\\s*$/, &#39;&#39;);\n\t}\n\t\n\t/**\n\t * Determine if we&#39;re running in a standard browser environment\n\t *\n\t * This allows axios to run in a web worker, and react-native.\n\t * Both environments support XMLHttpRequest, but not fully standard globals.\n\t *\n\t * web workers:\n\t *  typeof window -&gt; undefined\n\t *  typeof document -&gt; undefined\n\t *\n\t * react-native:\n\t *  navigator.product -&gt; &#39;ReactNative&#39;\n\t */\n\tfunction isStandardBrowserEnv() {\n\t  if (typeof navigator !== &#39;undefined&#39; &amp;&amp; navigator.product === &#39;ReactNative&#39;) {\n\t    return false;\n\t  }\n\t  return (\n\t    typeof window !== &#39;undefined&#39; &amp;&amp;\n\t    typeof document !== &#39;undefined&#39;\n\t  );\n\t}\n\t\n\t/**\n\t * Iterate over an Array or an Object invoking a function for each item.\n\t *\n\t * If `obj` is an Array callback will be called passing\n\t * the value, index, and complete array for each item.\n\t *\n\t * If &#39;obj&#39; is an Object callback will be called passing\n\t * the value, key, and complete object for each property.\n\t *\n\t * @param {Object|Array} obj The object to iterate\n\t * @param {Function} fn The callback to invoke for each item\n\t */\n\tfunction forEach(obj, fn) {\n\t  // Don&#39;t bother if no value provided\n\t  if (obj === null || typeof obj === &#39;undefined&#39;) {\n\t    return;\n\t  }\n\t\n\t  // Force an array if not already something iterable\n\t  if (typeof obj !== &#39;object&#39;) {\n\t    /*eslint no-param-reassign:0*/\n\t    obj = [obj];\n\t  }\n\t\n\t  if (isArray(obj)) {\n\t    // Iterate over array values\n\t    for (var i = 0, l = obj.length; i &lt; l; i++) {\n\t      fn.call(null, obj[i], i, obj);\n\t    }\n\t  } else {\n\t    // Iterate over object keys\n\t    for (var key in obj) {\n\t      if (Object.prototype.hasOwnProperty.call(obj, key)) {\n\t        fn.call(null, obj[key], key, obj);\n\t      }\n\t    }\n\t  }\n\t}\n\t\n\t/**\n\t * Accepts varargs expecting each argument to be an object, then\n\t * immutably merges the properties of each object and returns result.\n\t *\n\t * When multiple objects contain the same key the later object in\n\t * the arguments list will take precedence.\n\t *\n\t * Example:\n\t *\n\t * ```js\n\t * var result = merge({foo: 123}, {foo: 456});\n\t * console.log(result.foo); // outputs 456\n\t * ```\n\t *\n\t * @param {Object} obj1 Object to merge\n\t * @returns {Object} Result of all merge properties\n\t */\n\tfunction merge(/* obj1, obj2, obj3, ... */) {\n\t  var result = {};\n\t  function assignValue(val, key) {\n\t    if (typeof result[key] === &#39;object&#39; &amp;&amp; typeof val === &#39;object&#39;) {\n\t      result[key] = merge(result[key], val);\n\t    } else {\n\t      result[key] = val;\n\t    }\n\t  }\n\t\n\t  for (var i = 0, l = arguments.length; i &lt; l; i++) {\n\t    forEach(arguments[i], assignValue);\n\t  }\n\t  return result;\n\t}\n\t\n\t/**\n\t * Extends object a by mutably adding to it the properties of object b.\n\t *\n\t * @param {Object} a The object to be extended\n\t * @param {Object} b The object to copy properties from\n\t * @param {Object} thisArg The object to bind function to\n\t * @return {Object} The resulting value of object a\n\t */\n\tfunction extend(a, b, thisArg) {\n\t  forEach(b, function assignValue(val, key) {\n\t    if (thisArg &amp;&amp; typeof val === &#39;function&#39;) {\n\t      a[key] = bind(val, thisArg);\n\t    } else {\n\t      a[key] = val;\n\t    }\n\t  });\n\t  return a;\n\t}\n\t\n\tmodule.exports = {\n\t  isArray: isArray,\n\t  isArrayBuffer: isArrayBuffer,\n\t  isBuffer: isBuffer,\n\t  isFormData: isFormData,\n\t  isArrayBufferView: isArrayBufferView,\n\t  isString: isString,\n\t  isNumber: isNumber,\n\t  isObject: isObject,\n\t  isUndefined: isUndefined,\n\t  isDate: isDate,\n\t  isFile: isFile,\n\t  isBlob: isBlob,\n\t  isFunction: isFunction,\n\t  isStream: isStream,\n\t  isURLSearchParams: isURLSearchParams,\n\t  isStandardBrowserEnv: isStandardBrowserEnv,\n\t  forEach: forEach,\n\t  merge: merge,\n\t  extend: extend,\n\t  trim: trim\n\t};\n\n\n/***/ }),\n/* 3 */\n/***/ (function(module, exports) {\n\n\t&#39;use strict&#39;;\n\t\n\tmodule.exports = function bind(fn, thisArg) {\n\t  return function wrap() {\n\t    var args = new Array(arguments.length);\n\t    for (var i = 0; i &lt; args.length; i++) {\n\t      args[i] = arguments[i];\n\t    }\n\t    return fn.apply(thisArg, args);\n\t  };\n\t};\n\n\n/***/ }),\n/* 4 */\n/***/ (function(module, exports) {\n\n\t/*!\n\t * Determine if an object is a Buffer\n\t *\n\t * @author   Feross Aboukhadijeh &lt;https://feross.org&gt;\n\t * @license  MIT\n\t */\n\t\n\t// The _isBuffer check is for Safari 5-7 support, because it&#39;s missing\n\t// Object.prototype.constructor. Remove this eventually\n\tmodule.exports = function (obj) {\n\t  return obj != null &amp;&amp; (isBuffer(obj) || isSlowBuffer(obj) || !!obj._isBuffer)\n\t}\n\t\n\tfunction isBuffer (obj) {\n\t  return !!obj.constructor &amp;&amp; typeof obj.constructor.isBuffer === &#39;function&#39; &amp;&amp; obj.constructor.isBuffer(obj)\n\t}\n\t\n\t// For Node v0.10 support. Remove this eventually.\n\tfunction isSlowBuffer (obj) {\n\t  return typeof obj.readFloatLE === &#39;function&#39; &amp;&amp; typeof obj.slice === &#39;function&#39; &amp;&amp; isBuffer(obj.slice(0, 0))\n\t}\n\n\n/***/ }),\n/* 5 */\n/***/ (function(module, exports, __webpack_require__) {\n\n\t&#39;use strict&#39;;\n\t\n\tvar defaults = __webpack_require__(6);\n\tvar utils = __webpack_require__(2);\n\tvar InterceptorManager = __webpack_require__(17);\n\tvar dispatchRequest = __webpack_require__(18);\n\t\n\t/**\n\t * Create a new instance of Axios\n\t *\n\t * @param {Object} instanceConfig The default config for the instance\n\t */\n\tfunction Axios(instanceConfig) {\n\t  this.defaults = instanceConfig;\n\t  this.interceptors = {\n\t    request: new InterceptorManager(),\n\t    response: new InterceptorManager()\n\t  };\n\t}\n\t\n\t/**\n\t * Dispatch a request\n\t *\n\t * @param {Object} config The config specific for this request (merged with this.defaults)\n\t */\n\tAxios.prototype.request = function request(config) {\n\t  /*eslint no-param-reassign:0*/\n\t  // Allow for axios(&#39;example/url&#39;[, config]) a la fetch API\n\t  if (typeof config === &#39;string&#39;) {\n\t    config = utils.merge({\n\t      url: arguments[0]\n\t    }, arguments[1]);\n\t  }\n\t\n\t  config = utils.merge(defaults, {method: &#39;get&#39;}, this.defaults, config);\n\t  config.method = config.method.toLowerCase();\n\t\n\t  // Hook up interceptors middleware\n\t  var chain = [dispatchRequest, undefined];\n\t  var promise = Promise.resolve(config);\n\t\n\t  this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {\n\t    chain.unshift(interceptor.fulfilled, interceptor.rejected);\n\t  });\n\t\n\t  this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {\n\t    chain.push(interceptor.fulfilled, interceptor.rejected);\n\t  });\n\t\n\t  while (chain.length) {\n\t    promise = promise.then(chain.shift(), chain.shift());\n\t  }\n\t\n\t  return promise;\n\t};\n\t\n\t// Provide aliases for supported request methods\n\tutils.forEach([&#39;delete&#39;, &#39;get&#39;, &#39;head&#39;, &#39;options&#39;], function forEachMethodNoData(method) {\n\t  /*eslint func-names:0*/\n\t  Axios.prototype[method] = function(url, config) {\n\t    return this.request(utils.merge(config || {}, {\n\t      method: method,\n\t      url: url\n\t    }));\n\t  };\n\t});\n\t\n\tutils.forEach([&#39;post&#39;, &#39;put&#39;, &#39;patch&#39;], function forEachMethodWithData(method) {\n\t  /*eslint func-names:0*/\n\t  Axios.prototype[method] = function(url, data, config) {\n\t    return this.request(utils.merge(config || {}, {\n\t      method: method,\n\t      url: url,\n\t      data: data\n\t    }));\n\t  };\n\t});\n\t\n\tmodule.exports = Axios;\n\n\n/***/ }),\n/* 6 */\n/***/ (function(module, exports, __webpack_require__) {\n\n\t&#39;use strict&#39;;\n\t\n\tvar utils = __webpack_require__(2);\n\tvar normalizeHeaderName = __webpack_require__(7);\n\t\n\tvar DEFAULT_CONTENT_TYPE = {\n\t  &#39;Content-Type&#39;: &#39;application/x-www-form-urlencoded&#39;\n\t};\n\t\n\tfunction setContentTypeIfUnset(headers, value) {\n\t  if (!utils.isUndefined(headers) &amp;&amp; utils.isUndefined(headers[&#39;Content-Type&#39;])) {\n\t    headers[&#39;Content-Type&#39;] = value;\n\t  }\n\t}\n\t\n\tfunction getDefaultAdapter() {\n\t  var adapter;\n\t  if (typeof XMLHttpRequest !== &#39;undefined&#39;) {\n\t    // For browsers use XHR adapter\n\t    adapter = __webpack_require__(8);\n\t  } else if (typeof process !== &#39;undefined&#39;) {\n\t    // For node use HTTP adapter\n\t    adapter = __webpack_require__(8);\n\t  }\n\t  return adapter;\n\t}\n\t\n\tvar defaults = {\n\t  adapter: getDefaultAdapter(),\n\t\n\t  transformRequest: [function transformRequest(data, headers) {\n\t    normalizeHeaderName(headers, &#39;Content-Type&#39;);\n\t    if (utils.isFormData(data) ||\n\t      utils.isArrayBuffer(data) ||\n\t      utils.isBuffer(data) ||\n\t      utils.isStream(data) ||\n\t      utils.isFile(data) ||\n\t      utils.isBlob(data)\n\t    ) {\n\t      return data;\n\t    }\n\t    if (utils.isArrayBufferView(data)) {\n\t      return data.buffer;\n\t    }\n\t    if (utils.isURLSearchParams(data)) {\n\t      setContentTypeIfUnset(headers, &#39;application/x-www-form-urlencoded;charset=utf-8&#39;);\n\t      return data.toString();\n\t    }\n\t    if (utils.isObject(data)) {\n\t      setContentTypeIfUnset(headers, &#39;application/json;charset=utf-8&#39;);\n\t      return JSON.stringify(data);\n\t    }\n\t    return data;\n\t  }],\n\t\n\t  transformResponse: [function transformResponse(data) {\n\t    /*eslint no-param-reassign:0*/\n\t    if (typeof data === &#39;string&#39;) {\n\t      try {\n\t        data = JSON.parse(data);\n\t      } catch (e) { /* Ignore */ }\n\t    }\n\t    return data;\n\t  }],\n\t\n\t  /**\n\t   * A timeout in milliseconds to abort a request. If set to 0 (default) a\n\t   * timeout is not created.\n\t   */\n\t  timeout: 0,\n\t\n\t  xsrfCookieName: &#39;XSRF-TOKEN&#39;,\n\t  xsrfHeaderName: &#39;X-XSRF-TOKEN&#39;,\n\t\n\t  maxContentLength: -1,\n\t\n\t  validateStatus: function validateStatus(status) {\n\t    return status &gt;= 200 &amp;&amp; status &lt; 300;\n\t  }\n\t};\n\t\n\tdefaults.headers = {\n\t  common: {\n\t    &#39;Accept&#39;: &#39;application/json, text/plain, */*&#39;\n\t  }\n\t};\n\t\n\tutils.forEach([&#39;delete&#39;, &#39;get&#39;, &#39;head&#39;], function forEachMethodNoData(method) {\n\t  defaults.headers[method] = {};\n\t});\n\t\n\tutils.forEach([&#39;post&#39;, &#39;put&#39;, &#39;patch&#39;], function forEachMethodWithData(method) {\n\t  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);\n\t});\n\t\n\tmodule.exports = defaults;\n\n\n/***/ }),\n/* 7 */\n/***/ (function(module, exports, __webpack_require__) {\n\n\t&#39;use strict&#39;;\n\t\n\tvar utils = __webpack_require__(2);\n\t\n\tmodule.exports = function normalizeHeaderName(headers, normalizedName) {\n\t  utils.forEach(headers, function processHeader(value, name) {\n\t    if (name !== normalizedName &amp;&amp; name.toUpperCase() === normalizedName.toUpperCase()) {\n\t      headers[normalizedName] = value;\n\t      delete headers[name];\n\t    }\n\t  });\n\t};\n\n\n/***/ }),\n/* 8 */\n/***/ (function(module, exports, __webpack_require__) {\n\n\t&#39;use strict&#39;;\n\t\n\tvar utils = __webpack_require__(2);\n\tvar settle = __webpack_require__(9);\n\tvar buildURL = __webpack_require__(12);\n\tvar parseHeaders = __webpack_require__(13);\n\tvar isURLSameOrigin = __webpack_require__(14);\n\tvar createError = __webpack_require__(10);\n\tvar btoa = (typeof window !== &#39;undefined&#39; &amp;&amp; window.btoa &amp;&amp; window.btoa.bind(window)) || __webpack_require__(15);\n\t\n\tmodule.exports = function xhrAdapter(config) {\n\t  return new Promise(function dispatchXhrRequest(resolve, reject) {\n\t    var requestData = config.data;\n\t    var requestHeaders = config.headers;\n\t\n\t    if (utils.isFormData(requestData)) {\n\t      delete requestHeaders[&#39;Content-Type&#39;]; // Let the browser set it\n\t    }\n\t\n\t    var request = new XMLHttpRequest();\n\t    var loadEvent = &#39;onreadystatechange&#39;;\n\t    var xDomain = false;\n\t\n\t    // For IE 8/9 CORS support\n\t    // Only supports POST and GET calls and doesn&#39;t returns the response headers.\n\t    // DON&#39;T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.\n\t    if ((\&quot;production\&quot;) !== &#39;test&#39; &amp;&amp;\n\t        typeof window !== &#39;undefined&#39; &amp;&amp;\n\t        window.XDomainRequest &amp;&amp; !(&#39;withCredentials&#39; in request) &amp;&amp;\n\t        !isURLSameOrigin(config.url)) {\n\t      request = new window.XDomainRequest();\n\t      loadEvent = &#39;onload&#39;;\n\t      xDomain = true;\n\t      request.onprogress = function handleProgress() {};\n\t      request.ontimeout = function handleTimeout() {};\n\t    }\n\t\n\t    // HTTP basic authentication\n\t    if (config.auth) {\n\t      var username = config.auth.username || &#39;&#39;;\n\t      var password = config.auth.password || &#39;&#39;;\n\t      requestHeaders.Authorization = &#39;Basic &#39; + btoa(username + &#39;:&#39; + password);\n\t    }\n\t\n\t    request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);\n\t\n\t    // Set the request timeout in MS\n\t    request.timeout = config.timeout;\n\t\n\t    // Listen for ready state\n\t    request[loadEvent] = function handleLoad() {\n\t      if (!request || (request.readyState !== 4 &amp;&amp; !xDomain)) {\n\t        return;\n\t      }\n\t\n\t      // The request errored out and we didn&#39;t get a response, this will be\n\t      // handled by onerror instead\n\t      // With one exception: request that using file: protocol, most browsers\n\t      // will return status as 0 even though it&#39;s a successful request\n\t      if (request.status === 0 &amp;&amp; !(request.responseURL &amp;&amp; request.responseURL.indexOf(&#39;file:&#39;) === 0)) {\n\t        return;\n\t      }\n\t\n\t      // Prepare the response\n\t      var responseHeaders = &#39;getAllResponseHeaders&#39; in request ? parseHeaders(request.getAllResponseHeaders()) : null;\n\t      var responseData = !config.responseType || config.responseType === &#39;text&#39; ? request.responseText : request.response;\n\t      var response = {\n\t        data: responseData,\n\t        // IE sends 1223 instead of 204 (https://github.com/axios/axios/issues/201)\n\t        status: request.status === 1223 ? 204 : request.status,\n\t        statusText: request.status === 1223 ? &#39;No Content&#39; : request.statusText,\n\t        headers: responseHeaders,\n\t        config: config,\n\t        request: request\n\t      };\n\t\n\t      settle(resolve, reject, response);\n\t\n\t      // Clean up request\n\t      request = null;\n\t    };\n\t\n\t    // Handle low level network errors\n\t    request.onerror = function handleError() {\n\t      // Real errors are hidden from us by the browser\n\t      // onerror should only fire if it&#39;s a network error\n\t      reject(createError(&#39;Network Error&#39;, config, null, request));\n\t\n\t      // Clean up request\n\t      request = null;\n\t    };\n\t\n\t    // Handle timeout\n\t    request.ontimeout = function handleTimeout() {\n\t      reject(createError(&#39;timeout of &#39; + config.timeout + &#39;ms exceeded&#39;, config, &#39;ECONNABORTED&#39;,\n\t        request));\n\t\n\t      // Clean up request\n\t      request = null;\n\t    };\n\t\n\t    // Add xsrf header\n\t    // This is only done if running in a standard browser environment.\n\t    // Specifically not if we&#39;re in a web worker, or react-native.\n\t    if (utils.isStandardBrowserEnv()) {\n\t      var cookies = __webpack_require__(16);\n\t\n\t      // Add xsrf header\n\t      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) &amp;&amp; config.xsrfCookieName ?\n\t          cookies.read(config.xsrfCookieName) :\n\t          undefined;\n\t\n\t      if (xsrfValue) {\n\t        requestHeaders[config.xsrfHeaderName] = xsrfValue;\n\t      }\n\t    }\n\t\n\t    // Add headers to the request\n\t    if (&#39;setRequestHeader&#39; in request) {\n\t      utils.forEach(requestHeaders, function setRequestHeader(val, key) {\n\t        if (typeof requestData === &#39;undefined&#39; &amp;&amp; key.toLowerCase() === &#39;content-type&#39;) {\n\t          // Remove Content-Type if data is undefined\n\t          delete requestHeaders[key];\n\t        } else {\n\t          // Otherwise add header to the request\n\t          request.setRequestHeader(key, val);\n\t        }\n\t      });\n\t    }\n\t\n\t    // Add withCredentials to request if needed\n\t    if (config.withCredentials) {\n\t      request.withCredentials = true;\n\t    }\n\t\n\t    // Add responseType to request if needed\n\t    if (config.responseType) {\n\t      try {\n\t        request.responseType = config.responseType;\n\t      } catch (e) {\n\t        // Expected DOMException thrown by browsers not compatible XMLHttpRequest Level 2.\n\t        // But, this can be suppressed for &#39;json&#39; type as it can be parsed by default &#39;transformResponse&#39; function.\n\t        if (config.responseType !== &#39;json&#39;) {\n\t          throw e;\n\t        }\n\t      }\n\t    }\n\t\n\t    // Handle progress if needed\n\t    if (typeof config.onDownloadProgress === &#39;function&#39;) {\n\t      request.addEventListener(&#39;progress&#39;, config.onDownloadProgress);\n\t    }\n\t\n\t    // Not all browsers support upload events\n\t    if (typeof config.onUploadProgress === &#39;function&#39; &amp;&amp; request.upload) {\n\t      request.upload.addEventListener(&#39;progress&#39;, config.onUploadProgress);\n\t    }\n\t\n\t    if (config.cancelToken) {\n\t      // Handle cancellation\n\t      config.cancelToken.promise.then(function onCanceled(cancel) {\n\t        if (!request) {\n\t          return;\n\t        }\n\t\n\t        request.abort();\n\t        reject(cancel);\n\t        // Clean up request\n\t        request = null;\n\t      });\n\t    }\n\t\n\t    if (requestData === undefined) {\n\t      requestData = null;\n\t    }\n\t\n\t    // Send the request\n\t    request.send(requestData);\n\t  });\n\t};\n\n\n/***/ }),\n/* 9 */\n/***/ (function(module, exports, __webpack_require__) {\n\n\t&#39;use strict&#39;;\n\t\n\tvar createError = __webpack_require__(10);\n\t\n\t/**\n\t * Resolve or reject a Promise based on response status.\n\t *\n\t * @param {Function} resolve A function that resolves the promise.\n\t * @param {Function} reject A function that rejects the promise.\n\t * @param {object} response The response.\n\t */\n\tmodule.exports = function settle(resolve, reject, response) {\n\t  var validateStatus = response.config.validateStatus;\n\t  // Note: status is not exposed by XDomainRequest\n\t  if (!response.status || !validateStatus || validateStatus(response.status)) {\n\t    resolve(response);\n\t  } else {\n\t    reject(createError(\n\t      &#39;Request failed with status code &#39; + response.status,\n\t      response.config,\n\t      null,\n\t      response.request,\n\t      response\n\t    ));\n\t  }\n\t};\n\n\n/***/ }),\n/* 10 */\n/***/ (function(module, exports, __webpack_require__) {\n\n\t&#39;use strict&#39;;\n\t\n\tvar enhanceError = __webpack_require__(11);\n\t\n\t/**\n\t * Create an Error with the specified message, config, error code, request and response.\n\t *\n\t * @param {string} message The error message.\n\t * @param {Object} config The config.\n\t * @param {string} [code] The error code (for example, &#39;ECONNABORTED&#39;).\n\t * @param {Object} [request] The request.\n\t * @param {Object} [response] The response.\n\t * @returns {Error} The created error.\n\t */\n\tmodule.exports = function createError(message, config, code, request, response) {\n\t  var error = new Error(message);\n\t  return enhanceError(error, config, code, request, response);\n\t};\n\n\n/***/ }),\n/* 11 */\n/***/ (function(module, exports) {\n\n\t&#39;use strict&#39;;\n\t\n\t/**\n\t * Update an Error with the specified config, error code, and response.\n\t *\n\t * @param {Error} error The error to update.\n\t * @param {Object} config The config.\n\t * @param {string} [code] The error code (for example, &#39;ECONNABORTED&#39;).\n\t * @param {Object} [request] The request.\n\t * @param {Object} [response] The response.\n\t * @returns {Error} The error.\n\t */\n\tmodule.exports = function enhanceError(error, config, code, request, response) {\n\t  error.config = config;\n\t  if (code) {\n\t    error.code = code;\n\t  }\n\t  error.request = request;\n\t  error.response = response;\n\t  return error;\n\t};\n\n\n/***/ }),\n/* 12 */\n/***/ (function(module, exports, __webpack_require__) {\n\n\t&#39;use strict&#39;;\n\t\n\tvar utils = __webpack_require__(2);\n\t\n\tfunction encode(val) {\n\t  return encodeURIComponent(val).\n\t    replace(/%40/gi, &#39;@&#39;).\n\t    replace(/%3A/gi, &#39;:&#39;).\n\t    replace(/%24/g, &#39;$&#39;).\n\t    replace(/%2C/gi, &#39;,&#39;).\n\t    replace(/%20/g, &#39;+&#39;).\n\t    replace(/%5B/gi, &#39;[&#39;).\n\t    replace(/%5D/gi, &#39;]&#39;);\n\t}\n\t\n\t/**\n\t * Build a URL by appending params to the end\n\t *\n\t * @param {string} url The base of the url (e.g., http://www.google.com)\n\t * @param {object} [params] The params to be appended\n\t * @returns {string} The formatted url\n\t */\n\tmodule.exports = function buildURL(url, params, paramsSerializer) {\n\t  /*eslint no-param-reassign:0*/\n\t  if (!params) {\n\t    return url;\n\t  }\n\t\n\t  var serializedParams;\n\t  if (paramsSerializer) {\n\t    serializedParams = paramsSerializer(params);\n\t  } else if (utils.isURLSearchParams(params)) {\n\t    serializedParams = params.toString();\n\t  } else {\n\t    var parts = [];\n\t\n\t    utils.forEach(params, function serialize(val, key) {\n\t      if (val === null || typeof val === &#39;undefined&#39;) {\n\t        return;\n\t      }\n\t\n\t      if (utils.isArray(val)) {\n\t        key = key + &#39;[]&#39;;\n\t      } else {\n\t        val = [val];\n\t      }\n\t\n\t      utils.forEach(val, function parseValue(v) {\n\t        if (utils.isDate(v)) {\n\t          v = v.toISOString();\n\t        } else if (utils.isObject(v)) {\n\t          v = JSON.stringify(v);\n\t        }\n\t        parts.push(encode(key) + &#39;=&#39; + encode(v));\n\t      });\n\t    });\n\t\n\t    serializedParams = parts.join(&#39;&amp;&#39;);\n\t  }\n\t\n\t  if (serializedParams) {\n\t    url += (url.indexOf(&#39;?&#39;) === -1 ? &#39;?&#39; : &#39;&amp;&#39;) + serializedParams;\n\t  }\n\t\n\t  return url;\n\t};\n\n\n/***/ }),\n/* 13 */\n/***/ (function(module, exports, __webpack_require__) {\n\n\t&#39;use strict&#39;;\n\t\n\tvar utils = __webpack_require__(2);\n\t\n\t// Headers whose duplicates are ignored by node\n\t// c.f. https://nodejs.org/api/http.html#http_message_headers\n\tvar ignoreDuplicateOf = [\n\t  &#39;age&#39;, &#39;authorization&#39;, &#39;content-length&#39;, &#39;content-type&#39;, &#39;etag&#39;,\n\t  &#39;expires&#39;, &#39;from&#39;, &#39;host&#39;, &#39;if-modified-since&#39;, &#39;if-unmodified-since&#39;,\n\t  &#39;last-modified&#39;, &#39;location&#39;, &#39;max-forwards&#39;, &#39;proxy-authorization&#39;,\n\t  &#39;referer&#39;, &#39;retry-after&#39;, &#39;user-agent&#39;\n\t];\n\t\n\t/**\n\t * Parse headers into an object\n\t *\n\t * ```\n\t * Date: Wed, 27 Aug 2014 08:58:49 GMT\n\t * Content-Type: application/json\n\t * Connection: keep-alive\n\t * Transfer-Encoding: chunked\n\t * ```\n\t *\n\t * @param {String} headers Headers needing to be parsed\n\t * @returns {Object} Headers parsed into an object\n\t */\n\tmodule.exports = function parseHeaders(headers) {\n\t  var parsed = {};\n\t  var key;\n\t  var val;\n\t  var i;\n\t\n\t  if (!headers) { return parsed; }\n\t\n\t  utils.forEach(headers.split(&#39;\\n&#39;), function parser(line) {\n\t    i = line.indexOf(&#39;:&#39;);\n\t    key = utils.trim(line.substr(0, i)).toLowerCase();\n\t    val = utils.trim(line.substr(i + 1));\n\t\n\t    if (key) {\n\t      if (parsed[key] &amp;&amp; ignoreDuplicateOf.indexOf(key) &gt;= 0) {\n\t        return;\n\t      }\n\t      if (key === &#39;set-cookie&#39;) {\n\t        parsed[key] = (parsed[key] ? parsed[key] : []).concat([val]);\n\t      } else {\n\t        parsed[key] = parsed[key] ? parsed[key] + &#39;, &#39; + val : val;\n\t      }\n\t    }\n\t  });\n\t\n\t  return parsed;\n\t};\n\n\n/***/ }),\n/* 14 */\n/***/ (function(module, exports, __webpack_require__) {\n\n\t&#39;use strict&#39;;\n\t\n\tvar utils = __webpack_require__(2);\n\t\n\tmodule.exports = (\n\t  utils.isStandardBrowserEnv() ?\n\t\n\t  // Standard browser envs have full support of the APIs needed to test\n\t  // whether the request URL is of the same origin as current location.\n\t  (function standardBrowserEnv() {\n\t    var msie = /(msie|trident)/i.test(navigator.userAgent);\n\t    var urlParsingNode = document.createElement(&#39;a&#39;);\n\t    var originURL;\n\t\n\t    /**\n\t    * Parse a URL to discover it&#39;s components\n\t    *\n\t    * @param {String} url The URL to be parsed\n\t    * @returns {Object}\n\t    */\n\t    function resolveURL(url) {\n\t      var href = url;\n\t\n\t      if (msie) {\n\t        // IE needs attribute set twice to normalize properties\n\t        urlParsingNode.setAttribute(&#39;href&#39;, href);\n\t        href = urlParsingNode.href;\n\t      }\n\t\n\t      urlParsingNode.setAttribute(&#39;href&#39;, href);\n\t\n\t      // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils\n\t      return {\n\t        href: urlParsingNode.href,\n\t        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, &#39;&#39;) : &#39;&#39;,\n\t        host: urlParsingNode.host,\n\t        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\\?/, &#39;&#39;) : &#39;&#39;,\n\t        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, &#39;&#39;) : &#39;&#39;,\n\t        hostname: urlParsingNode.hostname,\n\t        port: urlParsingNode.port,\n\t        pathname: (urlParsingNode.pathname.charAt(0) === &#39;/&#39;) ?\n\t                  urlParsingNode.pathname :\n\t                  &#39;/&#39; + urlParsingNode.pathname\n\t      };\n\t    }\n\t\n\t    originURL = resolveURL(window.location.href);\n\t\n\t    /**\n\t    * Determine if a URL shares the same origin as the current location\n\t    *\n\t    * @param {String} requestURL The URL to test\n\t    * @returns {boolean} True if URL shares the same origin, otherwise false\n\t    */\n\t    return function isURLSameOrigin(requestURL) {\n\t      var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;\n\t      return (parsed.protocol === originURL.protocol &amp;&amp;\n\t            parsed.host === originURL.host);\n\t    };\n\t  })() :\n\t\n\t  // Non standard browser envs (web workers, react-native) lack needed support.\n\t  (function nonStandardBrowserEnv() {\n\t    return function isURLSameOrigin() {\n\t      return true;\n\t    };\n\t  })()\n\t);\n\n\n/***/ }),\n/* 15 */\n/***/ (function(module, exports) {\n\n\t&#39;use strict&#39;;\n\t\n\t// btoa polyfill for IE&lt;10 courtesy https://github.com/davidchambers/Base64.js\n\t\n\tvar chars = &#39;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=&#39;;\n\t\n\tfunction E() {\n\t  this.message = &#39;String contains an invalid character&#39;;\n\t}\n\tE.prototype = new Error;\n\tE.prototype.code = 5;\n\tE.prototype.name = &#39;InvalidCharacterError&#39;;\n\t\n\tfunction btoa(input) {\n\t  var str = String(input);\n\t  var output = &#39;&#39;;\n\t  for (\n\t    // initialize result and counter\n\t    var block, charCode, idx = 0, map = chars;\n\t    // if the next str index does not exist:\n\t    //   change the mapping table to \&quot;=\&quot;\n\t    //   check if d has no fractional digits\n\t    str.charAt(idx | 0) || (map = &#39;=&#39;, idx % 1);\n\t    // \&quot;8 - idx % 1 * 8\&quot; generates the sequence 2, 4, 6, 8\n\t    output += map.charAt(63 &amp; block &gt;&gt; 8 - idx % 1 * 8)\n\t  ) {\n\t    charCode = str.charCodeAt(idx += 3 / 4);\n\t    if (charCode &gt; 0xFF) {\n\t      throw new E();\n\t    }\n\t    block = block &lt;&lt; 8 | charCode;\n\t  }\n\t  return output;\n\t}\n\t\n\tmodule.exports = btoa;\n\n\n/***/ }),\n/* 16 */\n/***/ (function(module, exports, __webpack_require__) {\n\n\t&#39;use strict&#39;;\n\t\n\tvar utils = __webpack_require__(2);\n\t\n\tmodule.exports = (\n\t  utils.isStandardBrowserEnv() ?\n\t\n\t  // Standard browser envs support document.cookie\n\t  (function standardBrowserEnv() {\n\t    return {\n\t      write: function write(name, value, expires, path, domain, secure) {\n\t        var cookie = [];\n\t        cookie.push(name + &#39;=&#39; + encodeURIComponent(value));\n\t\n\t        if (utils.isNumber(expires)) {\n\t          cookie.push(&#39;expires=&#39; + new Date(expires).toGMTString());\n\t        }\n\t\n\t        if (utils.isString(path)) {\n\t          cookie.push(&#39;path=&#39; + path);\n\t        }\n\t\n\t        if (utils.isString(domain)) {\n\t          cookie.push(&#39;domain=&#39; + domain);\n\t        }\n\t\n\t        if (secure === true) {\n\t          cookie.push(&#39;secure&#39;);\n\t        }\n\t\n\t        document.cookie = cookie.join(&#39;; &#39;);\n\t      },\n\t\n\t      read: function read(name) {\n\t        var match = document.cookie.match(new RegExp(&#39;(^|;\\\\s*)(&#39; + name + &#39;)=([^;]*)&#39;));\n\t        return (match ? decodeURIComponent(match[3]) : null);\n\t      },\n\t\n\t      remove: function remove(name) {\n\t        this.write(name, &#39;&#39;, Date.now() - 86400000);\n\t      }\n\t    };\n\t  })() :\n\t\n\t  // Non standard browser env (web workers, react-native) lack needed support.\n\t  (function nonStandardBrowserEnv() {\n\t    return {\n\t      write: function write() {},\n\t      read: function read() { return null; },\n\t      remove: function remove() {}\n\t    };\n\t  })()\n\t);\n\n\n/***/ }),\n/* 17 */\n/***/ (function(module, exports, __webpack_require__) {\n\n\t&#39;use strict&#39;;\n\t\n\tvar utils = __webpack_require__(2);\n\t\n\tfunction InterceptorManager() {\n\t  this.handlers = [];\n\t}\n\t\n\t/**\n\t * Add a new interceptor to the stack\n\t *\n\t * @param {Function} fulfilled The function to handle `then` for a `Promise`\n\t * @param {Function} rejected The function to handle `reject` for a `Promise`\n\t *\n\t * @return {Number} An ID used to remove interceptor later\n\t */\n\tInterceptorManager.prototype.use = function use(fulfilled, rejected) {\n\t  this.handlers.push({\n\t    fulfilled: fulfilled,\n\t    rejected: rejected\n\t  });\n\t  return this.handlers.length - 1;\n\t};\n\t\n\t/**\n\t * Remove an interceptor from the stack\n\t *\n\t * @param {Number} id The ID that was returned by `use`\n\t */\n\tInterceptorManager.prototype.eject = function eject(id) {\n\t  if (this.handlers[id]) {\n\t    this.handlers[id] = null;\n\t  }\n\t};\n\t\n\t/**\n\t * Iterate over all the registered interceptors\n\t *\n\t * This method is particularly useful for skipping over any\n\t * interceptors that may have become `null` calling `eject`.\n\t *\n\t * @param {Function} fn The function to call for each interceptor\n\t */\n\tInterceptorManager.prototype.forEach = function forEach(fn) {\n\t  utils.forEach(this.handlers, function forEachHandler(h) {\n\t    if (h !== null) {\n\t      fn(h);\n\t    }\n\t  });\n\t};\n\t\n\tmodule.exports = InterceptorManager;\n\n\n/***/ }),\n/* 18 */\n/***/ (function(module, exports, __webpack_require__) {\n\n\t&#39;use strict&#39;;\n\t\n\tvar utils = __webpack_require__(2);\n\tvar transformData = __webpack_require__(19);\n\tvar isCancel = __webpack_require__(20);\n\tvar defaults = __webpack_require__(6);\n\tvar isAbsoluteURL = __webpack_require__(21);\n\tvar combineURLs = __webpack_require__(22);\n\t\n\t/**\n\t * Throws a `Cancel` if cancellation has been requested.\n\t */\n\tfunction throwIfCancellationRequested(config) {\n\t  if (config.cancelToken) {\n\t    config.cancelToken.throwIfRequested();\n\t  }\n\t}\n\t\n\t/**\n\t * Dispatch a request to the server using the configured adapter.\n\t *\n\t * @param {object} config The config that is to be used for the request\n\t * @returns {Promise} The Promise to be fulfilled\n\t */\n\tmodule.exports = function dispatchRequest(config) {\n\t  throwIfCancellationRequested(config);\n\t\n\t  // Support baseURL config\n\t  if (config.baseURL &amp;&amp; !isAbsoluteURL(config.url)) {\n\t    config.url = combineURLs(config.baseURL, config.url);\n\t  }\n\t\n\t  // Ensure headers exist\n\t  config.headers = config.headers || {};\n\t\n\t  // Transform request data\n\t  config.data = transformData(\n\t    config.data,\n\t    config.headers,\n\t    config.transformRequest\n\t  );\n\t\n\t  // Flatten headers\n\t  config.headers = utils.merge(\n\t    config.headers.common || {},\n\t    config.headers[config.method] || {},\n\t    config.headers || {}\n\t  );\n\t\n\t  utils.forEach(\n\t    [&#39;delete&#39;, &#39;get&#39;, &#39;head&#39;, &#39;post&#39;, &#39;put&#39;, &#39;patch&#39;, &#39;common&#39;],\n\t    function cleanHeaderConfig(method) {\n\t      delete config.headers[method];\n\t    }\n\t  );\n\t\n\t  var adapter = config.adapter || defaults.adapter;\n\t\n\t  return adapter(config).then(function onAdapterResolution(response) {\n\t    throwIfCancellationRequested(config);\n\t\n\t    // Transform response data\n\t    response.data = transformData(\n\t      response.data,\n\t      response.headers,\n\t      config.transformResponse\n\t    );\n\t\n\t    return response;\n\t  }, function onAdapterRejection(reason) {\n\t    if (!isCancel(reason)) {\n\t      throwIfCancellationRequested(config);\n\t\n\t      // Transform response data\n\t      if (reason &amp;&amp; reason.response) {\n\t        reason.response.data = transformData(\n\t          reason.response.data,\n\t          reason.response.headers,\n\t          config.transformResponse\n\t        );\n\t      }\n\t    }\n\t\n\t    return Promise.reject(reason);\n\t  });\n\t};\n\n\n/***/ }),\n/* 19 */\n/***/ (function(module, exports, __webpack_require__) {\n\n\t&#39;use strict&#39;;\n\t\n\tvar utils = __webpack_require__(2);\n\t\n\t/**\n\t * Transform the data for a request or a response\n\t *\n\t * @param {Object|String} data The data to be transformed\n\t * @param {Array} headers The headers for the request or response\n\t * @param {Array|Function} fns A single function or Array of functions\n\t * @returns {*} The resulting transformed data\n\t */\n\tmodule.exports = function transformData(data, headers, fns) {\n\t  /*eslint no-param-reassign:0*/\n\t  utils.forEach(fns, function transform(fn) {\n\t    data = fn(data, headers);\n\t  });\n\t\n\t  return data;\n\t};\n\n\n/***/ }),\n/* 20 */\n/***/ (function(module, exports) {\n\n\t&#39;use strict&#39;;\n\t\n\tmodule.exports = function isCancel(value) {\n\t  return !!(value &amp;&amp; value.__CANCEL__);\n\t};\n\n\n/***/ }),\n/* 21 */\n/***/ (function(module, exports) {\n\n\t&#39;use strict&#39;;\n\t\n\t/**\n\t * Determines whether the specified URL is absolute\n\t *\n\t * @param {string} url The URL to test\n\t * @returns {boolean} True if the specified URL is absolute, otherwise false\n\t */\n\tmodule.exports = function isAbsoluteURL(url) {\n\t  // A URL is considered absolute if it begins with \&quot;&lt;scheme&gt;://\&quot; or \&quot;//\&quot; (protocol-relative URL).\n\t  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed\n\t  // by any combination of letters, digits, plus, period, or hyphen.\n\t  return /^([a-z][a-z\\d\\+\\-\\.]*:)?\\/\\//i.test(url);\n\t};\n\n\n/***/ }),\n/* 22 */\n/***/ (function(module, exports) {\n\n\t&#39;use strict&#39;;\n\t\n\t/**\n\t * Creates a new URL by combining the specified URLs\n\t *\n\t * @param {string} baseURL The base URL\n\t * @param {string} relativeURL The relative URL\n\t * @returns {string} The combined URL\n\t */\n\tmodule.exports = function combineURLs(baseURL, relativeURL) {\n\t  return relativeURL\n\t    ? baseURL.replace(/\\/+$/, &#39;&#39;) + &#39;/&#39; + relativeURL.replace(/^\\/+/, &#39;&#39;)\n\t    : baseURL;\n\t};\n\n\n/***/ }),\n/* 23 */\n/***/ (function(module, exports) {\n\n\t&#39;use strict&#39;;\n\t\n\t/**\n\t * A `Cancel` is an object that is thrown when an operation is canceled.\n\t *\n\t * @class\n\t * @param {string=} message The message.\n\t */\n\tfunction Cancel(message) {\n\t  this.message = message;\n\t}\n\t\n\tCancel.prototype.toString = function toString() {\n\t  return &#39;Cancel&#39; + (this.message ? &#39;: &#39; + this.message : &#39;&#39;);\n\t};\n\t\n\tCancel.prototype.__CANCEL__ = true;\n\t\n\tmodule.exports = Cancel;\n\n\n/***/ }),\n/* 24 */\n/***/ (function(module, exports, __webpack_require__) {\n\n\t&#39;use strict&#39;;\n\t\n\tvar Cancel = __webpack_require__(23);\n\t\n\t/**\n\t * A `CancelToken` is an object that can be used to request cancellation of an operation.\n\t *\n\t * @class\n\t * @param {Function} executor The executor function.\n\t */\n\tfunction CancelToken(executor) {\n\t  if (typeof executor !== &#39;function&#39;) {\n\t    throw new TypeError(&#39;executor must be a function.&#39;);\n\t  }\n\t\n\t  var resolvePromise;\n\t  this.promise = new Promise(function promiseExecutor(resolve) {\n\t    resolvePromise = resolve;\n\t  });\n\t\n\t  var token = this;\n\t  executor(function cancel(message) {\n\t    if (token.reason) {\n\t      // Cancellation has already been requested\n\t      return;\n\t    }\n\t\n\t    token.reason = new Cancel(message);\n\t    resolvePromise(token.reason);\n\t  });\n\t}\n\t\n\t/**\n\t * Throws a `Cancel` if cancellation has been requested.\n\t */\n\tCancelToken.prototype.throwIfRequested = function throwIfRequested() {\n\t  if (this.reason) {\n\t    throw this.reason;\n\t  }\n\t};\n\t\n\t/**\n\t * Returns an object that contains a new `CancelToken` and a function that, when called,\n\t * cancels the `CancelToken`.\n\t */\n\tCancelToken.source = function source() {\n\t  var cancel;\n\t  var token = new CancelToken(function executor(c) {\n\t    cancel = c;\n\t  });\n\t  return {\n\t    token: token,\n\t    cancel: cancel\n\t  };\n\t};\n\t\n\tmodule.exports = CancelToken;\n\n\n/***/ }),\n/* 25 */\n/***/ (function(module, exports) {\n\n\t&#39;use strict&#39;;\n\t\n\t/**\n\t * Syntactic sugar for invoking a function and expanding an array for arguments.\n\t *\n\t * Common use case would be to use `Function.prototype.apply`.\n\t *\n\t *  ```js\n\t *  function f(x, y, z) {}\n\t *  var args = [1, 2, 3];\n\t *  f.apply(null, args);\n\t *  ```\n\t *\n\t * With `spread` this example can be re-written.\n\t *\n\t *  ```js\n\t *  spread(function(x, y, z) {})([1, 2, 3]);\n\t *  ```\n\t *\n\t * @param {Function} callback\n\t * @returns {Function}\n\t */\n\tmodule.exports = function spread(callback) {\n\t  return function wrap(arr) {\n\t    return callback.apply(null, arr);\n\t  };\n\t};\n\n\n/***/ })\n/******/ ])\n});\n;\n\n\n// WEBPACK FOOTER //\n// axios.min.js&quot;,&quot; \t// The module cache\n \tvar installedModules = {};\n\n \t// The require function\n \tfunction __webpack_require__(moduleId) {\n\n \t\t// Check if module is in cache\n \t\tif(installedModules[moduleId])\n \t\t\treturn installedModules[moduleId].exports;\n\n \t\t// Create a new module (and put it into the cache)\n \t\tvar module = installedModules[moduleId] = {\n \t\t\texports: {},\n \t\t\tid: moduleId,\n \t\t\tloaded: false\n \t\t};\n\n \t\t// Execute the module function\n \t\tmodules[moduleId].call(module.exports, module, module.exports, __webpack_require__);\n\n \t\t// Flag the module as loaded\n \t\tmodule.loaded = true;\n\n \t\t// Return the exports of the module\n \t\treturn module.exports;\n \t}\n\n\n \t// expose the modules object (__webpack_modules__)\n \t__webpack_require__.m = modules;\n\n \t// expose the module cache\n \t__webpack_require__.c = installedModules;\n\n \t// __webpack_public_path__\n \t__webpack_require__.p = \&quot;\&quot;;\n\n \t// Load entry module and return exports\n \treturn __webpack_require__(0);\n\n\n\n// WEBPACK FOOTER //\n// webpack/bootstrap dad8263224c86c166a30&quot;,&quot;module.exports = require(&#39;./lib/axios&#39;);\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./index.js\n// module id = 0\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\nvar utils = require(&#39;./utils&#39;);\nvar bind = require(&#39;./helpers/bind&#39;);\nvar Axios = require(&#39;./core/Axios&#39;);\nvar defaults = require(&#39;./defaults&#39;);\n\n/**\n * Create an instance of Axios\n *\n * @param {Object} defaultConfig The default config for the instance\n * @return {Axios} A new instance of Axios\n */\nfunction createInstance(defaultConfig) {\n  var context = new Axios(defaultConfig);\n  var instance = bind(Axios.prototype.request, context);\n\n  // Copy axios.prototype to instance\n  utils.extend(instance, Axios.prototype, context);\n\n  // Copy context to instance\n  utils.extend(instance, context);\n\n  return instance;\n}\n\n// Create the default instance to be exported\nvar axios = createInstance(defaults);\n\n// Expose Axios class to allow class inheritance\naxios.Axios = Axios;\n\n// Factory for creating new instances\naxios.create = function create(instanceConfig) {\n  return createInstance(utils.merge(defaults, instanceConfig));\n};\n\n// Expose Cancel &amp; CancelToken\naxios.Cancel = require(&#39;./cancel/Cancel&#39;);\naxios.CancelToken = require(&#39;./cancel/CancelToken&#39;);\naxios.isCancel = require(&#39;./cancel/isCancel&#39;);\n\n// Expose all/spread\naxios.all = function all(promises) {\n  return Promise.all(promises);\n};\naxios.spread = require(&#39;./helpers/spread&#39;);\n\nmodule.exports = axios;\n\n// Allow use of default import syntax in TypeScript\nmodule.exports.default = axios;\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/axios.js\n// module id = 1\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\nvar bind = require(&#39;./helpers/bind&#39;);\nvar isBuffer = require(&#39;is-buffer&#39;);\n\n/*global toString:true*/\n\n// utils is a library of generic helper functions non-specific to axios\n\nvar toString = Object.prototype.toString;\n\n/**\n * Determine if a value is an Array\n *\n * @param {Object} val The value to test\n * @returns {boolean} True if value is an Array, otherwise false\n */\nfunction isArray(val) {\n  return toString.call(val) === &#39;[object Array]&#39;;\n}\n\n/**\n * Determine if a value is an ArrayBuffer\n *\n * @param {Object} val The value to test\n * @returns {boolean} True if value is an ArrayBuffer, otherwise false\n */\nfunction isArrayBuffer(val) {\n  return toString.call(val) === &#39;[object ArrayBuffer]&#39;;\n}\n\n/**\n * Determine if a value is a FormData\n *\n * @param {Object} val The value to test\n * @returns {boolean} True if value is an FormData, otherwise false\n */\nfunction isFormData(val) {\n  return (typeof FormData !== &#39;undefined&#39;) &amp;&amp; (val instanceof FormData);\n}\n\n/**\n * Determine if a value is a view on an ArrayBuffer\n *\n * @param {Object} val The value to test\n * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false\n */\nfunction isArrayBufferView(val) {\n  var result;\n  if ((typeof ArrayBuffer !== &#39;undefined&#39;) &amp;&amp; (ArrayBuffer.isView)) {\n    result = ArrayBuffer.isView(val);\n  } else {\n    result = (val) &amp;&amp; (val.buffer) &amp;&amp; (val.buffer instanceof ArrayBuffer);\n  }\n  return result;\n}\n\n/**\n * Determine if a value is a String\n *\n * @param {Object} val The value to test\n * @returns {boolean} True if value is a String, otherwise false\n */\nfunction isString(val) {\n  return typeof val === &#39;string&#39;;\n}\n\n/**\n * Determine if a value is a Number\n *\n * @param {Object} val The value to test\n * @returns {boolean} True if value is a Number, otherwise false\n */\nfunction isNumber(val) {\n  return typeof val === &#39;number&#39;;\n}\n\n/**\n * Determine if a value is undefined\n *\n * @param {Object} val The value to test\n * @returns {boolean} True if the value is undefined, otherwise false\n */\nfunction isUndefined(val) {\n  return typeof val === &#39;undefined&#39;;\n}\n\n/**\n * Determine if a value is an Object\n *\n * @param {Object} val The value to test\n * @returns {boolean} True if value is an Object, otherwise false\n */\nfunction isObject(val) {\n  return val !== null &amp;&amp; typeof val === &#39;object&#39;;\n}\n\n/**\n * Determine if a value is a Date\n *\n * @param {Object} val The value to test\n * @returns {boolean} True if value is a Date, otherwise false\n */\nfunction isDate(val) {\n  return toString.call(val) === &#39;[object Date]&#39;;\n}\n\n/**\n * Determine if a value is a File\n *\n * @param {Object} val The value to test\n * @returns {boolean} True if value is a File, otherwise false\n */\nfunction isFile(val) {\n  return toString.call(val) === &#39;[object File]&#39;;\n}\n\n/**\n * Determine if a value is a Blob\n *\n * @param {Object} val The value to test\n * @returns {boolean} True if value is a Blob, otherwise false\n */\nfunction isBlob(val) {\n  return toString.call(val) === &#39;[object Blob]&#39;;\n}\n\n/**\n * Determine if a value is a Function\n *\n * @param {Object} val The value to test\n * @returns {boolean} True if value is a Function, otherwise false\n */\nfunction isFunction(val) {\n  return toString.call(val) === &#39;[object Function]&#39;;\n}\n\n/**\n * Determine if a value is a Stream\n *\n * @param {Object} val The value to test\n * @returns {boolean} True if value is a Stream, otherwise false\n */\nfunction isStream(val) {\n  return isObject(val) &amp;&amp; isFunction(val.pipe);\n}\n\n/**\n * Determine if a value is a URLSearchParams object\n *\n * @param {Object} val The value to test\n * @returns {boolean} True if value is a URLSearchParams object, otherwise false\n */\nfunction isURLSearchParams(val) {\n  return typeof URLSearchParams !== &#39;undefined&#39; &amp;&amp; val instanceof URLSearchParams;\n}\n\n/**\n * Trim excess whitespace off the beginning and end of a string\n *\n * @param {String} str The String to trim\n * @returns {String} The String freed of excess whitespace\n */\nfunction trim(str) {\n  return str.replace(/^\\s*/, &#39;&#39;).replace(/\\s*$/, &#39;&#39;);\n}\n\n/**\n * Determine if we&#39;re running in a standard browser environment\n *\n * This allows axios to run in a web worker, and react-native.\n * Both environments support XMLHttpRequest, but not fully standard globals.\n *\n * web workers:\n *  typeof window -&gt; undefined\n *  typeof document -&gt; undefined\n *\n * react-native:\n *  navigator.product -&gt; &#39;ReactNative&#39;\n */\nfunction isStandardBrowserEnv() {\n  if (typeof navigator !== &#39;undefined&#39; &amp;&amp; navigator.product === &#39;ReactNative&#39;) {\n    return false;\n  }\n  return (\n    typeof window !== &#39;undefined&#39; &amp;&amp;\n    typeof document !== &#39;undefined&#39;\n  );\n}\n\n/**\n * Iterate over an Array or an Object invoking a function for each item.\n *\n * If `obj` is an Array callback will be called passing\n * the value, index, and complete array for each item.\n *\n * If &#39;obj&#39; is an Object callback will be called passing\n * the value, key, and complete object for each property.\n *\n * @param {Object|Array} obj The object to iterate\n * @param {Function} fn The callback to invoke for each item\n */\nfunction forEach(obj, fn) {\n  // Don&#39;t bother if no value provided\n  if (obj === null || typeof obj === &#39;undefined&#39;) {\n    return;\n  }\n\n  // Force an array if not already something iterable\n  if (typeof obj !== &#39;object&#39;) {\n    /*eslint no-param-reassign:0*/\n    obj = [obj];\n  }\n\n  if (isArray(obj)) {\n    // Iterate over array values\n    for (var i = 0, l = obj.length; i &lt; l; i++) {\n      fn.call(null, obj[i], i, obj);\n    }\n  } else {\n    // Iterate over object keys\n    for (var key in obj) {\n      if (Object.prototype.hasOwnProperty.call(obj, key)) {\n        fn.call(null, obj[key], key, obj);\n      }\n    }\n  }\n}\n\n/**\n * Accepts varargs expecting each argument to be an object, then\n * immutably merges the properties of each object and returns result.\n *\n * When multiple objects contain the same key the later object in\n * the arguments list will take precedence.\n *\n * Example:\n *\n * ```js\n * var result = merge({foo: 123}, {foo: 456});\n * console.log(result.foo); // outputs 456\n * ```\n *\n * @param {Object} obj1 Object to merge\n * @returns {Object} Result of all merge properties\n */\nfunction merge(/* obj1, obj2, obj3, ... */) {\n  var result = {};\n  function assignValue(val, key) {\n    if (typeof result[key] === &#39;object&#39; &amp;&amp; typeof val === &#39;object&#39;) {\n      result[key] = merge(result[key], val);\n    } else {\n      result[key] = val;\n    }\n  }\n\n  for (var i = 0, l = arguments.length; i &lt; l; i++) {\n    forEach(arguments[i], assignValue);\n  }\n  return result;\n}\n\n/**\n * Extends object a by mutably adding to it the properties of object b.\n *\n * @param {Object} a The object to be extended\n * @param {Object} b The object to copy properties from\n * @param {Object} thisArg The object to bind function to\n * @return {Object} The resulting value of object a\n */\nfunction extend(a, b, thisArg) {\n  forEach(b, function assignValue(val, key) {\n    if (thisArg &amp;&amp; typeof val === &#39;function&#39;) {\n      a[key] = bind(val, thisArg);\n    } else {\n      a[key] = val;\n    }\n  });\n  return a;\n}\n\nmodule.exports = {\n  isArray: isArray,\n  isArrayBuffer: isArrayBuffer,\n  isBuffer: isBuffer,\n  isFormData: isFormData,\n  isArrayBufferView: isArrayBufferView,\n  isString: isString,\n  isNumber: isNumber,\n  isObject: isObject,\n  isUndefined: isUndefined,\n  isDate: isDate,\n  isFile: isFile,\n  isBlob: isBlob,\n  isFunction: isFunction,\n  isStream: isStream,\n  isURLSearchParams: isURLSearchParams,\n  isStandardBrowserEnv: isStandardBrowserEnv,\n  forEach: forEach,\n  merge: merge,\n  extend: extend,\n  trim: trim\n};\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/utils.js\n// module id = 2\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\nmodule.exports = function bind(fn, thisArg) {\n  return function wrap() {\n    var args = new Array(arguments.length);\n    for (var i = 0; i &lt; args.length; i++) {\n      args[i] = arguments[i];\n    }\n    return fn.apply(thisArg, args);\n  };\n};\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/helpers/bind.js\n// module id = 3\n// module chunks = 0&quot;,&quot;/*!\n * Determine if an object is a Buffer\n *\n * @author   Feross Aboukhadijeh &lt;https://feross.org&gt;\n * @license  MIT\n */\n\n// The _isBuffer check is for Safari 5-7 support, because it&#39;s missing\n// Object.prototype.constructor. Remove this eventually\nmodule.exports = function (obj) {\n  return obj != null &amp;&amp; (isBuffer(obj) || isSlowBuffer(obj) || !!obj._isBuffer)\n}\n\nfunction isBuffer (obj) {\n  return !!obj.constructor &amp;&amp; typeof obj.constructor.isBuffer === &#39;function&#39; &amp;&amp; obj.constructor.isBuffer(obj)\n}\n\n// For Node v0.10 support. Remove this eventually.\nfunction isSlowBuffer (obj) {\n  return typeof obj.readFloatLE === &#39;function&#39; &amp;&amp; typeof obj.slice === &#39;function&#39; &amp;&amp; isBuffer(obj.slice(0, 0))\n}\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./~/is-buffer/index.js\n// module id = 4\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\nvar defaults = require(&#39;./../defaults&#39;);\nvar utils = require(&#39;./../utils&#39;);\nvar InterceptorManager = require(&#39;./InterceptorManager&#39;);\nvar dispatchRequest = require(&#39;./dispatchRequest&#39;);\n\n/**\n * Create a new instance of Axios\n *\n * @param {Object} instanceConfig The default config for the instance\n */\nfunction Axios(instanceConfig) {\n  this.defaults = instanceConfig;\n  this.interceptors = {\n    request: new InterceptorManager(),\n    response: new InterceptorManager()\n  };\n}\n\n/**\n * Dispatch a request\n *\n * @param {Object} config The config specific for this request (merged with this.defaults)\n */\nAxios.prototype.request = function request(config) {\n  /*eslint no-param-reassign:0*/\n  // Allow for axios(&#39;example/url&#39;[, config]) a la fetch API\n  if (typeof config === &#39;string&#39;) {\n    config = utils.merge({\n      url: arguments[0]\n    }, arguments[1]);\n  }\n\n  config = utils.merge(defaults, {method: &#39;get&#39;}, this.defaults, config);\n  config.method = config.method.toLowerCase();\n\n  // Hook up interceptors middleware\n  var chain = [dispatchRequest, undefined];\n  var promise = Promise.resolve(config);\n\n  this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {\n    chain.unshift(interceptor.fulfilled, interceptor.rejected);\n  });\n\n  this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {\n    chain.push(interceptor.fulfilled, interceptor.rejected);\n  });\n\n  while (chain.length) {\n    promise = promise.then(chain.shift(), chain.shift());\n  }\n\n  return promise;\n};\n\n// Provide aliases for supported request methods\nutils.forEach([&#39;delete&#39;, &#39;get&#39;, &#39;head&#39;, &#39;options&#39;], function forEachMethodNoData(method) {\n  /*eslint func-names:0*/\n  Axios.prototype[method] = function(url, config) {\n    return this.request(utils.merge(config || {}, {\n      method: method,\n      url: url\n    }));\n  };\n});\n\nutils.forEach([&#39;post&#39;, &#39;put&#39;, &#39;patch&#39;], function forEachMethodWithData(method) {\n  /*eslint func-names:0*/\n  Axios.prototype[method] = function(url, data, config) {\n    return this.request(utils.merge(config || {}, {\n      method: method,\n      url: url,\n      data: data\n    }));\n  };\n});\n\nmodule.exports = Axios;\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/core/Axios.js\n// module id = 5\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\nvar utils = require(&#39;./utils&#39;);\nvar normalizeHeaderName = require(&#39;./helpers/normalizeHeaderName&#39;);\n\nvar DEFAULT_CONTENT_TYPE = {\n  &#39;Content-Type&#39;: &#39;application/x-www-form-urlencoded&#39;\n};\n\nfunction setContentTypeIfUnset(headers, value) {\n  if (!utils.isUndefined(headers) &amp;&amp; utils.isUndefined(headers[&#39;Content-Type&#39;])) {\n    headers[&#39;Content-Type&#39;] = value;\n  }\n}\n\nfunction getDefaultAdapter() {\n  var adapter;\n  if (typeof XMLHttpRequest !== &#39;undefined&#39;) {\n    // For browsers use XHR adapter\n    adapter = require(&#39;./adapters/xhr&#39;);\n  } else if (typeof process !== &#39;undefined&#39;) {\n    // For node use HTTP adapter\n    adapter = require(&#39;./adapters/http&#39;);\n  }\n  return adapter;\n}\n\nvar defaults = {\n  adapter: getDefaultAdapter(),\n\n  transformRequest: [function transformRequest(data, headers) {\n    normalizeHeaderName(headers, &#39;Content-Type&#39;);\n    if (utils.isFormData(data) ||\n      utils.isArrayBuffer(data) ||\n      utils.isBuffer(data) ||\n      utils.isStream(data) ||\n      utils.isFile(data) ||\n      utils.isBlob(data)\n    ) {\n      return data;\n    }\n    if (utils.isArrayBufferView(data)) {\n      return data.buffer;\n    }\n    if (utils.isURLSearchParams(data)) {\n      setContentTypeIfUnset(headers, &#39;application/x-www-form-urlencoded;charset=utf-8&#39;);\n      return data.toString();\n    }\n    if (utils.isObject(data)) {\n      setContentTypeIfUnset(headers, &#39;application/json;charset=utf-8&#39;);\n      return JSON.stringify(data);\n    }\n    return data;\n  }],\n\n  transformResponse: [function transformResponse(data) {\n    /*eslint no-param-reassign:0*/\n    if (typeof data === &#39;string&#39;) {\n      try {\n        data = JSON.parse(data);\n      } catch (e) { /* Ignore */ }\n    }\n    return data;\n  }],\n\n  /**\n   * A timeout in milliseconds to abort a request. If set to 0 (default) a\n   * timeout is not created.\n   */\n  timeout: 0,\n\n  xsrfCookieName: &#39;XSRF-TOKEN&#39;,\n  xsrfHeaderName: &#39;X-XSRF-TOKEN&#39;,\n\n  maxContentLength: -1,\n\n  validateStatus: function validateStatus(status) {\n    return status &gt;= 200 &amp;&amp; status &lt; 300;\n  }\n};\n\ndefaults.headers = {\n  common: {\n    &#39;Accept&#39;: &#39;application/json, text/plain, */*&#39;\n  }\n};\n\nutils.forEach([&#39;delete&#39;, &#39;get&#39;, &#39;head&#39;], function forEachMethodNoData(method) {\n  defaults.headers[method] = {};\n});\n\nutils.forEach([&#39;post&#39;, &#39;put&#39;, &#39;patch&#39;], function forEachMethodWithData(method) {\n  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);\n});\n\nmodule.exports = defaults;\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/defaults.js\n// module id = 6\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\nvar utils = require(&#39;../utils&#39;);\n\nmodule.exports = function normalizeHeaderName(headers, normalizedName) {\n  utils.forEach(headers, function processHeader(value, name) {\n    if (name !== normalizedName &amp;&amp; name.toUpperCase() === normalizedName.toUpperCase()) {\n      headers[normalizedName] = value;\n      delete headers[name];\n    }\n  });\n};\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/helpers/normalizeHeaderName.js\n// module id = 7\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\nvar utils = require(&#39;./../utils&#39;);\nvar settle = require(&#39;./../core/settle&#39;);\nvar buildURL = require(&#39;./../helpers/buildURL&#39;);\nvar parseHeaders = require(&#39;./../helpers/parseHeaders&#39;);\nvar isURLSameOrigin = require(&#39;./../helpers/isURLSameOrigin&#39;);\nvar createError = require(&#39;../core/createError&#39;);\nvar btoa = (typeof window !== &#39;undefined&#39; &amp;&amp; window.btoa &amp;&amp; window.btoa.bind(window)) || require(&#39;./../helpers/btoa&#39;);\n\nmodule.exports = function xhrAdapter(config) {\n  return new Promise(function dispatchXhrRequest(resolve, reject) {\n    var requestData = config.data;\n    var requestHeaders = config.headers;\n\n    if (utils.isFormData(requestData)) {\n      delete requestHeaders[&#39;Content-Type&#39;]; // Let the browser set it\n    }\n\n    var request = new XMLHttpRequest();\n    var loadEvent = &#39;onreadystatechange&#39;;\n    var xDomain = false;\n\n    // For IE 8/9 CORS support\n    // Only supports POST and GET calls and doesn&#39;t returns the response headers.\n    // DON&#39;T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.\n    if (process.env.NODE_ENV !== &#39;test&#39; &amp;&amp;\n        typeof window !== &#39;undefined&#39; &amp;&amp;\n        window.XDomainRequest &amp;&amp; !(&#39;withCredentials&#39; in request) &amp;&amp;\n        !isURLSameOrigin(config.url)) {\n      request = new window.XDomainRequest();\n      loadEvent = &#39;onload&#39;;\n      xDomain = true;\n      request.onprogress = function handleProgress() {};\n      request.ontimeout = function handleTimeout() {};\n    }\n\n    // HTTP basic authentication\n    if (config.auth) {\n      var username = config.auth.username || &#39;&#39;;\n      var password = config.auth.password || &#39;&#39;;\n      requestHeaders.Authorization = &#39;Basic &#39; + btoa(username + &#39;:&#39; + password);\n    }\n\n    request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);\n\n    // Set the request timeout in MS\n    request.timeout = config.timeout;\n\n    // Listen for ready state\n    request[loadEvent] = function handleLoad() {\n      if (!request || (request.readyState !== 4 &amp;&amp; !xDomain)) {\n        return;\n      }\n\n      // The request errored out and we didn&#39;t get a response, this will be\n      // handled by onerror instead\n      // With one exception: request that using file: protocol, most browsers\n      // will return status as 0 even though it&#39;s a successful request\n      if (request.status === 0 &amp;&amp; !(request.responseURL &amp;&amp; request.responseURL.indexOf(&#39;file:&#39;) === 0)) {\n        return;\n      }\n\n      // Prepare the response\n      var responseHeaders = &#39;getAllResponseHeaders&#39; in request ? parseHeaders(request.getAllResponseHeaders()) : null;\n      var responseData = !config.responseType || config.responseType === &#39;text&#39; ? request.responseText : request.response;\n      var response = {\n        data: responseData,\n        // IE sends 1223 instead of 204 (https://github.com/axios/axios/issues/201)\n        status: request.status === 1223 ? 204 : request.status,\n        statusText: request.status === 1223 ? &#39;No Content&#39; : request.statusText,\n        headers: responseHeaders,\n        config: config,\n        request: request\n      };\n\n      settle(resolve, reject, response);\n\n      // Clean up request\n      request = null;\n    };\n\n    // Handle low level network errors\n    request.onerror = function handleError() {\n      // Real errors are hidden from us by the browser\n      // onerror should only fire if it&#39;s a network error\n      reject(createError(&#39;Network Error&#39;, config, null, request));\n\n      // Clean up request\n      request = null;\n    };\n\n    // Handle timeout\n    request.ontimeout = function handleTimeout() {\n      reject(createError(&#39;timeout of &#39; + config.timeout + &#39;ms exceeded&#39;, config, &#39;ECONNABORTED&#39;,\n        request));\n\n      // Clean up request\n      request = null;\n    };\n\n    // Add xsrf header\n    // This is only done if running in a standard browser environment.\n    // Specifically not if we&#39;re in a web worker, or react-native.\n    if (utils.isStandardBrowserEnv()) {\n      var cookies = require(&#39;./../helpers/cookies&#39;);\n\n      // Add xsrf header\n      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) &amp;&amp; config.xsrfCookieName ?\n          cookies.read(config.xsrfCookieName) :\n          undefined;\n\n      if (xsrfValue) {\n        requestHeaders[config.xsrfHeaderName] = xsrfValue;\n      }\n    }\n\n    // Add headers to the request\n    if (&#39;setRequestHeader&#39; in request) {\n      utils.forEach(requestHeaders, function setRequestHeader(val, key) {\n        if (typeof requestData === &#39;undefined&#39; &amp;&amp; key.toLowerCase() === &#39;content-type&#39;) {\n          // Remove Content-Type if data is undefined\n          delete requestHeaders[key];\n        } else {\n          // Otherwise add header to the request\n          request.setRequestHeader(key, val);\n        }\n      });\n    }\n\n    // Add withCredentials to request if needed\n    if (config.withCredentials) {\n      request.withCredentials = true;\n    }\n\n    // Add responseType to request if needed\n    if (config.responseType) {\n      try {\n        request.responseType = config.responseType;\n      } catch (e) {\n        // Expected DOMException thrown by browsers not compatible XMLHttpRequest Level 2.\n        // But, this can be suppressed for &#39;json&#39; type as it can be parsed by default &#39;transformResponse&#39; function.\n        if (config.responseType !== &#39;json&#39;) {\n          throw e;\n        }\n      }\n    }\n\n    // Handle progress if needed\n    if (typeof config.onDownloadProgress === &#39;function&#39;) {\n      request.addEventListener(&#39;progress&#39;, config.onDownloadProgress);\n    }\n\n    // Not all browsers support upload events\n    if (typeof config.onUploadProgress === &#39;function&#39; &amp;&amp; request.upload) {\n      request.upload.addEventListener(&#39;progress&#39;, config.onUploadProgress);\n    }\n\n    if (config.cancelToken) {\n      // Handle cancellation\n      config.cancelToken.promise.then(function onCanceled(cancel) {\n        if (!request) {\n          return;\n        }\n\n        request.abort();\n        reject(cancel);\n        // Clean up request\n        request = null;\n      });\n    }\n\n    if (requestData === undefined) {\n      requestData = null;\n    }\n\n    // Send the request\n    request.send(requestData);\n  });\n};\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/adapters/xhr.js\n// module id = 8\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\nvar createError = require(&#39;./createError&#39;);\n\n/**\n * Resolve or reject a Promise based on response status.\n *\n * @param {Function} resolve A function that resolves the promise.\n * @param {Function} reject A function that rejects the promise.\n * @param {object} response The response.\n */\nmodule.exports = function settle(resolve, reject, response) {\n  var validateStatus = response.config.validateStatus;\n  // Note: status is not exposed by XDomainRequest\n  if (!response.status || !validateStatus || validateStatus(response.status)) {\n    resolve(response);\n  } else {\n    reject(createError(\n      &#39;Request failed with status code &#39; + response.status,\n      response.config,\n      null,\n      response.request,\n      response\n    ));\n  }\n};\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/core/settle.js\n// module id = 9\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\nvar enhanceError = require(&#39;./enhanceError&#39;);\n\n/**\n * Create an Error with the specified message, config, error code, request and response.\n *\n * @param {string} message The error message.\n * @param {Object} config The config.\n * @param {string} [code] The error code (for example, &#39;ECONNABORTED&#39;).\n * @param {Object} [request] The request.\n * @param {Object} [response] The response.\n * @returns {Error} The created error.\n */\nmodule.exports = function createError(message, config, code, request, response) {\n  var error = new Error(message);\n  return enhanceError(error, config, code, request, response);\n};\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/core/createError.js\n// module id = 10\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\n/**\n * Update an Error with the specified config, error code, and response.\n *\n * @param {Error} error The error to update.\n * @param {Object} config The config.\n * @param {string} [code] The error code (for example, &#39;ECONNABORTED&#39;).\n * @param {Object} [request] The request.\n * @param {Object} [response] The response.\n * @returns {Error} The error.\n */\nmodule.exports = function enhanceError(error, config, code, request, response) {\n  error.config = config;\n  if (code) {\n    error.code = code;\n  }\n  error.request = request;\n  error.response = response;\n  return error;\n};\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/core/enhanceError.js\n// module id = 11\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\nvar utils = require(&#39;./../utils&#39;);\n\nfunction encode(val) {\n  return encodeURIComponent(val).\n    replace(/%40/gi, &#39;@&#39;).\n    replace(/%3A/gi, &#39;:&#39;).\n    replace(/%24/g, &#39;$&#39;).\n    replace(/%2C/gi, &#39;,&#39;).\n    replace(/%20/g, &#39;+&#39;).\n    replace(/%5B/gi, &#39;[&#39;).\n    replace(/%5D/gi, &#39;]&#39;);\n}\n\n/**\n * Build a URL by appending params to the end\n *\n * @param {string} url The base of the url (e.g., http://www.google.com)\n * @param {object} [params] The params to be appended\n * @returns {string} The formatted url\n */\nmodule.exports = function buildURL(url, params, paramsSerializer) {\n  /*eslint no-param-reassign:0*/\n  if (!params) {\n    return url;\n  }\n\n  var serializedParams;\n  if (paramsSerializer) {\n    serializedParams = paramsSerializer(params);\n  } else if (utils.isURLSearchParams(params)) {\n    serializedParams = params.toString();\n  } else {\n    var parts = [];\n\n    utils.forEach(params, function serialize(val, key) {\n      if (val === null || typeof val === &#39;undefined&#39;) {\n        return;\n      }\n\n      if (utils.isArray(val)) {\n        key = key + &#39;[]&#39;;\n      } else {\n        val = [val];\n      }\n\n      utils.forEach(val, function parseValue(v) {\n        if (utils.isDate(v)) {\n          v = v.toISOString();\n        } else if (utils.isObject(v)) {\n          v = JSON.stringify(v);\n        }\n        parts.push(encode(key) + &#39;=&#39; + encode(v));\n      });\n    });\n\n    serializedParams = parts.join(&#39;&amp;&#39;);\n  }\n\n  if (serializedParams) {\n    url += (url.indexOf(&#39;?&#39;) === -1 ? &#39;?&#39; : &#39;&amp;&#39;) + serializedParams;\n  }\n\n  return url;\n};\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/helpers/buildURL.js\n// module id = 12\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\nvar utils = require(&#39;./../utils&#39;);\n\n// Headers whose duplicates are ignored by node\n// c.f. https://nodejs.org/api/http.html#http_message_headers\nvar ignoreDuplicateOf = [\n  &#39;age&#39;, &#39;authorization&#39;, &#39;content-length&#39;, &#39;content-type&#39;, &#39;etag&#39;,\n  &#39;expires&#39;, &#39;from&#39;, &#39;host&#39;, &#39;if-modified-since&#39;, &#39;if-unmodified-since&#39;,\n  &#39;last-modified&#39;, &#39;location&#39;, &#39;max-forwards&#39;, &#39;proxy-authorization&#39;,\n  &#39;referer&#39;, &#39;retry-after&#39;, &#39;user-agent&#39;\n];\n\n/**\n * Parse headers into an object\n *\n * ```\n * Date: Wed, 27 Aug 2014 08:58:49 GMT\n * Content-Type: application/json\n * Connection: keep-alive\n * Transfer-Encoding: chunked\n * ```\n *\n * @param {String} headers Headers needing to be parsed\n * @returns {Object} Headers parsed into an object\n */\nmodule.exports = function parseHeaders(headers) {\n  var parsed = {};\n  var key;\n  var val;\n  var i;\n\n  if (!headers) { return parsed; }\n\n  utils.forEach(headers.split(&#39;\\n&#39;), function parser(line) {\n    i = line.indexOf(&#39;:&#39;);\n    key = utils.trim(line.substr(0, i)).toLowerCase();\n    val = utils.trim(line.substr(i + 1));\n\n    if (key) {\n      if (parsed[key] &amp;&amp; ignoreDuplicateOf.indexOf(key) &gt;= 0) {\n        return;\n      }\n      if (key === &#39;set-cookie&#39;) {\n        parsed[key] = (parsed[key] ? parsed[key] : []).concat([val]);\n      } else {\n        parsed[key] = parsed[key] ? parsed[key] + &#39;, &#39; + val : val;\n      }\n    }\n  });\n\n  return parsed;\n};\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/helpers/parseHeaders.js\n// module id = 13\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\nvar utils = require(&#39;./../utils&#39;);\n\nmodule.exports = (\n  utils.isStandardBrowserEnv() ?\n\n  // Standard browser envs have full support of the APIs needed to test\n  // whether the request URL is of the same origin as current location.\n  (function standardBrowserEnv() {\n    var msie = /(msie|trident)/i.test(navigator.userAgent);\n    var urlParsingNode = document.createElement(&#39;a&#39;);\n    var originURL;\n\n    /**\n    * Parse a URL to discover it&#39;s components\n    *\n    * @param {String} url The URL to be parsed\n    * @returns {Object}\n    */\n    function resolveURL(url) {\n      var href = url;\n\n      if (msie) {\n        // IE needs attribute set twice to normalize properties\n        urlParsingNode.setAttribute(&#39;href&#39;, href);\n        href = urlParsingNode.href;\n      }\n\n      urlParsingNode.setAttribute(&#39;href&#39;, href);\n\n      // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils\n      return {\n        href: urlParsingNode.href,\n        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, &#39;&#39;) : &#39;&#39;,\n        host: urlParsingNode.host,\n        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\\?/, &#39;&#39;) : &#39;&#39;,\n        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, &#39;&#39;) : &#39;&#39;,\n        hostname: urlParsingNode.hostname,\n        port: urlParsingNode.port,\n        pathname: (urlParsingNode.pathname.charAt(0) === &#39;/&#39;) ?\n                  urlParsingNode.pathname :\n                  &#39;/&#39; + urlParsingNode.pathname\n      };\n    }\n\n    originURL = resolveURL(window.location.href);\n\n    /**\n    * Determine if a URL shares the same origin as the current location\n    *\n    * @param {String} requestURL The URL to test\n    * @returns {boolean} True if URL shares the same origin, otherwise false\n    */\n    return function isURLSameOrigin(requestURL) {\n      var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;\n      return (parsed.protocol === originURL.protocol &amp;&amp;\n            parsed.host === originURL.host);\n    };\n  })() :\n\n  // Non standard browser envs (web workers, react-native) lack needed support.\n  (function nonStandardBrowserEnv() {\n    return function isURLSameOrigin() {\n      return true;\n    };\n  })()\n);\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/helpers/isURLSameOrigin.js\n// module id = 14\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\n// btoa polyfill for IE&lt;10 courtesy https://github.com/davidchambers/Base64.js\n\nvar chars = &#39;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=&#39;;\n\nfunction E() {\n  this.message = &#39;String contains an invalid character&#39;;\n}\nE.prototype = new Error;\nE.prototype.code = 5;\nE.prototype.name = &#39;InvalidCharacterError&#39;;\n\nfunction btoa(input) {\n  var str = String(input);\n  var output = &#39;&#39;;\n  for (\n    // initialize result and counter\n    var block, charCode, idx = 0, map = chars;\n    // if the next str index does not exist:\n    //   change the mapping table to \&quot;=\&quot;\n    //   check if d has no fractional digits\n    str.charAt(idx | 0) || (map = &#39;=&#39;, idx % 1);\n    // \&quot;8 - idx % 1 * 8\&quot; generates the sequence 2, 4, 6, 8\n    output += map.charAt(63 &amp; block &gt;&gt; 8 - idx % 1 * 8)\n  ) {\n    charCode = str.charCodeAt(idx += 3 / 4);\n    if (charCode &gt; 0xFF) {\n      throw new E();\n    }\n    block = block &lt;&lt; 8 | charCode;\n  }\n  return output;\n}\n\nmodule.exports = btoa;\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/helpers/btoa.js\n// module id = 15\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\nvar utils = require(&#39;./../utils&#39;);\n\nmodule.exports = (\n  utils.isStandardBrowserEnv() ?\n\n  // Standard browser envs support document.cookie\n  (function standardBrowserEnv() {\n    return {\n      write: function write(name, value, expires, path, domain, secure) {\n        var cookie = [];\n        cookie.push(name + &#39;=&#39; + encodeURIComponent(value));\n\n        if (utils.isNumber(expires)) {\n          cookie.push(&#39;expires=&#39; + new Date(expires).toGMTString());\n        }\n\n        if (utils.isString(path)) {\n          cookie.push(&#39;path=&#39; + path);\n        }\n\n        if (utils.isString(domain)) {\n          cookie.push(&#39;domain=&#39; + domain);\n        }\n\n        if (secure === true) {\n          cookie.push(&#39;secure&#39;);\n        }\n\n        document.cookie = cookie.join(&#39;; &#39;);\n      },\n\n      read: function read(name) {\n        var match = document.cookie.match(new RegExp(&#39;(^|;\\\\s*)(&#39; + name + &#39;)=([^;]*)&#39;));\n        return (match ? decodeURIComponent(match[3]) : null);\n      },\n\n      remove: function remove(name) {\n        this.write(name, &#39;&#39;, Date.now() - 86400000);\n      }\n    };\n  })() :\n\n  // Non standard browser env (web workers, react-native) lack needed support.\n  (function nonStandardBrowserEnv() {\n    return {\n      write: function write() {},\n      read: function read() { return null; },\n      remove: function remove() {}\n    };\n  })()\n);\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/helpers/cookies.js\n// module id = 16\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\nvar utils = require(&#39;./../utils&#39;);\n\nfunction InterceptorManager() {\n  this.handlers = [];\n}\n\n/**\n * Add a new interceptor to the stack\n *\n * @param {Function} fulfilled The function to handle `then` for a `Promise`\n * @param {Function} rejected The function to handle `reject` for a `Promise`\n *\n * @return {Number} An ID used to remove interceptor later\n */\nInterceptorManager.prototype.use = function use(fulfilled, rejected) {\n  this.handlers.push({\n    fulfilled: fulfilled,\n    rejected: rejected\n  });\n  return this.handlers.length - 1;\n};\n\n/**\n * Remove an interceptor from the stack\n *\n * @param {Number} id The ID that was returned by `use`\n */\nInterceptorManager.prototype.eject = function eject(id) {\n  if (this.handlers[id]) {\n    this.handlers[id] = null;\n  }\n};\n\n/**\n * Iterate over all the registered interceptors\n *\n * This method is particularly useful for skipping over any\n * interceptors that may have become `null` calling `eject`.\n *\n * @param {Function} fn The function to call for each interceptor\n */\nInterceptorManager.prototype.forEach = function forEach(fn) {\n  utils.forEach(this.handlers, function forEachHandler(h) {\n    if (h !== null) {\n      fn(h);\n    }\n  });\n};\n\nmodule.exports = InterceptorManager;\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/core/InterceptorManager.js\n// module id = 17\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\nvar utils = require(&#39;./../utils&#39;);\nvar transformData = require(&#39;./transformData&#39;);\nvar isCancel = require(&#39;../cancel/isCancel&#39;);\nvar defaults = require(&#39;../defaults&#39;);\nvar isAbsoluteURL = require(&#39;./../helpers/isAbsoluteURL&#39;);\nvar combineURLs = require(&#39;./../helpers/combineURLs&#39;);\n\n/**\n * Throws a `Cancel` if cancellation has been requested.\n */\nfunction throwIfCancellationRequested(config) {\n  if (config.cancelToken) {\n    config.cancelToken.throwIfRequested();\n  }\n}\n\n/**\n * Dispatch a request to the server using the configured adapter.\n *\n * @param {object} config The config that is to be used for the request\n * @returns {Promise} The Promise to be fulfilled\n */\nmodule.exports = function dispatchRequest(config) {\n  throwIfCancellationRequested(config);\n\n  // Support baseURL config\n  if (config.baseURL &amp;&amp; !isAbsoluteURL(config.url)) {\n    config.url = combineURLs(config.baseURL, config.url);\n  }\n\n  // Ensure headers exist\n  config.headers = config.headers || {};\n\n  // Transform request data\n  config.data = transformData(\n    config.data,\n    config.headers,\n    config.transformRequest\n  );\n\n  // Flatten headers\n  config.headers = utils.merge(\n    config.headers.common || {},\n    config.headers[config.method] || {},\n    config.headers || {}\n  );\n\n  utils.forEach(\n    [&#39;delete&#39;, &#39;get&#39;, &#39;head&#39;, &#39;post&#39;, &#39;put&#39;, &#39;patch&#39;, &#39;common&#39;],\n    function cleanHeaderConfig(method) {\n      delete config.headers[method];\n    }\n  );\n\n  var adapter = config.adapter || defaults.adapter;\n\n  return adapter(config).then(function onAdapterResolution(response) {\n    throwIfCancellationRequested(config);\n\n    // Transform response data\n    response.data = transformData(\n      response.data,\n      response.headers,\n      config.transformResponse\n    );\n\n    return response;\n  }, function onAdapterRejection(reason) {\n    if (!isCancel(reason)) {\n      throwIfCancellationRequested(config);\n\n      // Transform response data\n      if (reason &amp;&amp; reason.response) {\n        reason.response.data = transformData(\n          reason.response.data,\n          reason.response.headers,\n          config.transformResponse\n        );\n      }\n    }\n\n    return Promise.reject(reason);\n  });\n};\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/core/dispatchRequest.js\n// module id = 18\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\nvar utils = require(&#39;./../utils&#39;);\n\n/**\n * Transform the data for a request or a response\n *\n * @param {Object|String} data The data to be transformed\n * @param {Array} headers The headers for the request or response\n * @param {Array|Function} fns A single function or Array of functions\n * @returns {*} The resulting transformed data\n */\nmodule.exports = function transformData(data, headers, fns) {\n  /*eslint no-param-reassign:0*/\n  utils.forEach(fns, function transform(fn) {\n    data = fn(data, headers);\n  });\n\n  return data;\n};\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/core/transformData.js\n// module id = 19\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\nmodule.exports = function isCancel(value) {\n  return !!(value &amp;&amp; value.__CANCEL__);\n};\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/cancel/isCancel.js\n// module id = 20\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\n/**\n * Determines whether the specified URL is absolute\n *\n * @param {string} url The URL to test\n * @returns {boolean} True if the specified URL is absolute, otherwise false\n */\nmodule.exports = function isAbsoluteURL(url) {\n  // A URL is considered absolute if it begins with \&quot;&lt;scheme&gt;://\&quot; or \&quot;//\&quot; (protocol-relative URL).\n  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed\n  // by any combination of letters, digits, plus, period, or hyphen.\n  return /^([a-z][a-z\\d\\+\\-\\.]*:)?\\/\\//i.test(url);\n};\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/helpers/isAbsoluteURL.js\n// module id = 21\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\n/**\n * Creates a new URL by combining the specified URLs\n *\n * @param {string} baseURL The base URL\n * @param {string} relativeURL The relative URL\n * @returns {string} The combined URL\n */\nmodule.exports = function combineURLs(baseURL, relativeURL) {\n  return relativeURL\n    ? baseURL.replace(/\\/+$/, &#39;&#39;) + &#39;/&#39; + relativeURL.replace(/^\\/+/, &#39;&#39;)\n    : baseURL;\n};\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/helpers/combineURLs.js\n// module id = 22\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\n/**\n * A `Cancel` is an object that is thrown when an operation is canceled.\n *\n * @class\n * @param {string=} message The message.\n */\nfunction Cancel(message) {\n  this.message = message;\n}\n\nCancel.prototype.toString = function toString() {\n  return &#39;Cancel&#39; + (this.message ? &#39;: &#39; + this.message : &#39;&#39;);\n};\n\nCancel.prototype.__CANCEL__ = true;\n\nmodule.exports = Cancel;\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/cancel/Cancel.js\n// module id = 23\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\nvar Cancel = require(&#39;./Cancel&#39;);\n\n/**\n * A `CancelToken` is an object that can be used to request cancellation of an operation.\n *\n * @class\n * @param {Function} executor The executor function.\n */\nfunction CancelToken(executor) {\n  if (typeof executor !== &#39;function&#39;) {\n    throw new TypeError(&#39;executor must be a function.&#39;);\n  }\n\n  var resolvePromise;\n  this.promise = new Promise(function promiseExecutor(resolve) {\n    resolvePromise = resolve;\n  });\n\n  var token = this;\n  executor(function cancel(message) {\n    if (token.reason) {\n      // Cancellation has already been requested\n      return;\n    }\n\n    token.reason = new Cancel(message);\n    resolvePromise(token.reason);\n  });\n}\n\n/**\n * Throws a `Cancel` if cancellation has been requested.\n */\nCancelToken.prototype.throwIfRequested = function throwIfRequested() {\n  if (this.reason) {\n    throw this.reason;\n  }\n};\n\n/**\n * Returns an object that contains a new `CancelToken` and a function that, when called,\n * cancels the `CancelToken`.\n */\nCancelToken.source = function source() {\n  var cancel;\n  var token = new CancelToken(function executor(c) {\n    cancel = c;\n  });\n  return {\n    token: token,\n    cancel: cancel\n  };\n};\n\nmodule.exports = CancelToken;\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/cancel/CancelToken.js\n// module id = 24\n// module chunks = 0&quot;,&quot;&#39;use strict&#39;;\n\n/**\n * Syntactic sugar for invoking a function and expanding an array for arguments.\n *\n * Common use case would be to use `Function.prototype.apply`.\n *\n *  ```js\n *  function f(x, y, z) {}\n *  var args = [1, 2, 3];\n *  f.apply(null, args);\n *  ```\n *\n * With `spread` this example can be re-written.\n *\n *  ```js\n *  spread(function(x, y, z) {})([1, 2, 3]);\n *  ```\n *\n * @param {Function} callback\n * @returns {Function}\n */\nmodule.exports = function spread(callback) {\n  return function wrap(arr) {\n    return callback.apply(null, arr);\n  };\n};\n\n\n\n//////////////////\n// WEBPACK FOOTER\n// ./lib/helpers/spread.js\n// module id = 25\n// module chunks = 0&quot;],&quot;sourceRoot&quot;:&quot;&quot;}</td>
+      </tr>
+</table>
+
+  <div class="BlobToolbar position-absolute js-file-line-actions dropdown js-menu-container js-select-menu d-none" aria-hidden="true">
+    <button class="btn-octicon ml-0 px-2 p-0 bg-white border border-gray-dark rounded-1 dropdown-toggle js-menu-target" id="js-file-line-action-button" type="button" aria-expanded="false" aria-haspopup="true" aria-label="Inline file action toolbar" aria-controls="inline-file-actions">
+      <svg class="octicon octicon-kebab-horizontal" viewBox="0 0 13 16" version="1.1" width="13" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M1.5 9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg>
+    </button>
+    <div class="dropdown-menu-content js-menu-content" id="inline-file-actions">
+      <ul class="BlobToolbar-dropdown dropdown-menu dropdown-menu-se mt-2">
+        <li><clipboard-copy class="dropdown-item" style="cursor:pointer;" id="js-copy-lines" data-original-text="Copy lines">Copy lines</clipboard-copy></li>
+        <li><clipboard-copy class="dropdown-item" id="js-copy-permalink" style="cursor:pointer;" data-original-text="Copy permalink">Copy permalink</clipboard-copy></li>
+        <li><a class="dropdown-item js-update-url-with-hash" id="js-view-git-blame" href="/axios/axios/blame/0b3db5d87a60a1ad8b0dce9669dbc10483ec33da/dist/axios.min.map">View git blame</a></li>
+          <li><a class="dropdown-item" id="js-new-issue" href="/axios/axios/issues/new">Open new issue</a></li>
+      </ul>
+    </div>
+  </div>
+
+  </div>
+
+  </div>
+
+  <button type="button" data-facebox="#jump-to-line" data-facebox-class="linejump" data-hotkey="l" class="d-none">Jump to Line</button>
+  <div id="jump-to-line" style="display:none">
+    <!-- '"` --><!-- </textarea></xmp> --></option></form><form class="js-jump-to-line-form" action="" accept-charset="UTF-8" method="get"><input name="utf8" type="hidden" value="&#x2713;" />
+      <input class="form-control linejump-input js-jump-to-line-field" type="text" placeholder="Jump to line&hellip;" aria-label="Jump to line" autofocus>
+      <button type="submit" class="btn">Go</button>
+</form>  </div>
+
+
+  </div>
+  <div class="modal-backdrop js-touch-events"></div>
+</div>
+
+    </div>
+  </div>
+
+  </div>
+
+      
+<div class="footer container-lg px-3" role="contentinfo">
+  <div class="position-relative d-flex flex-justify-between pt-6 pb-2 mt-6 f6 text-gray border-top border-gray-light ">
+    <ul class="list-style-none d-flex flex-wrap ">
+      <li class="mr-3">&copy; 2018 <span title="0.23023s from unicorn-2852022006-2xg87">GitHub</span>, Inc.</li>
+        <li class="mr-3"><a data-ga-click="Footer, go to terms, text:terms" href="https://github.com/site/terms">Terms</a></li>
+        <li class="mr-3"><a data-ga-click="Footer, go to privacy, text:privacy" href="https://github.com/site/privacy">Privacy</a></li>
+        <li class="mr-3"><a href="https://help.github.com/articles/github-security/" data-ga-click="Footer, go to security, text:security">Security</a></li>
+        <li class="mr-3"><a href="https://status.github.com/" data-ga-click="Footer, go to status, text:status">Status</a></li>
+        <li><a data-ga-click="Footer, go to help, text:help" href="https://help.github.com">Help</a></li>
+    </ul>
+
+    <a aria-label="Homepage" title="GitHub" class="footer-octicon" href="https://github.com">
+      <svg height="24" class="octicon octicon-mark-github" viewBox="0 0 16 16" version="1.1" width="24" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+</a>
+   <ul class="list-style-none d-flex flex-wrap ">
+        <li class="mr-3"><a data-ga-click="Footer, go to contact, text:contact" href="https://github.com/contact">Contact GitHub</a></li>
+      <li class="mr-3"><a href="https://developer.github.com" data-ga-click="Footer, go to api, text:api">API</a></li>
+      <li class="mr-3"><a href="https://training.github.com" data-ga-click="Footer, go to training, text:training">Training</a></li>
+      <li class="mr-3"><a href="https://shop.github.com" data-ga-click="Footer, go to shop, text:shop">Shop</a></li>
+        <li class="mr-3"><a href="https://blog.github.com" data-ga-click="Footer, go to blog, text:blog">Blog</a></li>
+        <li><a data-ga-click="Footer, go to about, text:about" href="https://github.com/about">About</a></li>
+
+    </ul>
+  </div>
+  <div class="d-flex flex-justify-center pb-6">
+    <span class="f6 text-gray-light"></span>
+  </div>
+</div>
+
+
+
+  <div id="ajax-error-message" class="ajax-error-message flash flash-error">
+    <svg class="octicon octicon-alert" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8.865 1.52c-.18-.31-.51-.5-.87-.5s-.69.19-.87.5L.275 13.5c-.18.31-.18.69 0 1 .19.31.52.5.87.5h13.7c.36 0 .69-.19.86-.5.17-.31.18-.69.01-1L8.865 1.52zM8.995 13h-2v-2h2v2zm0-3h-2V6h2v4z"/></svg>
+    <button type="button" class="flash-close js-ajax-error-dismiss" aria-label="Dismiss error">
+      <svg class="octicon octicon-x" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48z"/></svg>
+    </button>
+    You can't perform that action at this time.
+  </div>
+
+
+    <script crossorigin="anonymous" type="application/javascript" src="https://assets-cdn.github.com/assets/compat-413dd2a0695c3dfaf7de158468a91646.js"></script>
+    <script crossorigin="anonymous" type="application/javascript" src="https://assets-cdn.github.com/assets/frameworks-eca8e7e9ccc2078d10d49cad268f6a4f.js"></script>
+    
+    <script crossorigin="anonymous" async="async" type="application/javascript" src="https://assets-cdn.github.com/assets/github-ab7d594a38757c6e674f25e869d9c899.js"></script>
+    
+    
+    
+    
+  <div class="js-stale-session-flash stale-session-flash flash flash-warn flash-banner d-none">
+    <svg class="octicon octicon-alert" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8.865 1.52c-.18-.31-.51-.5-.87-.5s-.69.19-.87.5L.275 13.5c-.18.31-.18.69 0 1 .19.31.52.5.87.5h13.7c.36 0 .69-.19.86-.5.17-.31.18-.69.01-1L8.865 1.52zM8.995 13h-2v-2h2v2zm0-3h-2V6h2v4z"/></svg>
+    <span class="signed-in-tab-flash">You signed in with another tab or window. <a href="">Reload</a> to refresh your session.</span>
+    <span class="signed-out-tab-flash">You signed out in another tab or window. <a href="">Reload</a> to refresh your session.</span>
+  </div>
+  <div class="facebox" id="facebox" style="display:none;">
+  <div class="facebox-popup">
+    <div class="facebox-content" role="dialog" aria-labelledby="facebox-header" aria-describedby="facebox-description">
+    </div>
+    <button type="button" class="facebox-close js-facebox-close" aria-label="Close modal">
+      <svg class="octicon octicon-x" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48z"/></svg>
+    </button>
+  </div>
+</div>
+
+  <div class="Popover js-hovercard-content position-absolute" style="display: none; outline: none;" tabindex="0">
+  <div class="Popover-message Popover-message--bottom-left Popover-message--large Box box-shadow-large" style="width:360px;">
+  </div>
+</div>
+
+<div id="hovercard-aria-description" class="sr-only">
+  Press h to open a hovercard with more details.
+</div>
+
+
+  </body>
+</html>
+

@@ -139,8 +139,7 @@
                 },
                 components: {
                     mainPage: { template: "<div>Main page</div>" },                   
-                    explore: httpVueLoader('/vue/explore.vue'),
-                    'my-component': httpVueLoader('http://127.0.0.1:8080/ipfs/QmRNppixRR63hsWhc4ZKiFzu4ZYSupgLpWhMmJeUTSz9d3/my-component.vue')
+                    explore: httpVueLoader('/vue/explore.vue')
                 },
                 methods: {
                     switchComponent: function(compName){
