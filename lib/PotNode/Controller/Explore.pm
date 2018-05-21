@@ -10,6 +10,7 @@ use Mojo::ByteStream 'b';
 use Data::UUID;
 use Config::IniFiles;
 use PotNode::Multichain;
+use File::Spec::Functions qw( catfile );
 
 # This action will render a template
 
@@ -251,6 +252,13 @@ sub api {
     
     $c->debug($dataOut);
     $c->render(json => $dataOut, status => 200);
+};
+
+sub swagger {
+	my ( $c ) = @_;
+	my $path = catfile( Alien::SwaggerUI->root_dir, $c->stash( 'path' ) );
+	my $file = Mojo::Asset::File->new( path => $path );
+	$c->reply->asset( $file );
 };
 
 1;

@@ -86,13 +86,17 @@
 											<v-card dark color="secondary">
 												<v-card-title><h4>Current Permissions</h4></v-card-title>
 												<v-divider></v-divider>
-												<v-list dark two-line>
-													<v-list-tile-content class="my-3" v-for="listPermission in listPermissions">
-														<v-list-tile-title class="ml-3">Address : {{listPermission.address}}</v-list-tile-title>
-														<v-list-tile-sub-title class="ml-5">Permissions</v-list-tile-sub-title>
-													</v-list-tile-content>
-												</v-card-text>
-												</v-list>
+												<v-expansion-panel>
+													<v-expansion-panel-content v-for="listPermission in listPermissions">
+														<div slot="header">Peer : {{ listPermission.address }}</div>
+															<v-list dark two-line>
+																<v-list-tile-content class="my-3">
+																	<v-list-tile-title class="ml-3">Permissions</v-list-tile-title>
+																	<v-list-tile-sub-title class="ml-5" v-for="rights in listPermission.permissions">{{rights}}</v-list-tile-sub-title>
+																</v-list-tile-content>
+															</v-list>
+													</v-expansion-panel-content>
+												</v-expansion-panel>
 											</v-card>
 										</v-flex>
 										<v-flex xs6>
@@ -109,7 +113,46 @@
 									<v-layout row wrap>
 										<v-flex xs6>
 											<v-card dark color="secondary">
-												<v-card-title><h4>stream</h4></v-card-title>
+												<v-card-title><h4>Subscribed Streams</h4></v-card-title>
+												<v-divider></v-divider>
+												<v-list dark two-line v-for="subs in subscribed">
+													<v-list-tile-content class="my-3">
+														<v-list-tile-title class="ml-3">Name</v-list-tile-title>
+														<v-list-tile-sub-title class="ml-5" v-if="subs.items > 0" v-model="subs.createtxid" @click="loadStream(subs.createtxid)">{{ subs.name }}</v-list-tile-sub-title>
+														<v-list-tile-sub-title class="ml-5" v-else="subs.items > 0">{{ subs.name }}</v-list-tile-sub-title>
+														<v-list-tile-title class="ml-3">Created By</v-list-tile-title>
+														<v-list-tile-sub-title class="ml-5">{{ subs.creators[0] }}</v-list-tile-sub-title>
+														<v-list-tile-title class="ml-3">Items</v-list-tile-title>
+														<v-list-tile-sub-title class="ml-5">{{ subs.items }}</v-list-tile-sub-title>
+														<v-list-tile-title class="ml-3">Publishers</v-list-tile-title>
+														<v-list-tile-sub-title class="ml-5">{{ subs.publishers }}</v-list-tile-sub-title>
+													</v-list-tile-content>
+													<v-divider></v-divider>
+												</v-list>
+											</v-card>
+											<v-card dark color="secondary">
+												<v-card-title><h4>Availible Streams</h4></v-card-title>
+											</v-card>
+										</v-flex>
+										<v-flex xs6>
+											<v-card dark color="secondary">
+												<v-card-title><h4>Streams</h4></v-card-title>
+												<v-divider></v-divider>
+												<v-list dark two-line v-for="streamItem in streamItems">
+													<v-list-tile-content class="my-3">
+														<v-list-tile-title class="ml-3">Publisher</v-list-tile-title>
+														<v-list-tile-sub-title class="ml-5" v-model="streamItem.streamId" @click="loadStreamPublisherItems({txid: streamItem.streamId, publisher: streamItem.publisher})">{{ streamItem.publisher }}</v-list-tile-sub-title>
+														<v-list-tile-title class="ml-3">Key</v-list-tile-title>
+														<v-list-tile-sub-title class="ml-5"><a style="color:secondary" v-model="streamItem.streamId" @click="loadStreamKeyItems({txid: streamItem.streamId, key: streamItem.key})">{{ streamItem.key }}</a></v-list-tile-sub-title>
+														<v-list-tile-title class="ml-3">Data</v-list-tile-title>
+														<v-list-tile-sub-title class="ml-5">{{ streamItem.data }}</v-list-tile-sub-title>
+														<v-list-tile-title class="ml-3">Added</v-list-tile-title>
+														<v-list-tile-sub-title class="ml-5">{{ streamItem.added }}</v-list-tile-sub-title>
+														<v-list-tile-title class="ml-3">Confirmations</v-list-tile-title>
+														<v-list-tile-sub-title class="ml-5">{{ streamItem.confirmations }}</v-list-tile-sub-title>
+													</v-list-tile-content>
+													<v-divider></v-divider>
+												</v-list>
 											</v-card>
 										</v-flex>
 									</v-layout>
@@ -125,6 +168,15 @@
 
 <script>
 
+function hexToAscii(str){
+                    hexString = str;
+                    strOut = '';
+                    for (x = 0; x < hexString.length; x += 2) {
+                        strOut += String.fromCharCode(parseInt(hexString.substr(x, 2), 16));
+                    }
+                    return strOut;    
+				};
+
 store.registerModule('explore', { 
 	state: {
 		blockChains: [],
@@ -133,11 +185,15 @@ store.registerModule('explore', {
 		connectedNodes: [],
 		addresses: [],
 		listPermissions: [],
+		subscribed: [],
+		stream: [],
+		streamItems: [],
 		loadedBlockchains: false,
 		loadedMynode: false,
 		loadedConnectedNodes: false,
 		loadedAddresses: false,
 		loadedListPermissions: false,
+		loadedSubscribed: false,
 		tabName: 'node',
 		blockChain: ''
 	},
@@ -174,6 +230,15 @@ store.registerModule('explore', {
 		},
 		loadedListPermissions (state, loadedListPermissions) {
 			state.loadedListPermissions = loadedListPermissions
+		},
+		loadedSubscribed (state, loadedSubscribed) {
+			state.loadedSubscribed = loadedSubscribed
+		},
+		loadSubscribed (state, subscribed) {
+			state.subscribed = subscribed
+		},
+		loadStreamItems (state, streamItems) {
+			state.streamItems = streamItems
 		},
 		clearGetInfo (state) {
 			state.newMynode = ''
@@ -231,6 +296,7 @@ store.registerModule('explore', {
 							}	
 							context.commit('loadedConnectedNodes', true)
 							context.commit('loadConnectedNodes', nodes)
+							console.log(nodes)
 						})
 						.catch(function (error) {
 								console.log(error);
@@ -267,16 +333,19 @@ store.registerModule('explore', {
 							const data = res.data.result
 							console.log("Load ListPermissions")
 							console.log(data)
+							var address = ''
 							const permissions = []
 							const array = []
 							for (let item in data) {
-								const object = {}
-								object.address = data[item].address
+								address = data[item].address
 //								console.log("Data Set")
 //								console.log(data[item].type)
 								array.push(data[item].type)
 							}
-							permissions.push(object)
+							permissions.push({
+								address: address,
+								permissions: array
+							})
 							console.log(permissions)
 							context.commit('loadedListPermissions', true)
 							context.commit('loadListPermissions', permissions)
@@ -289,8 +358,176 @@ store.registerModule('explore', {
 				}
 			}
 		},
+		loadSubscribed (context, blockChain) {
+			if (context.state.loadedSubscribed == false) {
+				console.log("loadSubscribed")
+				if (blockChain) {
+					axios.get('/v1/api/multichain/liststreams/' + blockChain)
+						.then(res => {
+							const data = res.data.result
+							console.log("Load Subscribed")
+							console.log(data)
+							context.commit('loadedSubscribed', true)
+							context.commit('loadSubscribed', data)
+						})
+						.catch(function (error) {
+								console.log(error);
+						})
+				} else {
+						context.commit('loadedSubscribed', false)
+				}
+			}
+		},
+		loadStreamItems (context, payload) {
+			axios.get('/v1/api/multichain/liststreamitems/' + payload.blockChain +'?streamId=' + payload.streamId + '&verbose=true&count=100')
+			.then(res => {
+				const data = res.data.result
+				console.log("Load StreamItems")
+				console.log(data)
+				const streamItems = []
+
+				var options = {
+                    //weekday: 'long',
+                    month: 'short',
+                    year: 'numeric',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric'
+				},intlDate = new Intl.DateTimeFormat( undefined, options );
+				 
+				for (let item in data) {
+					const object = {} 
+					object.publisher = data[item].publishers[0]
+					object.key = data[item].key
+					object.streamId = payload.streamId
+					object.txid = data[item].txid
+					var hexString = data[item].data
+					var strOut = '';
+					for (x = 0; x < hexString.length; x += 2) {
+						strOut += String.fromCharCode(parseInt(hexString.substr(x, 2), 16));
+					}
+					recorddata = strOut
+					if (recorddata.match(/^Salt/)  || recorddata.match(/^stream/)) {
+						recorddata = "Encrypted"
+					}
+					if (data[item].data == '00') {
+						recorddata = "Marked As Deleted"
+					}
+					object.data = recorddata
+					object.added = intlDate.format( new Date( 1000 * data[item].blocktime ) )
+					object.confirmations = data[item].confirmations
+					streamItems.push(object)
+				}
+				console.log(streamItems)
+				context.commit('loadStreamItems', streamItems)
+			})
+			.catch(function (error) {
+				console.log(error);
+			})
+		},
+		loadStreamPublisherItems (context, payload) {
+			axios.get('/v1/api/multichain/liststreampublisheritems/' + payload.blockChain +'?streamId=' + payload.streamId + '&address='+ payload.address +'&verbose=true&count=100')
+			.then(res => {
+				const data = res.data.result
+				console.log("Load StreamPublisherItems")
+				console.log(data)
+				const streamItems = []
+
+				var options = {
+                    //weekday: 'long',
+                    month: 'short',
+                    year: 'numeric',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric'
+				},intlDate = new Intl.DateTimeFormat( undefined, options );
+				 
+				for (let item in data) {
+					const object = {} 
+					object.publisher = data[item].publishers[0]
+					object.key = data[item].key
+					object.streamId = payload.streamId
+					object.txid = data[item].txid
+					var hexString = data[item].data
+					var strOut = '';
+					for (x = 0; x < hexString.length; x += 2) {
+						strOut += String.fromCharCode(parseInt(hexString.substr(x, 2), 16));
+					}
+					recorddata = strOut
+					if (recorddata.match(/^Salt/)  || recorddata.match(/^stream/)) {
+						recorddata = "Encrypted"
+					}
+					if (data[item].data == '00') {
+						recorddata = "Marked As Deleted"
+					}
+					object.data = recorddata
+					object.added = intlDate.format( new Date( 1000 * data[item].blocktime ) )
+					object.confirmations = data[item].confirmations
+					streamItems.push(object)
+				}
+				console.log(streamItems)
+				context.commit('loadStreamItems', streamItems)
+			})
+			.catch(function (error) {
+				console.log(error);
+			})
+		},
+		loadStreamKeyItems (context, payload) {
+			console.log("KeyItems" + payload)
+			axios.get('/v1/api/multichain/liststreamkeyitems/' + payload.blockChain +'?streamId=' + payload.streamId + '&key='+ payload.key +'&verbose=true&count=100')
+			.then(res => {
+				const data = res.data.result
+				console.log("Load StreamPublisherItems")
+				console.log(data)
+				const streamItems = []
+
+				var options = {
+                    //weekday: 'long',
+                    month: 'short',
+                    year: 'numeric',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric'
+				},intlDate = new Intl.DateTimeFormat( undefined, options );
+				 
+				for (let item in data) {
+					const object = {} 
+					object.publisher = data[item].publishers[0]
+					object.key = data[item].key
+					object.streamId = payload.streamId
+					object.txid = data[item].txid
+					var hexString = data[item].data
+					var strOut = '';
+					for (x = 0; x < hexString.length; x += 2) {
+						strOut += String.fromCharCode(parseInt(hexString.substr(x, 2), 16));
+					}
+					recorddata = strOut
+					if (recorddata.match(/^Salt/)  || recorddata.match(/^stream/)) {
+						recorddata = "Encrypted"
+					}
+					if (data[item].data == '00') {
+						recorddata = "Marked As Deleted"
+					}
+					object.data = recorddata
+					object.added = intlDate.format( new Date( 1000 * data[item].blocktime ) )
+					object.confirmations = data[item].confirmations
+					streamItems.push(object)
+				}
+				console.log(streamItems)
+				context.commit('loadStreamItems', streamItems)
+			})
+			.catch(function (error) {
+				console.log(error);
+			})
+		},
 		loadConnectedNodes (context, connectedNodes) {
 			console.log("loadConnectedNodes")
+		},
+		loadStream (context, id) {
+			console.log(id)
 		},
 		clearGetInfo ({ commit }) {
 			commit(clearGetInfo)
@@ -329,6 +566,15 @@ store.registerModule('explore', {
 		mynode: state => state.mynode,
 		loadedMynode (state) {
 			return state.loadedMynode
+		},
+		loadedSubscribed (state) {
+			return state.loadedSubscribed
+		},
+		loadSubscribed (state) {
+			return state.subscribed
+		},
+		loadStreamItems (state) {
+			return state.streamItems
 		}
 	}
 })
@@ -378,7 +624,17 @@ module.exports = {
 		},
 		selectedBlockchain () {
 			return this.$store.getters.selectedBlockchain
+		},
+		subscribed () {
+			return this.$store.getters.loadSubscribed
+		},
+		stream () {
+				return this.$store.getters.loadStream
+		},
+		streamItems () {
+			return this.$store.getters.loadStreamItems
 		}
+		
 	},
 	methods: {
 		loadData (tab) {
@@ -393,16 +649,36 @@ module.exports = {
 			}
 			if (tab == 2) {
 				this.$store.commit('setTabName', "stream")
-//				this.$store.dispatch('loadGetInfo',this.blockChain)
+				this.$store.dispatch('loadSubscribed',this.blockChain)
 			}
 		},
+		loadStream (id) {
+			this.$store.dispatch('loadStreamItems',{
+				blockChain: this.blockChain,
+				streamId: id
+			})
+		},
+		loadStreamPublisherItems (payload) {
+			this.$store.dispatch('loadStreamPublisherItems',{
+				blockChain: this.blockChain,
+				streamId: payload.txid,
+				address: payload.publisher
+			})
+		},
+		loadStreamKeyItems (payload) {
+			this.$store.dispatch('loadStreamKeyItems',{
+				blockChain: this.blockChain,
+				streamId: payload.txid,
+				key: payload.key
+			})
+		},	
 		changedBlockchain (value) {
 			this.$store.commit('setBlockChain', value)
 			this.$store.commit('loadedMynode', false)
 			this.$store.commit('loadedConnectedNodes', false)
 			this.$store.commit('loadedAddresses', false)
 			this.$store.commit('loadedListPermissions', false)
-			
+			this.$store.commit('loadedSubscribed', false)
 			this.$store.dispatch('loadGetInfo', value)
 		}
 	},

@@ -82,10 +82,18 @@ sub multichain {
     
     my $spec = $c->openapi->spec;
     $c->debug($spec);
+    my $hash = $c->req->params->to_hash;
     
     my $input = $c->validation->output;
     $c->debug($input);
-    my @params = [];
+    my @params;
+    my @array;
+    if ($spec->{'x-order'}) {
+		foreach my $item (@{$spec->{'x-order'}}) {
+			push @array, $input->{$item};
+		}
+		push @params, \@array;
+    }
     $blockchain = $input->{'blockchainId'};
     $config = "rpc_$blockchain";
     if (!$redis->exists($config)) {

@@ -2,6 +2,7 @@ package PotNode;
 use Mojo::Base 'Mojolicious';
 use Mojo::UserAgent;
 use Mojo::JSON qw(decode_json encode_json);
+use Alien::SwaggerUI;
 
 # This method will run once at server start
 sub startup {
@@ -66,6 +67,7 @@ sub startup {
   $auth->get('/genqrcode')->to('system#genqrcode');  # Generates QRCode VIA API
   $auth->get('/genqrcode64')->to('system#genqrcode64');  #Generates Base64 QRCode pushing to websites
   
+  $auth->get('/swagger/*path')->to('explore#swagger')->name('path');
   $auth->get('/explore')->to('explore#redirect');
   $auth->get('/explore/blockchain')->to('explore#blockchain');
   $auth->get('/explore/api')->to('explore#api');
