@@ -1,0 +1,485 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Process Of Things - This is a decentalised appliation network that allow you build applications around process and movement of objects as they pass thought different locations.",
+    "version": "1.0.0",
+    "title": "PoT Multichain API",
+    "termsOfService": "https://github.com/ProcessofThings/pot_node/blob/master/CODE_OF_CONDUCT.md",
+    "contact": {
+      "email": "api@processofthings.io"
+    },
+    "license": {
+      "name": "AGPL v3.0",
+      "url": "https://www.gnu.org/licenses/agpl-3.0.en.html"
+    }
+  },
+  "host": "127.0.0.1:9090",
+  "basePath": "/v1/api/multichain",
+  "tags": [
+    {
+      "name": "general",
+      "description": "Functions"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/blockchains": {
+      "get": {
+        "tags": [
+          "general"
+        ],
+        "x-mojo-to": "api#blockchain",
+        "x-mojo-name": "get_blockchain",
+        "summary": "List availiable blockchains",
+        "description": "This method returns a list of availible blockchains.  PoT will only display blockchains with a valid UUID",
+        "operationId": "getBlockchains",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/getinfo/{blockchainId}": {
+      "get": {
+        "tags": [
+          "general"
+        ],
+        "x-mojo-to": [
+          "api#multichain",
+          {
+            "method": "getinfo"
+          }
+        ],
+        "x-mojo-name": "getinfo",
+        "summary": "Get blockchain info",
+        "description": "Returns general information about this node and blockchain.",
+        "operationId": "getInfo",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "blockchainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    },
+	"/getaddresses/{blockchainId}": {
+      "get": {
+        "tags": [
+          "general"
+        ],
+        "x-mojo-to": [
+          "api#multichain",
+          {
+            "method": "getaddresses"
+          }
+        ],
+        "x-mojo-name": "getaddresses",
+        "summary": "Get blockchain info",
+        "description": "Returns general information about this node and blockchain.",
+        "operationId": "getAddresses",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "blockchainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    },
+	"/listpermissions/{blockchainId}": {
+      "get": {
+        "tags": [
+          "general"
+        ],
+        "x-mojo-to": [
+          "api#multichain",
+          {
+            "method": "listpermissions"
+          }
+        ],
+        "x-mojo-name": "listpermissions",
+        "summary": "Get blockchain info",
+        "description": "Returns general information about this node and blockchain.",
+        "operationId": "listPermissions",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "blockchainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    },
+	"/getpeerinfo/{blockchainId}": {
+      "get": {
+        "tags": [
+          "general"
+        ],
+        "x-mojo-to": [
+          "api#multichain",
+          {
+            "method": "getpeerinfo"
+          }
+        ],
+        "x-mojo-name": "getpeerinfo",
+        "summary": "Get blockchain info",
+        "description": "Returns general information about this node and blockchain.",
+        "operationId": "getPeerInfo",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "blockchainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    },
+    "/liststreams/{blockchainId}": {
+      "get": {
+        "tags": [
+				"general"
+        ],
+        "x-mojo-to": [
+          "api#multichain",
+          {
+            "method": "liststreams"
+          }
+        ],
+        "x-mojo-name": "liststreams",
+        "summary": "List of Streams",
+        "description": "Returns a list of current subscription.",
+        "operationId": "liststreams",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "x-order": ["streamId","verbose"],
+        "parameters": [
+          {
+            "name": "blockchainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "streamId",
+            "in": "query",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": false,
+            "type": "string",
+            "default": "*"
+          },
+          {
+            "name": "verbose",
+            "in": "query",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": false,
+            "type": "boolean",
+            "default": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    },
+	"/liststreamitems/{blockchainId}": {
+      "get": {
+        "tags": [
+				"general"
+        ],
+        "x-mojo-to": [
+          "api#multichain",
+          {
+            "method": "liststreamitems"
+          }
+        ],
+        "x-mojo-name": "liststreamitems",
+        "summary": "Stream items",
+        "description": "List of stream items.",
+        "operationId": "liststreamitems",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "x-order": ["streamId","verbose","count"],
+        "parameters": [
+          {
+            "name": "blockchainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "streamId",
+            "in": "query",
+            "description": "Stream identifier - one of the following: stream txid, stream reference, stream name.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "verbose",
+            "in": "query",
+            "description": "returns information about item transaction",
+            "required": false,
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "The number of items to display",
+            "required": false,
+            "type": "number",
+            "default": 100
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    },
+	"/liststreampublisheritems/{blockchainId}": {
+      "get": {
+        "tags": [
+				"general"
+        ],
+        "x-mojo-to": [
+          "api#multichain",
+          {
+            "method": "liststreampublisheritems"
+          }
+        ],
+        "x-mojo-name": "liststreampublisheritems",
+        "summary": "Items for specific publisher",
+        "description": "Returns stream items for specific publisher.",
+        "operationId": "liststreampublisheritems",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "x-order": ["streamId","address","verbose"],
+        "parameters": [
+          {
+            "name": "blockchainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "streamId",
+            "in": "query",
+            "description": "Stream identifier - one of the following: stream txid, stream reference, stream name.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "address",
+            "in": "query",
+            "description": "Publisher address",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "verbose",
+            "in": "query",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": false,
+            "type": "boolean",
+            "default": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    },
+	"/liststreamkeyitems/{blockchainId}": {
+      "get": {
+        "tags": [
+				"general"
+        ],
+        "x-mojo-to": [
+          "api#multichain",
+          {
+            "method": "liststreamkeyitems"
+          }
+        ],
+        "x-mojo-name": "liststreamkeyitems",
+        "summary": "Stream items for specific key",
+        "description": "List of stream items for specific key.",
+        "operationId": "liststreamkeyitems",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "x-order": ["streamId","key","verbose","count"],
+        "parameters": [
+          {
+            "name": "blockchainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "streamId",
+            "in": "query",
+            "description": "Stream identifier - one of the following: stream txid, stream reference, stream name.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "key",
+            "in": "query",
+            "description": "Stream key",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "verbose",
+            "in": "query",
+            "description": "returns information about item transaction",
+            "required": false,
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "The number of items to display",
+            "required": false,
+            "type": "number",
+            "default": 100
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    }
+  }
+}

@@ -64,9 +64,9 @@
                         </button>
                         <div id="bs-example-navbar-collapse-1" class="collapse navbar-collapse pull-right">
                             <ul class="nav navbar-nav">
-                                <li class="propClone"><input type="text" id="loadhash" placeholder="Paste App HASH here"></li>
-                                <li class="propClone"><a class="inner-link text-white" href="./index.html?page=node" data-selector="nav a" style="">Create New App</a></li>
-                                <li class="propClone"><a class="inner-link text-white" href="./index.html?page=node" data-selector="nav a" style="">Your Apps</a></li>
+                                <li class="propClone"><input type="text" id="loadHash" placeholder="Paste App HASH here"></li>
+                                <li class="propClone"><a class="inner-link text-white" href="./createApp.html" data-selector="nav a" style="">Create New App</a></li>
+                                <li class="propClone"><a class="inner-link text-white" href="./yourApp" data-selector="nav a" style="">Your Apps</a></li>
                             </ul>
                         </div>
                     </div>
@@ -90,33 +90,18 @@
             jQuery.noConflict();
             (function( $ ) {
                 $(document).ready(function() {
-                    var input = document.querySelector('input');
-                    input.addEventListener('input', function()
+                    var hash = document.getElementById("loadHash");
+                    document.getElementById("loadHash").addEventListener("mouseout", function()
                     {
-                        alert("Changed ID");
-                        fetch('/developer/set/' + input.value)
+                        
+                        fetch('/developer/set/' + hash.value);
                     });
-                })(jQuery);
+                });
+            })(jQuery);
             </SCRIPT>
         </div>
      
         <!-- /#page -->
-<!--    <script type="text/javascript" src="/js/jquery_006.js"></script>
-        <script type="text/javascript" src="/js/jquery_002.js"></script>
-        <script type="text/javascript" src="/js/smooth-scroll.js"></script>
-        <script type="text/javascript" src="/js/bootstrap.js"></script>
-        <script type="text/javascript" src="/js/wow.js"></script>
-        <script type="text/javascript" src="/js/owl.js"></script>
-        <script type="text/javascript" src="/js/imagesloaded.js"></script>
-        <script type="text/javascript" src="/js/jquery_007.js"></script>
-        <script type="text/javascript" src="/js/jquery_003.js"></script>
-        <script type="text/javascript" src="/js/jquery_004.js"></script>
-        <script type="text/javascript" src="/js/equalize.js"></script>
-        <script type="text/javascript" src="/js/jquery_005.js"></script>
-        <script type="text/javascript" src="/js/jquery.js"></script>
-        <script type="text/javascript" src="/js/counter.js"></script>
-        <script type="text/javascript" src="/js/twitterFetcher_min.js"></script>
-        <script type="text/javascript" src="/js/main.js"></script> -->
     </body>
 </html>
 

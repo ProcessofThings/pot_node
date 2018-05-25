@@ -28,9 +28,18 @@ sub load {
     my $eventConfig;
     my $pot_config = decode_json($redis->get('config'));
     my $page = $c->req->param('page') || "main";
-    my $id = $pot_config->{'config'}->{'9090_layout'}->{$page};
+    my $id;
     my $blockchain = $c->req->param('chain') || "none";
     my $allparams = $c->req->params->to_hash;
+    my $template;
+    
+    foreach my $item (@{$pot_config->{'config'}->{'9090_layout'}}) {
+        if($item->{'name'} eq $page) {
+            $id = $item->{'ipfs'};
+        } else {
+            $c->app->log->debug("Error Page name not found");
+        }
+    }
     
     if ($blockchain eq "none") {
         if ($c->session('blockchain') ne 'none') {
@@ -42,7 +51,7 @@ sub load {
             $c->redirect_to('/main.html');
         }
     }
-    
+        
     if ($c->req->param('chain')) {
         $c->session(blockchain => $blockchain);
     }
@@ -66,8 +75,10 @@ sub load {
     my $htmldata = "<div id=\"data\" data-eventHash=\"$eventHash\">";
     my $encodedfile = b($htmldata);
     $c->stash(importData => $encodedfile);
+    $c->debug($encodedfile);
 
     ## GET config file
+    $c->debug($id);
     my $config = $ua->get('http://127.0.0.1:8080/ipfs/'.$id.'/config.json')->result->body;
     if ($config =~ /\n$/) { chop $config; };
     $config = decode_json($config);
@@ -79,23 +90,85 @@ sub load {
     $eventConfig->{'allparams'} = $allparams;
     $redis->setex($eventHash,1800, encode_json($eventConfig));
     
-	my $url = 'http://127.0.0.1:8080/ipfs/'.$id.'/'.$page.'.html';
+	my $url = 'http://127.0.0.1:8080/ipfs/'.$id.'/'.$page.'.vue';
 	$c->app->log->debug("URL : $url");
+	$c->stash(import_url => $url);
 #	$c->url_for('page', page => 'index.html')->to_abs;
 #	my $html = $ua->get('http://127.0.0.1:8080/ipfs/QmfQMb2jjboKYkk5f1DhmGXyxcwNtnFJzvj92WxLJjJjcS')->res->dom->find('section')->first;
-    my $html = $ua->get($url)->res->dom->find('div.template')->first;
-    my $encodedfile = b($html);
-    $c->stash(import_template => $encodedfile);
+##    my $html = $ua->get($url)->res->dom->find('div.template')->first;
+##    my $encodedfile = b($html);
+##    $c->stash(import_template => $encodedfile);
 
-    while( my( $key, $value ) = each %{$config->{'component'}}){
-        my $url = 'http://127.0.0.1:8080/ipfs/'.$id.'/'.$value;
-        my $html = $ua->get($url)->res->dom->find('div.template')->first;
-        my $encodedfile = b($html);
-        my $importref = "import_$key";
-        $c->stash($importref => $encodedfile);
-    };
-    
-    $c->render(template => $config->{'template'});
+##    while( my( $key, $value ) = each %{$config->{'component'}}){
+##        my $url = 'http://127.0.0.1:8080/ipfs/'.$id.'/'.$value;
+##        my $html = $ua->get($url)->res->dom->find('div.template')->first;
+##        my $encodedfile = b($html);
+##        my $importref = "import_$key";
+##        $c->stash($importref => $encodedfile);
+##    };
+	my @components;
+	my $list;
+	
+	if ($redis->exists("config")) {
+		my @ipfsHash;
+		$c->app->log->debug("Checking for HTML changes 9090");
+		my $config = decode_json($redis->get("config"));
+		foreach my $item (@{$config->{'config'}->{'9090_layout'}}) {
+			$c->debug($item);
+			push @ipfsHash, $item->{'ipfs'};
+		}
+		my @navitems;
+		foreach my $ipfsHash (@ipfsHash) {
+			my $component;
+			my $status = $ua->get("http://127.0.0.1:5001/api/v0/pin/ls?arg=$ipfsHash")->result->json;
+			if ($status->{'Keys'}->{$ipfsHash}->{'Type'} ne "recursive") {
+					$c->app->log->debug("Pinning App");
+					$ua->get("http://127.0.0.1:5001/api/v0/pin/add?arg=$ipfsHash");
+			}
+			$c->app->log->debug("Getting $ipfsHash/config.json");
+			my $config = $ua->get('http://127.0.0.1:8080/ipfs/'.$ipfsHash.'/config.json')->result->body;
+			if ($config =~ /\n$/) { chop $config; };
+			$config = decode_json($config);
+			$component = 'mainPage: httpVueLoader( "http://127.0.0.1:8080/ipfs/'.$ipfsHash.'/main.vue" )';
+			push @components, $component;
+			if ($config->{'navitems'}) {
+					foreach my $item (@{$config->{'navitems'}}) {
+						foreach my $option (@{$item->{'navitems'}}) {
+							if ($option->{'href'}) {
+									$option->{'ipfs'} = $ipfsHash;
+#									$component = [$option->{'href'},"http://127.0.0.1:8080/ipfs/$ipfsHash/$option->{'href'}.vue"];
+									$component = $option->{'href'}.': httpVueLoader( "http://127.0.0.1:8080/ipfs/'.$ipfsHash.'/'.$option->{'href'}.'.vue" )';
+									$c->config($component);
+									push @components, $component;
+							}
+						}
+						$c->debug($item);
+						push @navitems, $item;
+					}
+					
+			}
+			my $dataOut->{'navitems'} = \@navitems;
+			$c->debug(@components);
+#			$redis->set(index => encode_json($dataOut));
+		}
+	}
+
+	$list = join(',',@components);
+	
+	$c->debug($list);
+	
+	$c->stash(import_components => $list);
+
+	$c->debug("Load Config");
+	$c->debug($config);
+	
+	if (!$config->{'template'}) {
+		$template = 'system/start';
+	} else {
+		$template = $config->{'template'};
+	}
+	
+	$c->render(template => $template);
 };
 
 sub assets {
@@ -124,5 +197,14 @@ sub assets {
     });
 };
 
+sub api {
+    my $c = shift;
+    $c->res->headers->header('Access-Control-Allow-Origin' => '*');
+    $c->res->headers->header('Access-Control-Allow-Credentials' => 'true');
+    $c->res->headers->header('Pragma' => 'no-cache');
+    $c->res->headers->header('Cache-Control' => 'no-cache');
+    my $data = decode_json($redis->get('index'));
+    $c->render(json => $data);
+};
   
 1;

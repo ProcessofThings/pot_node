@@ -2,6 +2,7 @@ package PotNode;
 use Mojo::Base 'Mojolicious';
 use Mojo::UserAgent;
 use Mojo::JSON qw(decode_json encode_json);
+use Alien::SwaggerUI;
 
 # This method will run once at server start
 sub startup {
@@ -17,6 +18,7 @@ sub startup {
   $self->plugin('PotNode::Helpers');
   $self->plugin('DebugDumperHelper');
   $self->plugin('Crypto');
+  $self->plugin(OpenAPI => {spec => $self->static->file("v1apimultichain.json")->path});
   $self->mode('development');
   
   $self->log->path('/home/node/log/pot_node.log');
@@ -65,6 +67,7 @@ sub startup {
   $auth->get('/genqrcode')->to('system#genqrcode');  # Generates QRCode VIA API
   $auth->get('/genqrcode64')->to('system#genqrcode64');  #Generates Base64 QRCode pushing to websites
   
+  $auth->get('/swagger/*path')->to('explore#swagger')->name('path');
   $auth->get('/explore')->to('explore#redirect');
   $auth->get('/explore/blockchain')->to('explore#blockchain');
   $auth->get('/explore/api')->to('explore#api');
@@ -78,10 +81,15 @@ sub startup {
   $auth->get('/developer/set/:id')->to('developer#set');
   $auth->get('/developer/images/*')->to('developer#assets');
   $auth->get('/developer/assets/*')->to('developer#assets');
+  $auth->get('/developer/app/:page')->to('developer#loadApp');
+  $auth->get('/developer/app/assets/*')->to('developer#assets');
+  $auth->post('/developer/api/createApp')->to('developer#createApp');
   
+  $auth->get('/nav')->to('private#api');
   $auth->get('/')->to('private#redirect');
   $auth->get('/assets/*')->to('private#assets');
   $auth->get('/:page')->to('private#load');
+  
   
 }
 
