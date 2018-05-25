@@ -17,6 +17,14 @@
                 class="secondary"
                 >
                     <v-list>
+                        <v-list-tile @click="switchComponent('mainPage')">
+									 <v-list-tile-action>
+                            <v-icon>home</v-icon>
+                            </v-list-tile-action>
+                            <v-list-tile-content>
+                            <v-list-tile-title>Home</v-list-tile-title>
+                            </v-list-tile-content>
+                         </v-list-tile>
                         <v-list-group
                         v-model="item.active"
                         v-for="item in navitems"
@@ -107,7 +115,7 @@
             const indexPage = {
                 state: {
                     count: 0,
-                    loadedNavitems: [{"action":"code","navitems":[{"title":"Create App"},{"title":"Your Apps"}],"title":"Developer"},{"action":"explore","navitems":[{"href":"explore","title":"Blockchains"},{"href":"my-component","title":"Node"},{"title":"Permissions"},{"title":"View Stream"}],"title":"Explore"}]
+//                    loadedNavitems: [{"action":"code","navitems":[{"title":"Create App"},{"title":"Your Apps"}],"title":"D1eveloper"},{"action":"explore","navitems":[{"href":"explore","title":"Blockchains"},{"href":"my-component","title":"Node"},{"title":"Permissions"},{"title":"View Stream"}],"title":"Explore"}]
                 },
                 mutations: {},
                 actions: {},
@@ -130,6 +138,7 @@
                 data: {
                     currentView: "mainPage",
                     drawer: null,
+                    navitems: []
                 },
                 store,
                 computed: {
@@ -138,8 +147,7 @@
 						}
                 },
                 components: {
-                    mainPage: { template: "<div>Main page</div>" },                   
-                    explore: httpVueLoader('/vue/explore.vue')
+						<%== $import_components %>
                 },
                 methods: {
                     switchComponent: function(compName){
@@ -150,11 +158,11 @@
                 },
                 created() {
                     this.$vuetify.theme = theme
-//                    fetch('/api')
-//                    .then(response => response.json())
-//                    .then(json => {
-//                        this.navitems = json.navitems
-//                    })
+                    fetch('/nav')
+                    .then(response => response.json())
+                    .then(json => {
+                        this.navitems = json.navitems
+                    })
                 },
                 props: {
                     source: String

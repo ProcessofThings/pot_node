@@ -85,7 +85,7 @@ sub startup {
   $auth->get('/developer/app/assets/*')->to('developer#assets');
   $auth->post('/developer/api/createApp')->to('developer#createApp');
   
-#  $auth->get('/api')->to('private#api');
+  $auth->get('/nav')->to('private#api');
   $auth->get('/')->to('private#redirect');
   $auth->get('/assets/*')->to('private#assets');
   $auth->get('/:page')->to('private#load');

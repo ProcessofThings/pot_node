@@ -333,7 +333,8 @@ sub check {
                 foreach my $item (@{$config->{'navitems'}}) {
                     foreach my $option (@{$item->{'navitems'}}) {
                         if ($option->{'href'}) {
-                            $option->{'href'} = $ipfsHash.$option->{'href'};
+#                            $option->{'href'} = $ipfsHash.$option->{'href'};
+									$option->{'ipfs'} = $ipfsHash;
                         }
                     }
                     $c->debug($item);
