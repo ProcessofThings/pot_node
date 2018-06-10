@@ -34,15 +34,18 @@ sub startup {
   # Normal route to controller
 
   $r->websocket('/ws')->to('start#ws');
+  $r->websocket('/wsapi')->to('api#wsapi');
   #Public Functions
   
   $r->get('/node/join')->to('node#join')->name('node');
   $r->get('/node/alive')->to('node#alive')->name('node');
   
+  $r->get('/ipfs/:ipfs')->to('public#load');
+
   my $auth = $r->under ( sub {
     my $c = shift;
     return 1 if $c->tx->local_port eq '9090';
-    $c->app->log->debug("Requested Port Not Allowed ");
+    $c->app->log->debug("Requested Port 9090 Not Allowed ");
     return undef;
   });
   
@@ -52,7 +55,8 @@ sub startup {
     $c->app->log->debug("Requested Port Not Allowed ");
     return undef;
   });
-
+  
+  
   # These functions can only be access thought the local lan or via ssh tunnel from your computer
   # SSH Tunnel - ssh ipaddress -l username -L 9090:127.0.0.1:9090 
   

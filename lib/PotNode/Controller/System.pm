@@ -45,6 +45,7 @@ sub check {
     my $sconfig;
     my $home = $c->config->{home};
     my $dir = $c->config->{dir};
+    my $status;
     
     ## TODO : Multichain params (./multichain/DIR/params & RPC info from multichain.conf
     ## TODO : Find chain-description = pot
@@ -59,7 +60,6 @@ sub check {
     ## Checks the multichain directory for any active blockchains and checks if the daemon is running
     if ($dircount > 0) {
         my @blockchain = $c->get_blockchains;
-        $c->debug(@blockchain);
         ## New Install or Restart Look for pot_config ( PoT is the Genisis Blockchain for the PoT Network all nodes require this )
         if (!$redis->exists("pot_config")){
             $c->app->log->debug("Loading Configs");
@@ -72,26 +72,49 @@ sub check {
                 $c->app->log->debug("New Blockchain Found Loading Config");
                 $c->load_blockchain_config(@blockchain);
             }
-            
+            my $config = decode_json($redis->get($entry."_config"));
+            $status->{$entry}->{'name'} = $config->{'name'};
+				$status->{$entry}->{'id'} = $entry;
+				
+				
             ## Finds all directories and filters out all directories apart from those that contain HEX 32 chars
             ## Gets the PID id from the pid files and removes them if the process is not running
             my $pid = "/home/node/run/$entry\.pid";
             my $pidid = qx/cat $pid/;
             if ($pidid =~ /\n$/) { chop $pidid; };
             if (! -d "/proc/$pidid") {
+					$status->{$entry}->{'status'} = "Removing Stale PID files $pidid";
                 $c->app->log->debug("Removing Stale PID files $pidid");
                 unlink $pid;
             }
-            ## Checks if the pid file exists before trying to start the multichain daemon if it exists express the process id
-            if ( -f '/home/node/run/'.$entry.'.pid') {
-                $c->app->log->debug("Running Process : $entry with PID : $pidid");
-            } else {
-                ## launched the daemon using > /dev/null & to return control to mojolicious
-                $command = 'multichaind '.$entry.' -daemon -pid=/home/node/run/'.$entry.'.pid -walletnotifynew="curl -H \'Content-Type: application/json\' -d %j http://127.0.0.1:9090/system/alertnotify?name=%m\&txid=%s\&hex=%h\&seen=%c\&address=%a\&assets=%e" > /dev/null &';
-                system($command);
-                $c->app->log->debug("Starting : $entry");
+            
+            ## Check if chain if blockchain is disabled
+            if ( -f '/home/node/run/'.$entry.'.stop') {
+					if ( -f '/home/node/run/'.$entry.'.pid') {
+						$c->app->log->debug("Stopping Blockchain $entry");
+						$command = 'multichain-cli '.$entry.' stop';
+						system($command);
+						$status->{$entry}->{'status'} = "Shutting down";
+					} else {
+						$c->app->log->debug("Blockchain .stop located - skipping blockchain");
+						$status->{$entry}->{'status'} = "Stopped";
+					}
+				} else {
+					## Checks if the pid file exists before trying to start the multichain daemon if it exists express the process id
+					if ( -f '/home/node/run/'.$entry.'.pid') {
+						$c->app->log->debug("Running Process : $entry with PID : $pidid");
+						$status->{$entry}->{'status'} = "Running";
+					} else {
+						## launched the daemon using > /dev/null & to return control to mojolicious
+						$command = 'multichaind '.$entry.' -daemon -pid=/home/node/run/'.$entry.'.pid -walletnotifynew="curl -H \'Content-Type: application/json\' -d %j http://127.0.0.1:9090/system/alertnotify?name=%m\&txid=%s\&hex=%h\&seen=%c\&address=%a\&assets=%e" > /dev/null &';
+						system($command);
+						$c->app->log->debug("Starting : $entry");
+						$status->{$entry}->{'status'} = "Starting";
+					}
             }
         }
+        $status = encode_json($status);
+        $redis->publish("status" => $status);
     } else {
         $command = 'ipfs add -r -w -Q /home/node/pot_node';
         my $value = qx/$command/;
@@ -337,7 +360,7 @@ sub check {
 									$option->{'ipfs'} = $ipfsHash;
                         }
                     }
-                    $c->debug($item);
+#                    $c->debug($item);
                     push @navitems, $item;
                 }
                 

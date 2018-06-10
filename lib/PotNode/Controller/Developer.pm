@@ -228,27 +228,61 @@ sub set {
 
 
 sub createApp{
-    my $c = shift;
-    my $sessionUuid;
-    my $eventHash;
-    my $eventConfig;
-    my $pot_config = decode_json($redis->get('config'));
-    my $allparams = $c->req->params->to_hash;
-    my $jsonParams = $c->req->json;
-    my $ug = Data::UUID->new;
+	my $c = shift;
+	my $sessionUuid;
+	my $eventHash;
+	my $eventConfig;
+	my $pot_config = decode_json($redis->get('config'));
+	my $jsonParams = $c->req->json;
+	my $ug = Data::UUID->new;
+	my $api;
+	my $url;
 
-    my $uuid = $c->app->uuid();
+	my $uuid = $c->app->uuid();
 
-    $jsonParams->{'containerid'} = $uuid;
+	$jsonParams->{'containerid'} = $uuid;
+	
+	$c->debug($uuid);
+	
+	my $hex = $ug->from_string($uuid);
+	$hex = $ug->to_hexstring($hex);
+	$hex = substr($hex,2);
+	
+	$c->debug($hex);
+	$c->debug($jsonParams);
+	
+	my @optionlist;
+	push (@optionlist,"-chain-description=$jsonParams->{'appName'}") if $jsonParams->{'appName'};
+	push (@optionlist,"-anyone-can-connect=true") if $jsonParams->{'appConnect'};
+	push (@optionlist,"-anyone-can-send=true") if $jsonParams->{'appSending'};
+	push (@optionlist,"-anyone-can-receive=true") if $jsonParams->{'appReceive'};
+	my $options = join(' ', @optionlist);
+	$c->debug("Options : $options");
+	## TODO : Get path using which
+	my $command = "/usr/local/bin/multichain-util create $hex $options";
+	my $create = qx/$command/;
+	$c->debug("Create : $create");
+
+	##  curl --user myusername --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "create", "params": ["stream", "test", false] }' -H 'content-type: text/plain;' http://127.0.0.1:2876
+	
+	
+#	my $blockchain = $hex;
+#	my $config = "rpc_$blockchain";
+#	if (!$redis->exists($config)) {
+#		$config = $c->get_rpc_config($blockchain);
+#	} else {
+#		$config = decode_json($redis->get($config));
+#	}
+#	$url = "$config->{'rpcuser'}:$config->{'rpcpassword'}\@127.0.0.1:$config->{'rpcport'}";
+#	
+#	$c->debug($url);
+#	$api =  PotNode::Multichain->new( url => $url );
+	
+#	my $method = $spec->{'x-mojo-name'};
+	
+#	$dataOut = $api->$method( @params );
     
-    $c->debug($uuid);
-    
-    my $hex = $ug->from_string($uuid);
-    $hex = $ug->to_hexstring($hex);
-    $hex = substr($hex,2);
-    
-    $c->debug($hex);
-    $c->debug($jsonParams);
+	$c->render(text => "OK", status => 200);
     
 };
 
