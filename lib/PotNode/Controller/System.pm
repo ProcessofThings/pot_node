@@ -114,6 +114,7 @@ sub check {
             }
         }
         $status = encode_json($status);
+        $redis->set("status" => $status);
         $redis->publish("status" => $status);
     } else {
         $command = 'ipfs add -r -w -Q /home/node/pot_node';

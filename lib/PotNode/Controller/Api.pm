@@ -76,7 +76,9 @@ sub blockchain {
 
 sub wsapi {
     my $c = shift;
+    my $rsub;
     
+ 
 #    $c->kept_alive;
     $c->inactivity_timeout(60);
     $c->app->log->debug("Open Websocket");
@@ -86,28 +88,27 @@ sub wsapi {
 
     $c->on(message => sub {
 		my ($self, $msg) = @_;
-
-		if ($msg eq '__ping__') {
-			$c->app->log->debug("Ping");
-			my $wsconid = $c->tx->handshake->{'connection'};
+		$msg = decode_json($msg);
+		
+ 		if ($msg->{'channel'} eq 'ping') {
+ 			$c->app->log->debug("Message : $msg->{'data'}->{'msg'}");
+ 			my $wsconid = $c->tx->handshake->{'connection'};
 #			$c->debug("WSCon".$wsconid);
-			$self->send({json => {
-				channel => "pong",
-				data => {
-					msg => "__pong__"
-				}
-			}});
-			return undef;
-		}
+ 			$self->send({json => {
+ 				channel => "pong",
+ 				data => {
+ 					msg => "__pong__"
+ 				}
+ 			}});
+ 			return undef;
+ 		}
+
+		$c->app->log->debug("Channel : $msg->{'channel'}");
 		
-#		$msg = decode_json($msg);
-#		$c->debug($msg);
+		$rsub = $self->redis->subscribe([$msg->{'channel'}]);
 		
-		
-		my $rsub = $self->redis->subscribe(['status']);
-	
 		my $data;
-	
+
 		$rsub->on(message => sub {
 			my ($rsub, $message, $channel) = @_;
 			$c->app->log->debug("Subscribe Message");
@@ -117,6 +118,26 @@ sub wsapi {
 			$self->send({json => $data});
 			
 		});
+#		}
+		
+		
+#		$msg = decode_json($msg);
+#		$c->debug($msg);
+		
+		
+# 		$rsub = $self->redis->subscribe(['status']);
+# 	
+# 		my $data;
+# 	
+# 		$rsub->on(message => sub {
+# 			my ($rsub, $message, $channel) = @_;
+# 			$c->app->log->debug("Subscribe Message");
+# 			$message = decode_json($message);
+# 			$data->{'channel'} = $channel;
+# 			$data->{'data'} = $message;
+# 			$self->send({json => $data});
+# 			
+# 		});
 	});
     
 	$c->on(finish => sub {
@@ -183,4 +204,12 @@ sub multichain {
     $c->debug($dataOut);
     $c->render(openapi => $dataOut);
 };
+
+sub getStatus {
+	my $c = shift;
+	$c->app->log->debug("Publish Status");
+	my $data = $redis->get("status");
+	$redis->publish("status" => $data);
+	$c->render(text => "OK", status => 200);
+}
 1;

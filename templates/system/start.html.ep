@@ -116,7 +116,7 @@
             const store = new Vuex.Store({
 					modules: {
 						main: {
-							namespaced: 1,
+							namespaced: true,
 							
 							state: {
 								count: 0,
@@ -138,7 +138,6 @@
 							},
 							actions: {
 								storeChannelData (context, payload) {
-										
 										context.commit(payload.channel+'Store', payload.data)
 								}
 							},
@@ -157,7 +156,9 @@
 				const socket = new WebSocket("ws://127.0.0.1:9090/wsapi")
 				
 				setInterval(() => {
-					socket.send(`__ping__`)
+					socket.send(
+						JSON.stringify({'channel' : "ping",'data' : {}})
+					)
 				}, 3000)
 				
 				    
@@ -189,15 +190,16 @@
 					created() {
 							socket.onopen = e => {
 									socket.send(
-										JSON.stringify({'msg' : "connect"})
+										JSON.stringify({'channel' : "status",'data' : {}})
 									);
 							};
 							
 							socket.onmessage = e => {
 					        let data = JSON.parse(e.data);
-								this.$store.dispatch('storeChannelData',data)
+					         console.log(data)
+								this.$store.dispatch('main/storeChannelData',data)
 							};
-					
+
 							this.$store.getters.getStatus
 							
                     this.$vuetify.theme = theme
