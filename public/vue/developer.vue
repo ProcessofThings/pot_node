@@ -80,7 +80,6 @@
 store.registerModule('developer', { 
 	namespaced: true,
 	state: {
-		status: ''
 	},
 	mutations: {
 	},
