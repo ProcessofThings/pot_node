@@ -77,6 +77,8 @@ sub blockchain {
 sub wsapi {
     my $c = shift;
     my $rsub;
+    my $pong;
+    my $pongkey;
     
  
 #    $c->kept_alive;
@@ -91,13 +93,21 @@ sub wsapi {
 		$msg = decode_json($msg);
 		
  		if ($msg->{'channel'} eq 'ping') {
- 			$c->app->log->debug("Message : $msg->{'data'}->{'msg'}");
+			if ($redis->exists('pong')) {
+              $pong = $redis->get('pong');
+				  $pongkey = 	$redis->get('pongkey');
+			} else {
+					$pong = "__pong__";
+					$pongkey = "1";
+			}
+ 			$c->app->log->debug("Message : $pong");
  			my $wsconid = $c->tx->handshake->{'connection'};
 #			$c->debug("WSCon".$wsconid);
  			$self->send({json => {
  				channel => "pong",
  				data => {
- 					msg => "__pong__"
+ 					msg => $pong,
+ 					id => $pongkey
  				}
  			}});
  			return undef;

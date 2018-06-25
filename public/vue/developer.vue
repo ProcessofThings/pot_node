@@ -15,8 +15,8 @@
 											<v-card-title><h4>Status</h4></v-card-title>
 											<v-divider></v-divider>
 											<v-list dark>
-												<v-list-tile-content v-for="chain in status" :key="chain.id" v-model="status" class="my-3">
-													<v-list-tile-title class="ml-3">{{ chain.name }} : {{chain.status}}</v-list-tile-title>
+												<v-list-tile-content v-for="chain in pong" :key="chain.id" v-model="pong" class="my-3">
+													<v-list-tile-title class="ml-3">Message : {{ chain }}</v-list-tile-title>
 												</v-list-tile-content>
 											</v-card-text>
 											</v-list>
@@ -75,9 +75,10 @@
 </template>
 
 
-<script>
+<script type="text/babel">
 
 store.registerModule('developer', { 
+	
 	namespaced: true,
 	state: {
 	},
@@ -110,17 +111,12 @@ module.exports = {
 		}
 	},
    computed: {
-		tabName () {
-			return this.$store.getters.tabName
-		},
-		status () {
-			return this.$store.getters['main/getStatus']
-		}
-	},
+//		pong () { return this.$store.state.main.pong}
+		pong () { return this.$store.getters['main/getPong'] }
+   },
 	methods: {
 		clicktab (tabid) {
 			if (tabid == 0) {
-				return this.$store.getters['main/getStatus']
 			}
 		},
 	

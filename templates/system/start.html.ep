@@ -95,6 +95,8 @@
         <script src="/js/vuetify.js"></script>
         <script src="/js/http-vue-loader.js"></script>
         <script src="https://unpkg.com/vuex@3.0.1/dist/vuex.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.js"></script>
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
         <script src="/js/axios.min.js"></script>
         
         <script>
@@ -114,6 +116,7 @@
  
  
             const store = new Vuex.Store({
+					strict: true,
 					modules: {
 						main: {
 							namespaced: true,
@@ -147,6 +150,9 @@
 									},
 									getStatus (state) {
 										return state.status
+									},
+									getPong (state) {
+										return state.pong
 									}
 							}	
 						}
