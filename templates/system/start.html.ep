@@ -142,7 +142,17 @@
 							actions: {
 								storeChannelData (context, payload) {
 										context.commit(payload.channel+'Store', payload.data)
-								}
+								},
+								loadBlockChainStatus (context) {
+                                    axios.get('/v1/api/multichain/blockchainStatus')
+                                    .then(res => {
+                                        console.log(res.data)
+                                        context.commit('statusStore', res.data)
+                                    })
+                                    .catch(function (error) {
+                                        console.log(error)
+                                    })
+                                }
 							},
 							getters: {
 									loadedNavitems (state) {
@@ -214,6 +224,8 @@
                     .then(json => {
                         this.navitems = json.navitems
                     })
+                    
+                    this.$store.dispatch('main/loadBlockChainStatus')
                 },
 					beforeDestroy(){
 						socket.$off("message", this.handleMessage)

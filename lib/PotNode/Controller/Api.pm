@@ -220,6 +220,6 @@ sub getStatus {
 	$c->app->log->debug("Publish Status");
 	my $data = $redis->get("status");
 	$redis->publish("status" => $data);
-	$c->render(text => "OK", status => 200);
+	$c->render(json => $data, status => 200);
 }
 1;

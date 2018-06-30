@@ -138,6 +138,7 @@ module.exports = {
       }
 	},
 	created: function () {
+        this.$store.dispatch('main/loadBlockChainStatus')
 		console.log("onCreate developer")
 //		axios.get('/v1/api/multichain/blockchainStatus', {
 //			const status = this.$store.getters['main/getStatus']
