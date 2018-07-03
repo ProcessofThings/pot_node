@@ -15,4 +15,5 @@ requires 'Mojolicious::Plugin::Crypto';
 requires 'Perl::Tidy';
 requires 'JavaScript::V8';
 requires 'OpenAPI::Client';
-requires 'YAML::XS'
+requires 'YAML::XS';
+requires 'Alien::SwaggerUI';
