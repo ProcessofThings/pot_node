@@ -84,7 +84,7 @@ sub wsapi {
 #    $c->kept_alive;
     $c->inactivity_timeout(60);
     $c->app->log->debug("Open Websocket");
-    $c->app->log->debug(sprintf 'Client connected: %s', $c->tx);
+    $c->debug(sprintf 'Client connected: %s', $c->tx);
     my $id = sprintf "%s", $c->tx;
     $clients->{$id} = $c->tx;
 

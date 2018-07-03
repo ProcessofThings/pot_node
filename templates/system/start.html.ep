@@ -91,6 +91,7 @@
             </v-app>
         </div>
 
+        <script src="/js/require.min.js"></script>
         <script src="/js/vue-2.5.16.js"></script>
         <script src="/js/vuetify.js"></script>
         <script src="/js/http-vue-loader.js"></script>
@@ -98,14 +99,17 @@
         <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.js"></script>
         <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
         <script src="/js/axios.min.js"></script>
+<!--        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script> -->
+        <script src="https://rawgit.com/nathantsoi/vue-native-websocket/master/dist/build.js"></script>
+        <script type="text/javascript" src="/js/require.min.js"></script>
         
         <script>
-//            import axios as axios;
         
-//            const instance = axios.create({
-//                baseURL: 'http://127.0.0.1:9090/v1/api'
-//            });
-
+//				var Vue = require('vue');
+				var VueNativeSock = require('/js/VueNativeSock');
+				
+//				Vue.use(VueNativeSock, 'ws://localhost:9090/wsapi', { format: 'json' });
+				
             const theme = {
                 primary: '#2d325a',
                 secondary: '#304b78',
@@ -124,7 +128,10 @@
 							state: {
 								count: 0,
 								pong: '',
-								status: ''
+								status: '',
+								isConnected: false,
+								message: '',
+								reconnectError: false,
 //								loadedNavitems: [{"action":"code","navitems":[{"title":"Create App"},{"title":"Your Apps"}],"title":"D1eveloper"},{"action":"explore","navitems":[{"href":"explore","title":"Blockchains"},{"href":"my-										component","title":"Node"},{"title":"Permissions"},{"title":"View Stream"}],"title":"Explore"}]
 							},
 							mutations: {
@@ -137,6 +144,9 @@
 								},
 								statusStore (state, data) {
 									state.status = data
+								},
+								SOCKET_ONOPEN (state, event)  {
+									state.socket.isConnected = true
 								}
 							},
 							actions: {
@@ -146,7 +156,6 @@
 								loadBlockChainStatus (context) {
                                     axios.get('/v1/api/multichain/blockchainStatus')
                                     .then(res => {
-                                        console.log(res.data)
                                         context.commit('statusStore', res.data)
                                     })
                                     .catch(function (error) {
@@ -169,14 +178,21 @@
 					}
 				})
 				
-				const socket = new WebSocket("ws://127.0.0.1:9090/wsapi")
 				
-				setInterval(() => {
-					socket.send(
-						JSON.stringify({'channel' : "ping",'data' : {}})
-					)
-				}, 3000)
+//				const socket = new VueNativeSock('ws://127.0.0.1:9090/wsapi',{
+//					reconnection: true, // (Boolean) whether to reconnect automatically (false)
+//					reconnectionAttempts: 100, // (Number) number of reconnection attempts before giving up (Infinity),
+//					reconnectionDelay: 3000, // (Number) how long to initially wait before attempting a new (1000)
+//				});
 				
+//				const socket = new WebSocket("ws://127.0.0.1:9090/wsapi")
+				
+//				setInterval(() => {
+//					socket.send(
+//						JSON.stringify({'channel' : "ping",'data' : {}})
+//					)
+//				}, 3000)
+	
 				    
             new Vue({ 
                 el: '#app',
@@ -204,17 +220,21 @@
                     }
                 },
 					created() {
-							socket.onopen = e => {
-									socket.send(
-										JSON.stringify({'channel' : "status",'data' : {}})
-									);
-							};
+							Vue.use(VueNativeSock, 'ws://localhost:9090/wsapi', { format: 'json' });
+							this.$store.dispatch('main/loadBlockChainStatus')
+
+
+//							socket.onopen = e => {
+//									socket.send(
+//										JSON.stringify({'channel' : "status",'data' : {}})
+//									);
+//							};
 							
-							socket.onmessage = e => {
-					        let data = JSON.parse(e.data);
-					         console.log(data)
-								this.$store.dispatch('main/storeChannelData',data)
-							};
+//							socket.onmessage = e => {
+//					        let data = JSON.parse(e.data);
+//					         console.log(data)
+//								this.$store.dispatch('main/storeChannelData',data)
+//							};
 
 							this.$store.getters.getStatus
 							
@@ -225,10 +245,9 @@
                         this.navitems = json.navitems
                     })
                     
-                    this.$store.dispatch('main/loadBlockChainStatus')
                 },
 					beforeDestroy(){
-						socket.$off("message", this.handleMessage)
+//						socket.$off("message", this.handleMessage)
 					},
                 props: {
                     source: String

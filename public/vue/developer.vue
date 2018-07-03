@@ -12,11 +12,11 @@
 								<v-layout row wrap>
 									<v-flex xs6>
 										<v-card dark color="secondary">
-											<v-card-title><h4>Status</h4></v-card-title>
+											<v-card-title v-on:click="update"><h4>Status</h4></v-card-title>
 											<v-divider></v-divider>
 											<v-list dark>
-												<v-list-tile-content v-for="chain in pong" :key="chain.id" v-model="pong" class="my-3">
-													<v-list-tile-title class="ml-3">Message : {{ chain }}</v-list-tile-title>
+												<v-list-tile-content v-for="chain in getStatus" :key="chain.id" v-model="getStatus" class="my-3">
+													<v-list-tile-title class="ml-3">{{chain.id}} : {{chain.name}} : {{chain.status}}</v-list-tile-title>
 												</v-list-tile-content>
 											</v-card-text>
 											</v-list>
@@ -77,18 +77,17 @@
 
 <script type="text/babel">
 
-store.registerModule('developer', { 
-	
-	namespaced: true,
-	state: {
-	},
-	mutations: {
-	},
-	actions: {
-	},
-	getters: {
-	}
-})
+//store.registerModule('developer', { 
+//	namespaced: true,
+//	state: {
+//	},
+//	mutations: {
+//	},
+//	actions: {
+//	},
+//	getters: {
+//	}
+//})
 
 
 module.exports = {
@@ -112,12 +111,16 @@ module.exports = {
 	},
    computed: {
 //		pong () { return this.$store.state.main.pong}
-		pong () { return this.$store.getters['main/getPong'] }
+		getPong () { return this.$store.getters['main/getPong'] },
+		getStatus: function () { return this.$store.getters['main/getStatus'] }
    },
 	methods: {
 		clicktab (tabid) {
 			if (tabid == 0) {
 			}
+		},
+		update () {
+			this.$store.dispatch('main/loadBlockChainStatus')
 		},
 	
 		submit () {
@@ -127,23 +130,11 @@ module.exports = {
             "appConnect": this.connect,
             "appSending": this.sending,
             "appReceive": this.receive}}))
-          // Native form submission is not yet supported
-//          axios.post('/v1/api/multichain/createApp', {
-//            appName: this.name,
-//            appDesc: this.description,
-//            appConnect: this.connect,
-//            appSending: this.sending,
-//            appReceive: this.receive
-//          })
       }
 	},
 	created: function () {
-        this.$store.dispatch('main/loadBlockChainStatus')
+      this.$store.dispatch('main/loadBlockChainStatus')
 		console.log("onCreate developer")
-//		axios.get('/v1/api/multichain/blockchainStatus', {
-//			const status = this.$store.getters['main/getStatus']
-//			console.log(status)
-//		})
 	}	
 }
 </script>
