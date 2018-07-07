@@ -2,6 +2,7 @@ package PotNode::Helpers;
 use base 'Mojolicious::Plugin';
 use Data::UUID;
 use Config::IniFiles;
+use PotNode::QRCode;
 use Mojo::JSON qw(decode_json encode_json);
 
 
@@ -45,6 +46,7 @@ sub register {
     $app->helper(get_rpc_config => \&_get_rpc_config);
     $app->helper(get_blockchains => \&_get_blockchains);
     $app->helper(load_blockchain_config => \&_load_blockchain_config);
+    $app->helper(genqrcode64 => \&_genqrcode64);
     
 
 }
@@ -131,6 +133,30 @@ sub _mergeHTML {
 
 sub _blockchain_api {
     
+};
+
+sub _genqrcode64 {
+	 ## Generates QRCode
+    ## 38mm Label needs size 3 Version 5 (default)
+    ## 62mm With Text size 4 Version 5
+    ## 62mm No Text size 5 60mmX60mm Version 5
+    my ($self,$text) = @_;
+    my $size = 3;
+    my $version = 5;
+    my $blank = 'no';
+    my $data;
+    if ($blank eq 'no') {
+            $text = 'https://pot.ec/'.$text;
+    }
+    my $mqr  = PotNode::QRCode->new(
+    text   => $text,
+    qrcode => {size => $size,margin => 2,version => $version,level => 'H'}
+    );
+    my $logo = Imager->new(file => "/home/node/pot_node/public/images/potlogoqrtag.png") || die Imager->errstr;
+    $mqr->logo($logo);
+    $mqr->to_png_base64("/home/node/tmp/test.png");
+	 $data->{'image'} = $mqr->to_png_base64("/home/node/tmp/test.png");
+    return $data;
 };
 
 1;

@@ -93,19 +93,7 @@ sub load {
 	my $url = 'http://127.0.0.1:8080/ipfs/'.$id.'/'.$page.'.vue';
 	$c->app->log->debug("URL : $url");
 	$c->stash(import_url => $url);
-#	$c->url_for('page', page => 'index.html')->to_abs;
-#	my $html = $ua->get('http://127.0.0.1:8080/ipfs/QmfQMb2jjboKYkk5f1DhmGXyxcwNtnFJzvj92WxLJjJjcS')->res->dom->find('section')->first;
-##    my $html = $ua->get($url)->res->dom->find('div.template')->first;
-##    my $encodedfile = b($html);
-##    $c->stash(import_template => $encodedfile);
 
-##    while( my( $key, $value ) = each %{$config->{'component'}}){
-##        my $url = 'http://127.0.0.1:8080/ipfs/'.$id.'/'.$value;
-##        my $html = $ua->get($url)->res->dom->find('div.template')->first;
-##        my $encodedfile = b($html);
-##        my $importref = "import_$key";
-##        $c->stash($importref => $encodedfile);
-##    };
 	my @components;
 	my $list;
 	
@@ -136,8 +124,13 @@ sub load {
 						foreach my $option (@{$item->{'navitems'}}) {
 							if ($option->{'href'}) {
 									$option->{'ipfs'} = $ipfsHash;
-#									$component = [$option->{'href'},"http://127.0.0.1:8080/ipfs/$ipfsHash/$option->{'href'}.vue"];
-									$component = $option->{'href'}.': httpVueLoader( "http://127.0.0.1:8080/ipfs/'.$ipfsHash.'/'.$option->{'href'}.'.vue" )';
+									## To override loading vue files from ipfs add the array bellow
+									my @list = ["developer","multichain"];
+									if ($option->{'href'} ~~ @list) {
+										$component = $option->{'href'}.': httpVueLoader( "/vue/'.$option->{'href'}.'.vue" )';
+									} else {
+										$component = $option->{'href'}.': httpVueLoader( "http://127.0.0.1:8080/ipfs/'.$ipfsHash.'/'.$option->{'href'}.'.vue" )';
+									}
 									$c->config($component);
 									push @components, $component;
 							}
