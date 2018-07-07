@@ -312,4 +312,11 @@ sub changeAppState {
 	$c->render(text => "OK", status => 200);
 };
 
+sub inviteMobile {
+	my $c = shift;
+	my $jsonParams = $c->req->json;
+	my $data = $c->genqrcode64("test");
+	$c->render(json => $data, status => 200)
+	
+};
 1;

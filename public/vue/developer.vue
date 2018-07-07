@@ -25,14 +25,16 @@
 												<v-btn icon ripple v-if="chain.status == 'Running'" v-on:click="changeState(chain.id)">
 													<v-icon color="grey lighten-1">pause</v-icon>
 												</v-btn>
+												<v-progress-circular indeterminate color="accent" v-else-if="chain.status != 'Running' && chain.status != 'Stopped'"></v-progress-circular>
 												<v-btn icon ripple v-else v-on:click="changeState(chain.id)">
 													<v-icon color="grey lighten-1">play_arrow</v-icon>
 												</v-btn>
 											</v-list-tile-action>
 											<v-list-tile-action v-if="chain.id != 'C9AF3F5620B911E8A0510CD5963D4F80'">
-												<v-btn icon ripple v-if="chain.status == 'Running'">
+												<v-btn icon ripple v-if="chain.status == 'Running'" v-on:click="inviteMobile(chain.id)">
 													<v-icon color="grey lighten-1">person_add</v-icon>
 												</v-btn>
+												<v-progress-circular indeterminate color="yellow" v-else-if="chain.status != 'Running' && chain.status != 'Stopped'"></v-progress-circular>
 												<v-btn icon ripple v-else v-on:click="deleteApp(chain.id)">
 													<v-icon color="grey lighten-1">delete</v-icon>
 												</v-btn>
@@ -82,6 +84,27 @@
 					</v-tabs>
 				</v-flex>
 			</v-layout>
+			<v-dialog v-model="dialog" width="200">
+				<v-card>
+					<v-card-title class="headline grey lighten-2" primary-title>
+						Invite Mobile
+					</v-card-title>
+					<img :src="img" width="100%">
+
+					<v-divider></v-divider>
+
+					<v-card-actions>
+						<v-spacer></v-spacer>
+						<v-btn
+							color="primary"
+							flat
+							@click="dialog = false"
+						>
+							Close
+						</v-btn>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
 		</v-container>
 	</div>
 </template>
@@ -92,12 +115,17 @@
 store.registerModule('developer', { 
 	namespaced: true,
 	state: {
-		status: ''
+		updateStatus: false,
+		status: '',
+		img: ''
 	},
 	mutations: {
 		loadStatus (state, status) {
 			state.status = status
 		},
+		changeStatus (state, payload) {
+			state.status[payload.blockChainId].status = payload.status
+		}
 	},
 	actions: {
 		loadStatus (context, payload) {
@@ -106,11 +134,19 @@ store.registerModule('developer', {
 		getStatus ({state, rootState, rootGetters}) {
 			console.log(rootGetters)
 			store.dispatch('developer/loadStatus', rootGetters['main/getStatus'])
+		},
+		changeStatus ({state, rootState}, payload) {
+			console.log(rootState)
+			console.log(payload)
+			store.commit('developer/changeStatus', payload)
 		}
 	},
 	getters: {
 		getStatus (state) {
 			return state.status
+		},
+		updateStatus (state) {
+			return state.updateStatus
 		}
 	}
 })
@@ -137,13 +173,18 @@ module.exports = {
 			description: '',
 			connect: true,
 			sending: true,
-			receive: true
+			receive: true,
+			dialog: false,
+			img: ''
 		}
 	},
    computed: {
 		myStatus () {
 			console.log("computered myStatus")
 			return this.$store.getters['developer/getStatus']
+		},
+		updateStatus () {
+			return this.$store.getters['developer/updateStatus']
 		}
    },
 	methods: {
@@ -161,14 +202,30 @@ module.exports = {
       },
       changeState (id) {
 			console.log(id)
+			store.dispatch('developer/changeStatus', {blockChainId: id, status: "waiting"})
 			axios.post('/v1/api/multichain/changeAppState/' + id, {
 				blockChainId: id
 			})
       },
 		deleteApp (id) {
 			console.log(id)
+			store.dispatch('developer/changeStatus', {blockChainId: id, status: "waiting"})
 			axios.post('/v1/api/multichain/deleteApp/' + id, {
 				blockChainId: id
+			})
+      },
+      inviteMobile (id) {
+			axios.get('/v1/api/multichain/inviteMobile/' + id, {
+				blockChainId: id
+			})
+			.then(res => {
+				const data = res.data
+				this.$data.img = res.data.image
+				this.$data.dialog = true
+				console.log(data)
+			})
+			.catch(function (error) {
+				console.log(error);
 			})
       }
 	},
