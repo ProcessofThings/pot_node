@@ -2,31 +2,45 @@
 	<div>
 		<v-container fluid>
 			<v-layout>
-				<v-flex>
+				<v-flex xs12>
 					<v-tabs v-model="active" color="accent" dark slider-color="yellow" grow>
-						<v-tab v-for="tab in tabs" :key="tab.id" ripple :click="clicktab(active)">
+						<v-tab v-for="tab in tabs" :key="tab.id" ripple>
 							{{ tab.title }}
 						</v-tab>
 						<v-tab-item	v-for="tab in tabs" :key="tab.id" >
-							<v-card flat v-if="tab.id === 'status'">
-								<v-layout row wrap>
-									<v-flex xs6>
-										<v-card dark color="secondary">
-											<v-card-title v-on:click="update"><h4>Status</h4></v-card-title>
-											<v-divider></v-divider>
-											<v-list dark>
-												<v-list-tile-content v-for="chain in getStatus" :key="chain.id" v-model="getStatus" class="my-3">
-													<v-list-tile-title class="ml-3">{{chain.id}} : {{chain.name}} : {{chain.status}}</v-list-tile-title>
-												</v-list-tile-content>
-											</v-card-text>
-											</v-list>
-										</v-card>
-									</v-flex>
-								</v-layout>
+							<v-card flat v-if="tab.id === '0'">
+								<v-list two-line subheader>
+									<v-subheader inset>Decentralised Applications (DApps)</v-subheader>
+									<v-list-tile v-for="chain in myStatus" :key="chain.id" avatar @click="">
+										<v-list-tile-avatar>
+											<v-icon :class=["chain.icon"]>{{ chain.icon }}</v-icon>
+										</v-list-tile-avatar>
+
+										<v-list-tile-content>
+											<v-list-tile-title>{{ chain.name }}</v-list-tile-title>
+											<v-list-tile-sub-title>{{ chain.id }}</v-list-tile-sub-title>
+										</v-list-tile-content>
+					
+											<v-list-tile-action v-if="chain.id != 'C9AF3F5620B911E8A0510CD5963D4F80'">
+												<v-btn icon ripple v-if="chain.status == 'Running'" v-on:click="changeState(chain.id)">
+													<v-icon color="grey lighten-1">pause</v-icon>
+												</v-btn>
+												<v-btn icon ripple v-else v-on:click="changeState(chain.id)">
+													<v-icon color="grey lighten-1">play_arrow</v-icon>
+												</v-btn>
+											</v-list-tile-action>
+											<v-list-tile-action v-if="chain.id != 'C9AF3F5620B911E8A0510CD5963D4F80'">
+												<v-btn icon ripple v-if="chain.status == 'Running'">
+													<v-icon color="grey lighten-1">person_add</v-icon>
+												</v-btn>
+												<v-btn icon ripple v-else v-on:click="deleteApp(chain.id)">
+													<v-icon color="grey lighten-1">delete</v-icon>
+												</v-btn>
+											</v-list-tile-action>
+									</v-list-tile>
+								</v-list>
 							</v-card>
-							<v-card flat v-if="tab.id === 'create'">
-								<v-layout row wrap>
-									<v-flex xs6>
+							<v-card flat v-if="tab.id === '1'">
 										<v-form v-model="valid" lazy-validation>
 											<v-text-field
 												color="accent"
@@ -63,8 +77,6 @@
 											submit
 											</v-btn>
 										</v-form>
-									</v-flex>
-								</v-layout>
 							</v-card>
 						</v-tab-item>
 					</v-tabs>
@@ -77,18 +89,37 @@
 
 <script type="text/babel">
 
-//store.registerModule('developer', { 
-//	namespaced: true,
-//	state: {
-//	},
-//	mutations: {
-//	},
-//	actions: {
-//	},
-//	getters: {
-//	}
-//})
+store.registerModule('developer', { 
+	namespaced: true,
+	state: {
+		status: ''
+	},
+	mutations: {
+		loadStatus (state, status) {
+			state.status = status
+		},
+	},
+	actions: {
+		loadStatus (context, payload) {
+          context.commit('loadStatus', payload)
+		},
+		getStatus ({state, rootState, rootGetters}) {
+			console.log(rootGetters)
+			store.dispatch('developer/loadStatus', rootGetters['main/getStatus'])
+		}
+	},
+	getters: {
+		getStatus (state) {
+			return state.status
+		}
+	}
+})
 
+store.subscribe((mutation, state) => {
+	if (mutation.type == 'main/statusStore') {
+		store.dispatch('developer/loadStatus', mutation.payload)
+	}
+})
 
 module.exports = {
 	data: function () {
@@ -99,8 +130,8 @@ module.exports = {
 			v => !!v || 'Name is required'
 			],
 			tabs: [
-				{id: "status", title: "Status"},
-				{id: "create", title: "Create"}
+				{id: "0", title: "Status"},
+				{id: "1", title: "Create"}
 			],
 			active: '',
 			description: '',
@@ -110,31 +141,40 @@ module.exports = {
 		}
 	},
    computed: {
-//		pong () { return this.$store.state.main.pong}
-		getPong () { return this.$store.getters['main/getPong'] },
-		getStatus: function () { return this.$store.getters['main/getStatus'] }
+		myStatus () {
+			console.log("computered myStatus")
+			return this.$store.getters['developer/getStatus']
+		}
    },
 	methods: {
-		clicktab (tabid) {
-			if (tabid == 0) {
-			}
-		},
-		update () {
-			this.$store.dispatch('main/loadBlockChainStatus')
-		},
-	
 		submit () {
 			console.log('Submit')
-			socket.send(JSON.stringify({"createApp": {"appName": this.name,
-            "appDesc": this.description,
-            "appConnect": this.connect,
-            "appSending": this.sending,
-            "appReceive": this.receive}}))
+			// store.dispatch('main/sendMessage', '')
+			// Native form submission is not yet supported
+			axios.post('/v1/api/multichain/createApp', {
+				appName: this.name,
+				appDesc: this.description,
+				appConnect: this.connect,
+				appSending: this.sending,
+				appReceive: this.receive
+			})
+      },
+      changeState (id) {
+			console.log(id)
+			axios.post('/v1/api/multichain/changeAppState/' + id, {
+				blockChainId: id
+			})
+      },
+		deleteApp (id) {
+			console.log(id)
+			axios.post('/v1/api/multichain/deleteApp/' + id, {
+				blockChainId: id
+			})
       }
 	},
 	created: function () {
-      this.$store.dispatch('main/loadBlockChainStatus')
 		console.log("onCreate developer")
+		this.$store.dispatch('developer/getStatus')
 	}	
 }
 </script>

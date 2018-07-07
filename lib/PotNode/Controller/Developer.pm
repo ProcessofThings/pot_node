@@ -262,28 +262,54 @@ sub createApp{
 	my $command = "/usr/local/bin/multichain-util create $hex $options";
 	my $create = qx/$command/;
 	$c->debug("Create : $create");
-
-	##  curl --user myusername --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "create", "params": ["stream", "test", false] }' -H 'content-type: text/plain;' http://127.0.0.1:2876
-	
-	
-#	my $blockchain = $hex;
-#	my $config = "rpc_$blockchain";
-#	if (!$redis->exists($config)) {
-#		$config = $c->get_rpc_config($blockchain);
-#	} else {
-#		$config = decode_json($redis->get($config));
-#	}
-#	$url = "$config->{'rpcuser'}:$config->{'rpcpassword'}\@127.0.0.1:$config->{'rpcport'}";
-#	
-#	$c->debug($url);
-#	$api =  PotNode::Multichain->new( url => $url );
-	
-#	my $method = $spec->{'x-mojo-name'};
-	
-#	$dataOut = $api->$method( @params );
-    
 	$c->render(text => "OK", status => 200);
     
+};
+
+sub deleteApp{
+	my $c = shift;
+	my $jsonParams = $c->req->json;
+	if ($redis->exists("$jsonParams->{'blockChainId'}_config")) {
+		my $config = decode_json($redis->get("$jsonParams->{'blockChainId'}_config"));
+		my $run = "/home/node/run/$jsonParams->{'blockChainId'}";
+		my $path = "$config->{'path'}";
+		if (-f "$run.stop") {
+			if (-f "$run.pid") {
+				$c->app->debug("Waiting for blockchain to stop");
+			} else {
+				my $command = "/bin/mv $path /home/node/archieve/";
+				$c->app->debug("Command : $command");
+				qx/$command/;
+				$command = "/bin/rm $run.stop";
+				qx/$command/;
+			}
+		}
+	}
+	$c->render(text => "OK", status => 200);
+    
+};
+
+sub changeAppState {
+	my $c = shift;
+	my $pot_config = decode_json($redis->get('config'));
+	my $jsonParams = $c->req->json;
+	my $run = "/home/node/run/$jsonParams->{'blockChainId'}";
+	$c->app->debug($run);
+	if (-f "$run.stop") {
+		if (-f "$run.pid") {
+			$c->app->debug("Waiting for blockchain to stop");
+		} else {
+			$c->app->debug("Stopped");
+			unlink "$run.stop"
+		}
+	} else {
+		if (-f "$run.pid") {
+			$c->app->debug("Blockchain Running");
+			my $command = "/bin/cp $run.pid $run.stop";
+			qx/$command/;
+		}
+	}
+	$c->render(text => "OK", status => 200);
 };
 
 1;

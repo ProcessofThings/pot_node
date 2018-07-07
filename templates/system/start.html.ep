@@ -91,25 +91,14 @@
             </v-app>
         </div>
 
-        <script src="/js/require.min.js"></script>
         <script src="/js/vue-2.5.16.js"></script>
         <script src="/js/vuetify.js"></script>
         <script src="/js/http-vue-loader.js"></script>
-        <script src="https://unpkg.com/vuex@3.0.1/dist/vuex.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.js"></script>
-        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+        <script src="/js/vuex-3.0.1.js"></script>
         <script src="/js/axios.min.js"></script>
-<!--        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script> -->
-        <script src="https://rawgit.com/nathantsoi/vue-native-websocket/master/dist/build.js"></script>
-        <script type="text/javascript" src="/js/require.min.js"></script>
-        
+
         <script>
         
-//				var Vue = require('vue');
-				var VueNativeSock = require('/js/VueNativeSock');
-				
-//				Vue.use(VueNativeSock, 'ws://localhost:9090/wsapi', { format: 'json' });
-				
             const theme = {
                 primary: '#2d325a',
                 secondary: '#304b78',
@@ -129,9 +118,7 @@
 								count: 0,
 								pong: '',
 								status: '',
-								isConnected: false,
-								message: '',
-								reconnectError: false,
+								wsMsg: ''
 //								loadedNavitems: [{"action":"code","navitems":[{"title":"Create App"},{"title":"Your Apps"}],"title":"D1eveloper"},{"action":"explore","navitems":[{"href":"explore","title":"Blockchains"},{"href":"my-										component","title":"Node"},{"title":"Permissions"},{"title":"View Stream"}],"title":"Explore"}]
 							},
 							mutations: {
@@ -142,11 +129,8 @@
 								pongStore (state, data) {
 									state.pong = data
 								},
-								statusStore (state, data) {
-									state.status = data
-								},
-								SOCKET_ONOPEN (state, event)  {
-									state.socket.isConnected = true
+								statusStore (state, status) {
+									state.status = status
 								}
 							},
 							actions: {
@@ -156,12 +140,21 @@
 								loadBlockChainStatus (context) {
                                     axios.get('/v1/api/multichain/blockchainStatus')
                                     .then(res => {
-                                        context.commit('statusStore', res.data)
+													let data = JSON.parse(res.data);
+                                        context.commit('statusStore', data)
                                     })
                                     .catch(function (error) {
                                         console.log(error)
                                     })
-                                }
+								},
+								sendMessage (context, payload) {
+									ws.send(JSON.stringify({"createApp": {"appName": this.name,
+										"appDesc": this.description,
+										"appConnect": this.connect,
+										"appSending": this.sending,
+										"appReceive": this.receive}}))
+										
+								} 
 							},
 							getters: {
 									loadedNavitems (state) {
@@ -178,14 +171,9 @@
 					}
 				})
 				
-				
-//				const socket = new VueNativeSock('ws://127.0.0.1:9090/wsapi',{
-//					reconnection: true, // (Boolean) whether to reconnect automatically (false)
-//					reconnectionAttempts: 100, // (Number) number of reconnection attempts before giving up (Infinity),
-//					reconnectionDelay: 3000, // (Number) how long to initially wait before attempting a new (1000)
-//				});
-				
+				const ws = new WebSocket("ws://127.0.0.1:9090/wsapi")
 //				const socket = new WebSocket("ws://127.0.0.1:9090/wsapi")
+				
 				
 //				setInterval(() => {
 //					socket.send(
@@ -197,6 +185,7 @@
             new Vue({ 
                 el: '#app',
                 data: {
+						  ws: null,
                     currentView: "mainPage",
                     drawer: null,
                     navitems: [],
@@ -204,6 +193,7 @@
                     dom: ''
                 },
                 store,
+                ws,
                 computed: {
 						navitems () {
 							return this.$store.getters.loadedNavitems 
@@ -220,21 +210,50 @@
                     }
                 },
 					created() {
-							Vue.use(VueNativeSock, 'ws://localhost:9090/wsapi', { format: 'json' });
+							var self = this;
+//							this.ws = new WebSocket("ws://127.0.0.1:9090/wsapi")
+							
+//							socket.addEventListener('message', function(e) {
+//								let data = JSON.parse(e.data);
+//								console.log(data);
+//								this.$store.dispatch('main/storeChannelData',data);
+//							});
+							
+//							socket.addEventListener('open', function(e) {
+//								console.log("WS open")
+								
+								setInterval(() => {
+									ws.send(
+										JSON.stringify({'channel' : "ping",'data' : {}})
+									)
+								}, 3000)
+								
+//								socket.send(
+//									JSON.stringify({'channel' : "status",'data' : {}})
+//								);
+								
+//							});
+					
 							this.$store.dispatch('main/loadBlockChainStatus')
 
 
-//							socket.onopen = e => {
-//									socket.send(
-//										JSON.stringify({'channel' : "status",'data' : {}})
-//									);
-//							};
+							ws.onopen = e => {
+									console.log("Socket Open")
+									ws.send(
+										JSON.stringify({'channel' : "status",'data' : {}})
+									);
+							};
 							
-//							socket.onmessage = e => {
-//					        let data = JSON.parse(e.data);
-//					         console.log(data)
-//								this.$store.dispatch('main/storeChannelData',data)
-//							};
+							ws.onmessage = e => {
+					        let data = JSON.parse(e.data);
+					         console.log(data)
+ 					         if (data.channel == 'status') {
+									console.log("status channel found")
+									this.$store.dispatch('main/loadBlockChainStatus')
+					         } else {
+									self.$store.dispatch('main/storeChannelData',data)
+								}
+							};
 
 							this.$store.getters.getStatus
 							
