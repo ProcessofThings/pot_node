@@ -125,7 +125,7 @@ sub load {
 							if ($option->{'href'}) {
 									$option->{'ipfs'} = $ipfsHash;
 									## To override loading vue files from ipfs add the array bellow
-									my @list = ["developer","multichain"];
+									my @list = [];
 									if ($option->{'href'} ~~ @list) {
 										$component = $option->{'href'}.': httpVueLoader( "/vue/'.$option->{'href'}.'.vue" )';
 									} else {
