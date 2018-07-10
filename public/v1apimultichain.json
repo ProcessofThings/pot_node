@@ -19,6 +19,14 @@
     {
       "name": "general",
       "description": "Functions"
+    },
+    {
+		"name": "Application",
+		"description": "Functions needed for creating, editing and deleting applications"
+    },
+    {
+		"name": "Realtime",
+		"description": "Functions needed for updating realtime subscriptions"
     }
   ],
   "schemes": [
@@ -91,6 +99,7 @@
         }
       }
     },
+    
 	"/getaddresses/{blockchainId}": {
       "get": {
         "tags": [
@@ -468,6 +477,229 @@
             "default": 100
           }
         ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    },
+	"/createApp": {
+      "post": {
+        "tags": [
+				"application"
+        ],
+        "x-mojo-to": [
+          "developer#createApp"
+        ],
+        "x-mojo-name": "createApp",
+        "summary": "Created application",
+        "description": "This allows node operator to create new application",
+        "operationId": "createApp",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "appName",
+            "in": "formData",
+            "description": "Human readable name of your application",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "appDesc",
+            "in": "formData",
+            "description": "Description of your application.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "appConnect",
+            "in": "formData",
+            "description": "Anyone can connect to your application without your permissions",
+            "required": false,
+            "type": "boolean",
+            "default": true
+          },
+          {
+            "name": "appSending",
+            "in": "formData",
+            "description": "Allow users to send transactions",
+            "required": false,
+            "type": "boolean",
+            "default": true
+          },
+          {
+            "name": "appReceive",
+            "in": "formData",
+            "description": "Allow users to receive transactions",
+            "required": false,
+            "type": "boolean",
+            "default": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    },
+    	"/changeAppState/{blockchainId}": {
+      "post": {
+        "tags": [
+				"application"
+        ],
+        "x-mojo-to": [
+          "developer#changeAppState"
+        ],
+        "x-mojo-name": "changeAppState",
+        "summary": "Toggles between start and stop",
+        "description": "This allows node operator to stop and start dapps",
+        "operationId": "changeAppState",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "blockchainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    },
+	"/deleteApp/{blockchainId}": {
+      "post": {
+        "tags": [
+				"application"
+        ],
+        "x-mojo-to": [
+          "developer#deleteApp"
+        ],
+        "x-mojo-name": "deleteApp",
+        "summary": "Delete Application",
+        "description": "This deletes the application and moves it to archieve",
+        "operationId": "deleteApp",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "blockchainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    },
+	"/inviteMobile/{blockchainId}": {
+      "get": {
+        "tags": [
+				"application"
+        ],
+        "x-mojo-to": [
+          "developer#inviteMobile"
+        ],
+        "x-mojo-name": "inviteMobile",
+        "summary": "Invite PoT Mobile",
+        "description": "Dapps may be accessed via PoT Mobile app but must be invite",
+        "operationId": "inviteMobile",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "blockchainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    },
+	"/blockchainStatus": {
+      "get": {
+        "tags": [
+				"Realtime"
+        ],
+        "x-mojo-to": [
+          "api#getStatus"
+        ],
+        "x-mojo-name": "getStatus",
+        "summary": "Updates Realtime Blockchain Status",
+        "description": "This function updates the realtime blockchain status",
+        "operationId": "getStatus",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "successful operation",

@@ -94,16 +94,11 @@
         <script src="/js/vue-2.5.16.js"></script>
         <script src="/js/vuetify.js"></script>
         <script src="/js/http-vue-loader.js"></script>
-        <script src="/js/vuex-2.0.0.js"></script>
+        <script src="/js/vuex-3.0.1.js"></script>
         <script src="/js/axios.min.js"></script>
-        
-        <script>
-//            import axios as axios;
-        
-//            const instance = axios.create({
-//                baseURL: 'http://127.0.0.1:9090/v1/api'
-//            });
 
+        <script>
+        
             const theme = {
                 primary: '#2d325a',
                 secondary: '#304b78',
@@ -112,35 +107,93 @@
                 warning: '#dbb13b'
             }
  
-            const indexPage = {
-                state: {
-                    count: 0,
-//                    loadedNavitems: [{"action":"code","navitems":[{"title":"Create App"},{"title":"Your Apps"}],"title":"D1eveloper"},{"action":"explore","navitems":[{"href":"explore","title":"Blockchains"},{"href":"my-component","title":"Node"},{"title":"Permissions"},{"title":"View Stream"}],"title":"Explore"}]
-                },
-                mutations: {},
-                actions: {},
-                getters: {
-                    loadedNavitems (state) {
-                        return state.loadedNavitems
-                    }
-                }
-            }
  
             const store = new Vuex.Store({
+					strict: true,
 					modules: {
-						layout: indexPage
+						main: {
+							namespaced: true,
+							
+							state: {
+								count: 0,
+								pong: '',
+								status: '',
+								wsMsg: ''
+//								loadedNavitems: [{"action":"code","navitems":[{"title":"Create App"},{"title":"Your Apps"}],"title":"D1eveloper"},{"action":"explore","navitems":[{"href":"explore","title":"Blockchains"},{"href":"my-										component","title":"Node"},{"title":"Permissions"},{"title":"View Stream"}],"title":"Explore"}]
+							},
+							mutations: {
+//								TODO : Find away to use a single manipulation to store the data
+//								storeChannelData (state, channel, data) {
+//									state.channel = data
+//								},
+								pongStore (state, data) {
+									state.pong = data
+								},
+								statusStore (state, status) {
+									state.status = status
+								}
+							},
+							actions: {
+								storeChannelData (context, payload) {
+										context.commit(payload.channel+'Store', payload.data)
+								},
+								loadBlockChainStatus (context) {
+                                    axios.get('/v1/api/multichain/blockchainStatus')
+                                    .then(res => {
+													let data = JSON.parse(res.data);
+                                        context.commit('statusStore', data)
+                                    })
+                                    .catch(function (error) {
+                                        console.log(error)
+                                    })
+								},
+								sendMessage (context, payload) {
+									ws.send(JSON.stringify({"createApp": {"appName": this.name,
+										"appDesc": this.description,
+										"appConnect": this.connect,
+										"appSending": this.sending,
+										"appReceive": this.receive}}))
+										
+								} 
+							},
+							getters: {
+									loadedNavitems (state) {
+										return state.loadedNavitems
+									},
+									getStatus (state) {
+										return state.status
+									},
+									getPong (state) {
+										return state.pong
+									}
+							}	
+						}
 					}
 				})
 				
+				const ws = new WebSocket("ws://127.0.0.1:9090/wsapi")
+//				const socket = new WebSocket("ws://127.0.0.1:9090/wsapi")
+				
+				
+//				setInterval(() => {
+//					socket.send(
+//						JSON.stringify({'channel' : "ping",'data' : {}})
+//					)
+//				}, 3000)
+	
 				    
             new Vue({ 
                 el: '#app',
                 data: {
+						  ws: null,
                     currentView: "mainPage",
                     drawer: null,
-                    navitems: []
+                    navitems: [],
+                    messages: [],
+                    dom: ''
                 },
                 store,
+                ws,
                 computed: {
 						navitems () {
 							return this.$store.getters.loadedNavitems 
@@ -156,18 +209,70 @@
                         this.dialog = true;
                     }
                 },
-                created() {
+					created() {
+							var self = this;
+//							this.ws = new WebSocket("ws://127.0.0.1:9090/wsapi")
+							
+//							socket.addEventListener('message', function(e) {
+//								let data = JSON.parse(e.data);
+//								console.log(data);
+//								this.$store.dispatch('main/storeChannelData',data);
+//							});
+							
+//							socket.addEventListener('open', function(e) {
+//								console.log("WS open")
+								
+								setInterval(() => {
+									ws.send(
+										JSON.stringify({'channel' : "ping",'data' : {}})
+									)
+								}, 3000)
+								
+//								socket.send(
+//									JSON.stringify({'channel' : "status",'data' : {}})
+//								);
+								
+//							});
+					
+							this.$store.dispatch('main/loadBlockChainStatus')
+
+
+							ws.onopen = e => {
+									console.log("Socket Open")
+									ws.send(
+										JSON.stringify({'channel' : "status",'data' : {}})
+									);
+							};
+							
+							ws.onmessage = e => {
+					        let data = JSON.parse(e.data);
+					         console.log(data)
+ 					         if (data.channel == 'status') {
+									console.log("status channel found")
+									this.$store.dispatch('main/loadBlockChainStatus')
+					         } else {
+									self.$store.dispatch('main/storeChannelData',data)
+								}
+							};
+
+							this.$store.getters.getStatus
+							
                     this.$vuetify.theme = theme
                     fetch('/nav')
                     .then(response => response.json())
                     .then(json => {
                         this.navitems = json.navitems
                     })
+                    
                 },
+					beforeDestroy(){
+//						socket.$off("message", this.handleMessage)
+					},
                 props: {
                     source: String
                 }
             })
+
 
         </script>
     </body>

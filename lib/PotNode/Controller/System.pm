@@ -45,6 +45,7 @@ sub check {
     my $sconfig;
     my $home = $c->config->{home};
     my $dir = $c->config->{dir};
+    my $status;
     
     ## TODO : Multichain params (./multichain/DIR/params & RPC info from multichain.conf
     ## TODO : Find chain-description = pot
@@ -59,7 +60,6 @@ sub check {
     ## Checks the multichain directory for any active blockchains and checks if the daemon is running
     if ($dircount > 0) {
         my @blockchain = $c->get_blockchains;
-        $c->debug(@blockchain);
         ## New Install or Restart Look for pot_config ( PoT is the Genisis Blockchain for the PoT Network all nodes require this )
         if (!$redis->exists("pot_config")){
             $c->app->log->debug("Loading Configs");
@@ -72,26 +72,55 @@ sub check {
                 $c->app->log->debug("New Blockchain Found Loading Config");
                 $c->load_blockchain_config(@blockchain);
             }
-            
+            my $config = decode_json($redis->get($entry."_config"));
+            $status->{$entry}->{'name'} = $config->{'name'};
+				$status->{$entry}->{'id'} = $entry;
+				
+				
             ## Finds all directories and filters out all directories apart from those that contain HEX 32 chars
             ## Gets the PID id from the pid files and removes them if the process is not running
             my $pid = "/home/node/run/$entry\.pid";
             my $pidid = qx/cat $pid/;
             if ($pidid =~ /\n$/) { chop $pidid; };
             if (! -d "/proc/$pidid") {
+					$status->{$entry}->{'status'} = "Removing Stale PID files $pidid";
                 $c->app->log->debug("Removing Stale PID files $pidid");
                 unlink $pid;
             }
-            ## Checks if the pid file exists before trying to start the multichain daemon if it exists express the process id
-            if ( -f '/home/node/run/'.$entry.'.pid') {
-                $c->app->log->debug("Running Process : $entry with PID : $pidid");
-            } else {
-                ## launched the daemon using > /dev/null & to return control to mojolicious
-                $command = 'multichaind '.$entry.' -daemon -pid=/home/node/run/'.$entry.'.pid -walletnotifynew="curl -H \'Content-Type: application/json\' -d %j http://127.0.0.1:9090/system/alertnotify?name=%m\&txid=%s\&hex=%h\&seen=%c\&address=%a\&assets=%e" > /dev/null &';
-                system($command);
-                $c->app->log->debug("Starting : $entry");
+            
+            ## Check if chain if blockchain is disabled
+            if ( -f '/home/node/run/'.$entry.'.stop') {
+					if ( -f '/home/node/run/'.$entry.'.pid') {
+						$c->app->log->debug("Stopping Blockchain $entry");
+						$command = 'multichain-cli '.$entry.' stop';
+						system($command);
+						$status->{$entry}->{'status'} = "Shutting down";
+						$status->{$entry}->{'icon'} = "flight_land";
+					} else {
+						$c->app->log->debug("Blockchain .stop located - skipping blockchain");
+						$status->{$entry}->{'status'} = "Stopped";
+						$status->{$entry}->{'icon'} = "highlight_off";
+					}
+				} else {
+					## Checks if the pid file exists before trying to start the multichain daemon if it exists express the process id
+					if ( -f '/home/node/run/'.$entry.'.pid') {
+						$c->app->log->debug("Running Process : $entry with PID : $pidid");
+						$status->{$entry}->{'status'} = "Running";
+						$status->{$entry}->{'icon'} = "done";
+						
+					} else {
+						## launched the daemon using > /dev/null & to return control to mojolicious
+						$command = 'multichaind '.$entry.' -daemon -pid=/home/node/run/'.$entry.'.pid -walletnotifynew="curl -H \'Content-Type: application/json\' -d %j http://127.0.0.1:9090/system/alertnotify?name=%m\&txid=%s\&hex=%h\&seen=%c\&address=%a\&assets=%e" > /dev/null &';
+						system($command);
+						$c->app->log->debug("Starting : $entry");
+						$status->{$entry}->{'status'} = "Starting";
+						$status->{$entry}->{'icon'} = "flight_takeoff";
+					}
             }
         }
+        $status = encode_json($status);
+        $redis->set("status" => $status);
+        $redis->publish("status" => $status);
     } else {
         $command = 'ipfs add -r -w -Q /home/node/pot_node';
         my $value = qx/$command/;
@@ -187,7 +216,7 @@ sub check {
     }
     
     ## Loads PoT Default Config from the Blockchain
-    if (!$redis->exists("config")){
+    if (!$redis->exists("config_hash")){
         if ($redis->exists("pot_config")){
             my $ug = Data::UUID->new;
             ## Get PoTChain basics from the 
@@ -205,7 +234,7 @@ sub check {
                 ## Check if config Retreaval is underway to prevent second attempt (10mins)
                 if (!$redis->exists("setupconfig")){
                     ## Set setupconfig to prevent additional requests
-                    $redis->setex('setupconfig',600, "started");
+                    $redis->setex('setupconfig',120, "started");
                     my $data = $c->get_rpc_config($pot_config->{'id'});
                     my $URL = Mojo::URL->new("http://127.0.0.1:$data->{'rpcport'}")->userinfo("$data->{'rpcuser'}:$data->{'rpcpassword'}");
                     ## Recurring ID holder for the recurring event.
@@ -233,7 +262,6 @@ sub check {
                                 30 => sub {
                                     $c->app->log->debug("Checking for Config for $uuid");
                                     my $result = $ua->get($URL => json => {"jsonrpc" => "1.0", "id" => "curltest","method" => "liststreamkeyitems", "params" =>  ["config","$uuid",\0,1,-1]})->result->json;
-                                    $c->debug($result);
                                     $result = $result->{'result'}->[0]->{'data'};
                                     if (defined($result)) {
                                         $c->app->log->debug("Data Found");
@@ -248,8 +276,9 @@ sub check {
                             ## Recurring loop finished remove loop
                             Mojo::IOLoop->remove($recurringId);
                             $c->app->log->debug("Decrypting Data");
+                            $redis->set('config_hash',$result);
                             my ($config) = $c->app->decrypt_aes($result,$pot_config->{'id'});
-                            $redis->setex('config',1800, $config);
+                            $redis->set('config',$config);
                             ## Remove setupconfig once complete
                             $redis->del('setupconfig');
                             $c->app->log->debug("Blockchain Config Loaded");
@@ -265,7 +294,23 @@ sub check {
             $c->app->log->debug("Blockchain not loaded - Skipping Config Retreaval");
         }
     } else {
-        $c->app->log->debug("Blockchain Config Loaded - Skipping");
+		## Only reload config if the config hash in the blockchain has changed
+		my $ug = Data::UUID->new;
+		$c->app->log->debug("Blockchain Config Loaded - looking for changes");
+		my $pot_config = decode_json($redis->get("pot_config"));
+		my $data = $c->get_rpc_config($pot_config->{'id'});
+		my $URL = Mojo::URL->new("http://127.0.0.1:$data->{'rpcport'}")->userinfo("$data->{'rpcuser'}:$data->{'rpcpassword'}");
+		my $uuid = $ug->from_hexstring($pot_config->{'id'});
+		$uuid = $ug->to_string($uuid);
+		my $result = $ua->get($URL => json => {"jsonrpc" => "1.0", "id" => "curltest","method" => "liststreamkeyitems", "params" =>  ["config","$uuid",\0,1,-1]})->result->json;
+		$result = $result->{'result'}->[0]->{'data'};
+		my $config_hash = $redis->get('config_hash');
+		if ($config_hash != $result) {
+			$c->app->log->debug("Change in blockchain config detected");
+			$redis->del('config_hash');
+		} else {
+			$c->app->log->debug("No change to Blockchain Config - Skipping");
+		}
     }
     
     if (!$redis->exists("addpotnode")){
@@ -337,7 +382,7 @@ sub check {
 									$option->{'ipfs'} = $ipfsHash;
                         }
                     }
-                    $c->debug($item);
+#                    $c->debug($item);
                     push @navitems, $item;
                 }
                 

@@ -228,28 +228,95 @@ sub set {
 
 
 sub createApp{
-    my $c = shift;
-    my $sessionUuid;
-    my $eventHash;
-    my $eventConfig;
-    my $pot_config = decode_json($redis->get('config'));
-    my $allparams = $c->req->params->to_hash;
-    my $jsonParams = $c->req->json;
-    my $ug = Data::UUID->new;
+	my $c = shift;
+	my $sessionUuid;
+	my $eventHash;
+	my $eventConfig;
+	my $pot_config = decode_json($redis->get('config'));
+	my $jsonParams = $c->req->json;
+	my $ug = Data::UUID->new;
+	my $api;
+	my $url;
 
-    my $uuid = $c->app->uuid();
+	my $uuid = $c->app->uuid();
 
-    $jsonParams->{'containerid'} = $uuid;
-    
-    $c->debug($uuid);
-    
-    my $hex = $ug->from_string($uuid);
-    $hex = $ug->to_hexstring($hex);
-    $hex = substr($hex,2);
-    
-    $c->debug($hex);
-    $c->debug($jsonParams);
+	$jsonParams->{'containerid'} = $uuid;
+	
+	$c->debug($uuid);
+	
+	my $hex = $ug->from_string($uuid);
+	$hex = $ug->to_hexstring($hex);
+	$hex = substr($hex,2);
+	
+	$c->debug($hex);
+	$c->debug($jsonParams);
+	
+	my @optionlist;
+	push (@optionlist,"-chain-description=$jsonParams->{'appName'}") if $jsonParams->{'appName'};
+	push (@optionlist,"-anyone-can-connect=true") if $jsonParams->{'appConnect'};
+	push (@optionlist,"-anyone-can-send=true") if $jsonParams->{'appSending'};
+	push (@optionlist,"-anyone-can-receive=true") if $jsonParams->{'appReceive'};
+	my $options = join(' ', @optionlist);
+	$c->debug("Options : $options");
+	## TODO : Get path using which
+	my $command = "/usr/local/bin/multichain-util create $hex $options";
+	my $create = qx/$command/;
+	$c->debug("Create : $create");
+	$c->render(text => "OK", status => 200);
     
 };
 
+sub deleteApp{
+	my $c = shift;
+	my $jsonParams = $c->req->json;
+	if ($redis->exists("$jsonParams->{'blockChainId'}_config")) {
+		my $config = decode_json($redis->get("$jsonParams->{'blockChainId'}_config"));
+		my $run = "/home/node/run/$jsonParams->{'blockChainId'}";
+		my $path = "$config->{'path'}";
+		if (-f "$run.stop") {
+			if (-f "$run.pid") {
+				$c->app->debug("Waiting for blockchain to stop");
+			} else {
+				my $command = "/bin/mv $path /home/node/archieve/";
+				$c->app->debug("Command : $command");
+				qx/$command/;
+				$command = "/bin/rm $run.stop";
+				qx/$command/;
+			}
+		}
+	}
+	$c->render(text => "OK", status => 200);
+    
+};
+
+sub changeAppState {
+	my $c = shift;
+	my $pot_config = decode_json($redis->get('config'));
+	my $jsonParams = $c->req->json;
+	my $run = "/home/node/run/$jsonParams->{'blockChainId'}";
+	$c->app->debug($run);
+	if (-f "$run.stop") {
+		if (-f "$run.pid") {
+			$c->app->debug("Waiting for blockchain to stop");
+		} else {
+			$c->app->debug("Stopped");
+			unlink "$run.stop"
+		}
+	} else {
+		if (-f "$run.pid") {
+			$c->app->debug("Blockchain Running");
+			my $command = "/bin/cp $run.pid $run.stop";
+			qx/$command/;
+		}
+	}
+	$c->render(text => "OK", status => 200);
+};
+
+sub inviteMobile {
+	my $c = shift;
+	my $jsonParams = $c->req->json;
+	my $data = $c->genqrcode64("test");
+	$c->render(json => $data, status => 200)
+	
+};
 1;
