@@ -85,9 +85,9 @@ sub startup {
   $auth->get('/developer/app/assets/*')->to('developer#assets');
   $auth->post('/developer/api/createApp')->to('developer#createApp');
 
-  $auth->post('/device/ping')->to('device#ping');
   $auth->get('/device/new')->to('device#genNew');
-  $auth->get('/device/new/:uuid')->to('device#addNew');
+  $auth->post('/device/new')->to('device#addNew');
+  $auth->get('/device/test')->to('device#test');
 
   $auth->get('/nav')->to('private#api');
   $auth->get('/')->to('private#redirect');
