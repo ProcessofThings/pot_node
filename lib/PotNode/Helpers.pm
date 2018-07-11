@@ -8,12 +8,12 @@ use Mojo::JSON qw(decode_json encode_json);
 
 
 sub register {
-    
+
     my ($self, $app) = @_;
 
-    $app->helper(redis => 
+    $app->helper(redis =>
 	    sub { shift->stash->{redis} ||= Mojo::Redis2->new; });
-	    
+
     $app->helper(merge => sub {
         my ($self,$custData,$custLayout) = @_;
         my $dataOut;
@@ -25,21 +25,21 @@ sub register {
                                 $dataOut->{$key} = $value;
                         }
         }
-        
+
         return $dataOut;
     });
-    
+
 
 	$app->helper(layout => sub {
         my ($self,$custData,$custLayout) = @_;
          foreach my $items (@{$custLayout}) {
                          my ($key,$type,$text,$value) = split(/,/,$items);
                          $custLayout->{$key} = $value;
-                 }      
+                 }
         return $custLayout;
-    });    
-    
-    
+    });
+
+
     $app->helper(uuid => \&_uuid);
     $app->helper(mergeHTML => \&_mergeHTML);
     $app->helper(cache_control.no_caching => \&_cache_control_none);
@@ -47,7 +47,7 @@ sub register {
     $app->helper(get_blockchains => \&_get_blockchains);
     $app->helper(load_blockchain_config => \&_load_blockchain_config);
     $app->helper(genqrcode64 => \&_genqrcode64);
-    
+
 
 }
 
@@ -119,7 +119,7 @@ sub _mergeHTML {
     my $dataOut;
     foreach my $items (@{$custLayout}) {
                     my ($key,$type,$text,$value) = split(/,/,$items);
-                    
+
                     if ($custData->{$key}) {
                             my @newArray = [$key,$type,$text,$custData->{$key}];
                             push @{$dataOut->{'layout'}}, @newArray;
@@ -132,7 +132,7 @@ sub _mergeHTML {
 };
 
 sub _blockchain_api {
-    
+
 };
 
 sub _genqrcode64 {
@@ -141,9 +141,9 @@ sub _genqrcode64 {
     ## 62mm With Text size 4 Version 5
     ## 62mm No Text size 5 60mmX60mm Version 5
     my ($self,$text) = @_;
-    my $size = 3;
-    my $version = 5;
-    my $blank = 'no';
+    my $size = 10;
+    my $version = 1;
+    my $blank = 'yes';
     my $data;
     if ($blank eq 'no') {
             $text = 'https://pot.ec/'.$text;
@@ -153,7 +153,7 @@ sub _genqrcode64 {
     qrcode => {size => $size,margin => 2,version => $version,level => 'H'}
     );
     my $logo = Imager->new(file => "/home/node/pot_node/public/images/potlogoqrtag.png") || die Imager->errstr;
-    $mqr->logo($logo);
+    # $mqr->logo($logo);
     $mqr->to_png_base64("/home/node/tmp/test.png");
 	 $data->{'image'} = $mqr->to_png_base64("/home/node/tmp/test.png");
     return $data;
