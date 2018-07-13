@@ -129,7 +129,7 @@ sub load {
 									if ($option->{'href'} ~~ @list) {
 										$component = $option->{'href'}.': httpVueLoader( "/vue/'.$option->{'href'}.'.vue" )';
 									} else {
-										$component = $option->{'href'}.': httpVueLoader( "http://127.0.0.1:8080/ipfs/'.$ipfsHash.'/'.$option->{'href'}.'.vue" )';
+										$component = $option->{'href'}.': httpVueLoader( "/ipfs/'.$ipfsHash.'/'.$option->{'href'}.'.vue" )';
 									}
 									$c->config($component);
 									push @components, $component;
@@ -163,7 +163,10 @@ sub load {
 	
 	$c->render(template => $template);
 };
-
+sub video {
+	my $c = shift;
+	$c->render(template => 'system/video');
+};
 sub assets {
     my $c = shift;
     my $url = $c->req->url->to_string;
@@ -188,6 +191,15 @@ sub assets {
         
         $c->render(data => $file, format => $content);
     });
+};
+
+sub ipfs {
+    my $c = shift;
+    my $url = $c->req->url->to_string;
+    my $id = $c->param('id');
+    my $file = $c->param('file');
+    my $base = "http://127.0.0.1:8080/ipfs/$id/$file";
+    $c->proxy_to($base);
 };
 
 sub api {

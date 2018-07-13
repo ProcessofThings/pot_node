@@ -319,4 +319,11 @@ sub inviteMobile {
 	$c->render(json => $data, status => 200)
 	
 };
+
+sub genQrcode64 {
+	my $c = shift;
+	my $jsonParams = $c->req->json;
+	my $data = $c->genqrcode64($jsonParams->{'text'});
+	$c->render(json => $data, status => 200)
+};
 1;

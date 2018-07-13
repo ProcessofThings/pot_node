@@ -18,6 +18,7 @@ sub startup {
   $self->plugin('PotNode::Helpers');
   $self->plugin('DebugDumperHelper');
   $self->plugin('Crypto');
+  $self->plugin ('proxy');
   $self->plugin(OpenAPI => {spec => $self->static->file("v1apimultichain.json")->path});
   $self->mode('development');
   
@@ -40,7 +41,7 @@ sub startup {
   $r->get('/node/join')->to('node#join')->name('node');
   $r->get('/node/alive')->to('node#alive')->name('node');
   
-  $r->get('/ipfs/:ipfs')->to('public#load');
+#  $r->get('/ipfs/:ipfs')->to('public#load');
 
   my $auth = $r->under ( sub {
     my $c = shift;
@@ -88,10 +89,11 @@ sub startup {
   $auth->get('/developer/app/:page')->to('developer#loadApp');
   $auth->get('/developer/app/assets/*')->to('developer#assets');
   $auth->post('/developer/api/createApp')->to('developer#createApp');
-  
+  $auth->get('/video')->to('private#video');
   $auth->get('/nav')->to('private#api');
   $auth->get('/')->to('private#redirect');
   $auth->get('/assets/*')->to('private#assets');
+  $auth->get('/ipfs/:id/*file')->to('private#ipfs');
   $auth->get('/:page')->to('private#load');
   
   

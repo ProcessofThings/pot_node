@@ -49,7 +49,7 @@ sub _paste_logo_in_qrcode($self) {
 
   #Resize logo to half of the QR code
   $logo =
-    $logo->scale(xpixels => $qrcode->getwidth / 2, ypixels => $qrcode->getheight / 2);
+    $logo->scale(xpixels => $qrcode->getwidth / 3, ypixels => $qrcode->getheight / 3);
 
   my $center = {
     x => $qrcode->getwidth / 2 - $logo->getwidth / 2,

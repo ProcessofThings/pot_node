@@ -141,7 +141,8 @@ sub _genqrcode64 {
     ## 62mm With Text size 4 Version 5
     ## 62mm No Text size 5 60mmX60mm Version 5
     my ($self,$text) = @_;
-    my $size = 3;
+    my $timestamp = time();
+    my $size = 5;
     my $version = 5;
     my $blank = 'no';
     my $data;
@@ -154,8 +155,8 @@ sub _genqrcode64 {
     );
     my $logo = Imager->new(file => "/home/node/pot_node/public/images/potlogoqrtag.png") || die Imager->errstr;
     $mqr->logo($logo);
-    $mqr->to_png_base64("/home/node/tmp/test.png");
-	 $data->{'image'} = $mqr->to_png_base64("/home/node/tmp/test.png");
+    $mqr->to_png_base64("/home/node/tmp/qr-$timestamp.png");
+	 $data->{'image'} = $mqr->to_png_base64("/home/node/tmp/qr-$timestamp.png");
     return $data;
 };
 

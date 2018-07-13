@@ -171,7 +171,7 @@
 					}
 				})
 				
-				const ws = new WebSocket("ws://127.0.0.1:9090/wsapi")
+				const ws = new WebSocket(((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/wsapi");
 //				const socket = new WebSocket("ws://127.0.0.1:9090/wsapi")
 				
 				
@@ -211,7 +211,7 @@
                 },
 					created() {
 							var self = this;
-//							this.ws = new WebSocket("ws://127.0.0.1:9090/wsapi")
+//							this.ws = new WebSocket("/wsapi")
 							
 //							socket.addEventListener('message', function(e) {
 //								let data = JSON.parse(e.data);
