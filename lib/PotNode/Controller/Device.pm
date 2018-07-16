@@ -20,7 +20,81 @@ my $uuid = Data::UUID->new;
 
 sub ping{
   my $c = shift;
-  $c->render(text => "OK", status => 200);
+  my $req;
+  my $encr_data;
+  my $encr_aeskey;
+  my $decr_data;
+  my $decr_aeskey_string;
+  my $iv;
+  my $node_keys;
+
+  $req = $c->req->json;
+  $encr_data = $req->{data};
+  $dev_pubkey = $req->{pubkey};
+  $encr_aeskey = $req->{aeskey};
+  $iv = $req->{iv};
+  # my @log = @{$c->req->json};
+  # $c->app->log->debug("getting: @log");
+
+  unless ($encr_data) {
+    $c->render(json => {
+      "error" => "No data received.",
+      "status" => 400
+    }, status => 400);
+    return;
+  }
+
+  unless ($dev_pubkey) {
+    $c->render(json => {
+      "error" => "No RSA public key received.",
+      "status" => 400
+    }, status => 400);
+    return;
+  }
+
+  unless ($encr_aeskey) {
+    $c->render(json => {
+      "error" => "No AES key received.",
+      "status" => 400
+    }, status => 400);
+    return;
+  }
+
+  unless ($iv) {
+    $c->render(json => {
+      "error" => "No init vector received.",
+      "status" => 400
+    }, status => 400);
+    return;
+  }
+
+  &redis_rsa_keys();
+
+  # Getting the node private key
+  my $node_privkey_string = $redis->hget('keys', 'privkey');
+  my $node_privkey = Crypt::OpenSSL::RSA->new_private_key($node_privkey_string);
+  $node_privkey->use_pkcs1_padding();
+
+  # Decrypting the aes key
+  my $decr_aeskey_string = $node_privkey->decrypt(decode_base64($encr_aeskey));
+
+  # Decrypting the data and converting from json to a hash
+  my $decr_data_string = &aes_decrypt($encr_data, $decr_aeskey_string, $iv);
+  my $decr_data = decode_json $decr_data_string;
+
+  ###### ENCRYPTING DATA AGAIN
+
+  my ($encr_data, $new_aes_key, $new_iv) = aes_encrypt(encode_json $decr_data);
+  my $node_pubkey = $redis->hget('keys', 'pubkey');
+  my $dev_pubkey = Crypt::OpenSSL::RSA->new_public_key($dev_pubkey);
+  $new_aes_key = $dev_pubkey->encrypt($new_aes_key);
+
+  $c->render(json => {
+    data => $encr_data,
+    aeskey => $new_aes_key,
+    iv => $new_iv,
+    pubkey => $node_pubkey
+  });
 }
 
 sub genNew{
@@ -70,10 +144,10 @@ sub genNew{
   $qr_result = pothash($qr_result).$qr_result;
 
   my $data = $c->genqrcode64($qr_result);
-  my $image = $data->{image};
-  my $content = "<img src=\"$image\"/>";
-  # $c->render(template => 'new-device-qr');
-  $c->render(text => $content);
+  $c->render(json => $data, status => 200);
+  # my $image = $data->{image};
+  # my $content = "<img src=\"$image\"/>";
+  # $c->render(text => $content);
 }
 
 sub addNew{
@@ -197,7 +271,8 @@ sub aes_encrypt{
                   keysize => $bytes);
 
   my $cipher = Crypt::CBC->new(\%settings);
-  encode_base64 $cipher->encrypt($raw_data);
+  my $encr_data = encode_base64 $cipher->encrypt($raw_data);
+  ($encr_data, $key, $iv);
 }
 
 sub aes_decrypt{

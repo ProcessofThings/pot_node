@@ -91,7 +91,7 @@ sub startup {
 
   $auth->get('/device/new')->to('device#genNew');
   $auth->post('/device/new')->to('device#addNew');
-  $auth->get('/device/ping')->to('device#ping');
+  $auth->post('/device/ping')->to('device#ping');
 
   $auth->get('/nav')->to('private#api');
   $auth->get('/')->to('private#redirect');

@@ -141,7 +141,7 @@ sub _genqrcode64 {
     ## 62mm With Text size 4 Version 5
     ## 62mm No Text size 5 60mmX60mm Version 5
     my ($self,$text) = @_;
-    my $size = 10;
+    my $size = 5;
     my $version = 1;
     my $blank = 'yes';
     my $data;
@@ -150,7 +150,7 @@ sub _genqrcode64 {
     }
     my $mqr  = PotNode::QRCode->new(
     text   => $text,
-    qrcode => {size => $size,margin => 2,version => $version,level => 'H'}
+    qrcode => {size => $size,margin => 2,version => $version,level => 'L'}
     );
     my $logo = Imager->new(file => "/home/node/pot_node/public/images/potlogoqrtag.png") || die Imager->errstr;
     # $mqr->logo($logo);

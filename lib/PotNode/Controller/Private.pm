@@ -32,7 +32,7 @@ sub load {
     my $blockchain = $c->req->param('chain') || "none";
     my $allparams = $c->req->params->to_hash;
     my $template;
-    
+
     foreach my $item (@{$pot_config->{'config'}->{'9090_layout'}}) {
         if($item->{'name'} eq $page) {
             $id = $item->{'ipfs'};
@@ -40,7 +40,7 @@ sub load {
             $c->app->log->debug("Error Page name not found");
         }
     }
-    
+
     if ($blockchain eq "none") {
         if ($c->session('blockchain') ne 'none') {
             $blockchain = $c->session('blockchain');
@@ -51,13 +51,13 @@ sub load {
             $c->redirect_to('/main.html');
         }
     }
-        
+
     if ($c->req->param('chain')) {
         $c->session(blockchain => $blockchain);
     }
     ## Setup Session UUID and Event UUID
     ## These are combined to link and hashed to provide a uniquid that is used to link page config to data processing
-    
+
     my $uuid = $c->app->uuid();
     if (!$c->session('uuid')) {
         $c->app->log->debug("Session Set : $uuid");
@@ -67,7 +67,7 @@ sub load {
         $sessionUuid = $c->session('uuid');
         $c->app->log->debug("Session UUID Exists : $sessionUuid");
     }
-    
+
     ## Create Event Hash
     $eventHash = $c->sha256_hex("$sessionUuid-$uuid");
     $c->app->log->debug("Event Hash : $eventHash");
@@ -89,14 +89,14 @@ sub load {
     $eventConfig->{'config'} = $config;
     $eventConfig->{'allparams'} = $allparams;
     $redis->setex($eventHash,1800, encode_json($eventConfig));
-    
+
 	my $url = 'http://127.0.0.1:8080/ipfs/'.$id.'/'.$page.'.vue';
 	$c->app->log->debug("URL : $url");
 	$c->stash(import_url => $url);
 
 	my @components;
 	my $list;
-	
+
 	if ($redis->exists("config")) {
 		my @ipfsHash;
 		$c->app->log->debug("Checking for HTML changes 9090");
@@ -125,7 +125,7 @@ sub load {
 							if ($option->{'href'}) {
 									$option->{'ipfs'} = $ipfsHash;
 									## To override loading vue files from ipfs add the array bellow
-									my @list = [];
+									my @list = ['developer'];
 									if ($option->{'href'} ~~ @list) {
 										$component = $option->{'href'}.': httpVueLoader( "/vue/'.$option->{'href'}.'.vue" )';
 									} else {
@@ -138,7 +138,7 @@ sub load {
 						$c->debug($item);
 						push @navitems, $item;
 					}
-					
+
 			}
 			my $dataOut->{'navitems'} = \@navitems;
 			$c->debug(@components);
@@ -147,20 +147,20 @@ sub load {
 	}
 
 	$list = join(',',@components);
-	
+
 	$c->debug($list);
-	
+
 	$c->stash(import_components => $list);
 
 	$c->debug("Load Config");
 	$c->debug($config);
-	
+
 	if (!$config->{'template'}) {
 		$template = 'system/start';
 	} else {
 		$template = $config->{'template'};
 	}
-	
+
 	$c->render(template => $template);
 };
 
@@ -185,7 +185,7 @@ sub assets {
         my $content = $tx->res->headers->content_type;
         $c->debug($content);
         my $file = $tx->res->body;
-        
+
         $c->render(data => $file, format => $content);
     });
 };
@@ -199,5 +199,5 @@ sub api {
     my $data = decode_json($redis->get('index'));
     $c->render(json => $data);
 };
-  
+
 1;
