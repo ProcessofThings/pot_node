@@ -150,10 +150,10 @@ sub _genqrcode64 {
     }
     my $mqr  = PotNode::QRCode->new(
     text   => $text,
-    qrcode => {size => $size,margin => 2,version => $version,level => 'L'}
+    qrcode => {size => $size,margin => 2,version => $version,level => 'H'}
     );
     my $logo = Imager->new(file => "/home/node/pot_node/public/images/potlogoqrtag.png") || die Imager->errstr;
-    # $mqr->logo($logo);
+    $mqr->logo($logo);
     $mqr->to_png_base64("/home/node/tmp/test.png");
 	 $data->{'image'} = $mqr->to_png_base64("/home/node/tmp/test.png");
     return $data;

@@ -10,7 +10,7 @@ use Mojo::ByteStream 'b';
 use Data::UUID;
 use Data::Dumper;
 use Config::IniFiles;
-
+use PotNode::InviteService;
 # This action will render a template
 
   my $ua = Mojo::UserAgent->new;
@@ -46,10 +46,14 @@ sub check {
     my $home = $c->config->{home};
     my $dir = $c->config->{dir};
     my $status;
-    
+
     ## TODO : Multichain params (./multichain/DIR/params & RPC info from multichain.conf
     ## TODO : Find chain-description = pot
     ## TODO : Store default-network-port, default-rpc-port, chain-name
+
+    # Clear expired generated uuids
+    $c->app->log->debug("Clearing expired generated UUIDs.");
+    PotNode::InviteService->new->clear_expired_uuids;
 
     my @dir_list = glob("$path*");
     $c->debug(@dir_list);
