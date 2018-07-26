@@ -5,14 +5,39 @@ use PotNode::InviteService;
 use Mojo::Base 'Mojolicious::Controller';
 use Mojo::Redis2;
 use Mojo::JSON qw(decode_json);
-use Try::Tiny;
-use Mojo::IOLoop::Stream;
 
+use PotNode::MessageService;
+use PotNode::PubSubService;
 
-use constant REDIS_GEN_UUIDS_KEY => 'generated_uuids';
-use constant REDIS_UUIDS_KEY => 'device_uuids';
+use constant 'REDIS_GEN_UUIDS_KEY' => 'generated_uuids';
+use constant 'REDIS_UUIDS_KEY' => 'device_uuids';
 
 my $redis = Mojo::Redis2->new;
+
+sub listen{
+  my $c = shift;
+  my $pubsub = PotNode::PubSubService->new;
+  my $topic = $c->req->json->{topic};
+  $c->app->log->debug("Now listening to $topic");
+
+  $pubsub->sub($topic, sub {
+    my $body = shift;
+    my $hdr = shift;
+
+    $c->app->log->debug("Got data from $topic: $body");
+  });
+
+  return $c->render(text => "OK");
+}
+
+sub sendm{
+  my $c = shift;
+  my $pubsub = PotNode::PubSubService->new;
+  my $topic = $c->req->json->{topic};
+  my $message = $c->req->json->{message};
+  $pubsub->pub($topic, $message);
+  return $c->render(text => "OK");
+}
 
 sub genInvite{
   my $c = shift;
@@ -28,17 +53,15 @@ sub addNew{
   my $req = $c->req->json;
   my $dev_pubkey = $req->{pubkey};
 
-  my $req = PotNode::EncryptedRequest->new(
+  $req = PotNode::EncryptedRequest->new(
     encr_data => $req->{data},
     encr_aeskey => $req->{aeskey},
     iv => $req->{iv},
     dev_pubkey => $req->{pubkey}
   );
 
-  if ($req->error) {
-    $c->render(json => { error => $req->error }, status => 400);
-    return;
-  }
+  return $c->render(json => { error => $req->error }, status => 400)
+  if $req->error;
 
   my $decr_data;
   my $result = eval {
