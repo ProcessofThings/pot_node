@@ -32,6 +32,8 @@ sub load {
     my $blockchain = $c->req->param('chain') || "none";
     my $allparams = $c->req->params->to_hash;
     my $template;
+		my $static = Mojolicious::Static->new;
+		push @{$static->paths}, '/home/node/dev';
     
     foreach my $item (@{$pot_config->{'config'}->{'9090_layout'}}) {
         if($item->{'name'} eq $page) {
@@ -82,7 +84,6 @@ sub load {
     my $config = $ua->get('http://127.0.0.1:8080/ipfs/'.$id.'/config.json')->result->body;
     if ($config =~ /\n$/) { chop $config; };
     $config = decode_json($config);
-    $c->debug($config);
     $c->app->log->debug("Blockchain : $blockchain");
     $eventConfig->{'blockchain'} = $blockchain;
     $eventConfig->{'page'} = $page;
@@ -117,7 +118,7 @@ sub load {
 			my $config = $ua->get('http://127.0.0.1:8080/ipfs/'.$ipfsHash.'/config.json')->result->body;
 			if ($config =~ /\n$/) { chop $config; };
 			$config = decode_json($config);
-			$component = 'mainPage: httpVueLoader( "http://127.0.0.1:8080/ipfs/'.$ipfsHash.'/main.vue" )';
+			$component = 'mainPage: httpVueLoader( "/ipfs/'.$ipfsHash.'/main.vue" )';
 			push @components, $component;
 			if ($config->{'navitems'}) {
 					foreach my $item (@{$config->{'navitems'}}) {
@@ -125,9 +126,11 @@ sub load {
 							if ($option->{'href'}) {
 									$option->{'ipfs'} = $ipfsHash;
 									## To override loading vue files from ipfs add the array bellow
-									my @list = [];
-									if ($option->{'href'} ~~ @list) {
-										$component = $option->{'href'}.': httpVueLoader( "/vue/'.$option->{'href'}.'.vue" )';
+									my $devdirectory = $c->config->{dev}.'/'.$ipfsHash;
+									$c->app->log->debug($devdirectory);
+									if (-d $devdirectory) {
+										$c->app->log->debug("Developer Tool - Detected local copy");
+										$component = $option->{'href'}.': httpVueLoader( "/dev/'.$ipfsHash.'/'.$option->{'href'}.'.vue" )';
 									} else {
 										$component = $option->{'href'}.': httpVueLoader( "/ipfs/'.$ipfsHash.'/'.$option->{'href'}.'.vue" )';
 									}

@@ -326,4 +326,12 @@ sub genQrcode64 {
 	my $data = $c->genqrcode64($jsonParams->{'text'});
 	$c->render(json => $data, status => 200)
 };
+
+sub static {
+	my $c = shift;
+	my $file = $c->param('file');
+	$file = $c->config->{dev}.'/'.$file;
+	$c->res->content->asset(Mojo::Asset::File->new(path => $file));
+  $c->rendered(200);
+};
 1;

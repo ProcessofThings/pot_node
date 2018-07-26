@@ -39,6 +39,13 @@ sub register {
         return $custLayout;
     });    
     
+    ## System Check Helper Functions
+    
+    $app->helper(pid => \&_pid);
+    $app->helper(directory => \&_directory);
+    $app->helper(ipfs_status => \&_ipfs_status);
+    $app->helper(get_hash => \&_get_hash);
+    $app->helper(pot_web => \&_pot_web);
     
     $app->helper(uuid => \&_uuid);
     $app->helper(mergeHTML => \&_mergeHTML);
@@ -50,6 +57,135 @@ sub register {
     
 
 }
+
+sub _pid {
+	my ($c, $pid) = @_;
+	my $pidid = qx/cat $pid/;
+	my $system;
+	if ($pidid =~ /\n$/) { chop $pidid; };
+	$c->app->log->debug("Checking $pid");
+	if ($c->redis->hexists('system', 'pid')) {
+		my $system = decode_json($c->redis->hget('system', 'pid'));
+		$c->app->log->debug("Current PID : $pidid  System PID : $system->{'pid'}");
+		if ($system->{'pid'} ne "$pidid") {
+			$system->{'pid'} = $pidid;
+			$c->redis->hset('system', 'pid', encode_json($system));
+			$c->app->log->debug("PID Changed load Precheck");
+			return undef;
+		}
+		$c->app->log->debug("Skipping Precheck");
+		return 1;
+	}
+	$system->{'pid'} = $pidid;
+	$c->redis->hset('system','pid',encode_json($system));
+	return undef;
+}
+
+
+sub _directory {
+	my ($c, $data) = @_;
+	my $system;
+	$c->app->log->debug("Checking Directories");
+	my $dir = $c->config->{'dir'};
+	foreach my $directory (@{$data}) {
+		my $path = "$dir/$directory";
+		mkdir($path) unless(-d $path);
+	}
+	$system->{'directory'}->{'status'} = 1;
+	$c->redis->hset('system', 'directory', encode_json($system));
+	return;
+}
+
+sub _ipfs_status {
+	## This helper function gets the IPFS hash of the directory passed
+	my ($c, $command) = @_;
+	my $system;
+		my $value = qx/$command/;
+		my $status;
+		$value =~ s/\R//g;
+		eval {
+			$status = decode_json($value);
+		};
+		if ($@) {
+			die "IPFS not installed invalid responce";
+		}
+		$system->{'ipfs'}->{'system'} = $status;
+		$c->redis->hset('system' , 'ipfs', encode_json($system));
+		$c->app->log->debug("IPFS Installed");
+		return;
+}
+
+sub _get_hash {
+	## This helper function gets the IPFS hash of the directory passed
+	my ($c, $directory) = @_;
+	my $system;
+	if (-d $directory) {
+		$command = "ipfs add -r -w -Q $directory";
+		my $value = qx/$command/;
+		$value =~ s/\R//g;
+		$c->app->log->debug("Directory $directory - Hash : $value");
+		$system->{'pot'}->{'hash'} = $value;
+		$c->redis->hset('system', 'pot_hash',encode_json($system));
+		return;
+	} else {
+		die "directory does not exist";
+  }
+}
+
+sub _pot_web {
+	## This helper function gets the IPFS hash of the directory passed
+	my ($c, $directory) = @_;
+	my $pid = '/home/node/run/pot_web.pid';
+	my $system;
+	my $pot_web;
+	if (-d $directory) {
+	  $command = "ipfs add -r -w -Q $directory";
+		my $value = qx/$command/;
+		if (!$c->redis->hexists('system','pot_web')) {
+			$c->app->log->debug("PoT Web found saving hash $value");
+			$system->{'pot_web'}->{'hash'} = $value;
+		} else {
+			$system = decode_json($c->redis->hget('system', 'pot_web'));
+			if ($system->{'hash'} ne $value) {
+					$c->app->log->debug("PoT Web hash has changed - reloading");
+					$system->{'hash'} = $value;
+					$command = "/home/node/perl5/perlbrew/perls/perl-5.24.3/bin/hypnotoad $directory/pot_web.pl";
+					my $value = qx/$command/;
+					$value =~ s/\R//g;
+			}
+		}
+		
+		if (!-f $pid) {
+			$command = "/home/node/perl5/perlbrew/perls/perl-5.24.3/bin/hypnotoad $directory/pot_web.pl";
+			$c->app->log->debug("Starting PoT Web - $command");
+			my $value = qx/$command/;
+			$value =~ s/\R//g;
+			$c->app->log->debug("Directory $directory - Status : $value");
+		} else {
+			my $pidid = qx/cat $pid/;
+			if ($pidid =~ /\n$/) { chop $pidid; };
+			$c->app->log->debug("Checking $pid");
+			if ($c->redis->hexists('system', 'pot_web')) {
+				$c->app->log->debug("PoT Web Current PID : $pidid  PoT Web PID : $system->{'pid'}");
+				if ($system->{'pid'} ne "$pidid") {
+					$system->{'pid'} = $pidid;
+					$c->redis->hset('system', 'pot_web', encode_json($system));
+					$c->app->log->debug("PID Changed load Precheck");
+					return undef;
+				}
+				$c->app->log->debug("Skipping Precheck");
+				return 1;
+			}
+			$system->{'pid'} = $pidid;
+		}
+		$c->redis->hset('system', 'pot_web',encode_json($system));
+		return;
+	} else {
+		$c->app->log->debug("Skipping PoT Web - directory does not exist");
+		return;
+  }
+}
+
 
 sub _uuid {
     my $self = shift;
