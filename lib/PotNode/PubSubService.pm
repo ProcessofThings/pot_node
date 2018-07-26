@@ -15,6 +15,7 @@ sub sub{
   my $self = shift;
   my $topic = shift || croak('Topic required.');
   my $callback = shift;
+  $AnyEvent::HTTP::MAX_PER_HOST = 10000;
 
   http_request
     GET => IPFS_PUBSUB_ENDPOINT."sub?arg=$topic",
