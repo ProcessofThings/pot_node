@@ -1,43 +1,16 @@
 package PotNode::Controller::Device;
-use PotNode::EncryptedRequest;
-use PotNode::EncryptedResponse;
+use PotNode::Encryption::EncryptedRequest;
+use PotNode::Encryption::EncryptedResponse;
 use PotNode::InviteService;
 use Mojo::Base 'Mojolicious::Controller';
 use Mojo::Redis2;
 use Mojo::JSON qw(decode_json);
 
-use PotNode::MessageService;
-use PotNode::PubSubService;
 
 use constant 'REDIS_GEN_UUIDS_KEY' => 'generated_uuids';
 use constant 'REDIS_UUIDS_KEY' => 'device_uuids';
 
 my $redis = Mojo::Redis2->new;
-
-sub listen{
-  my $c = shift;
-  my $pubsub = PotNode::PubSubService->new;
-  my $topic = $c->req->json->{topic};
-  $c->app->log->debug("Now listening to $topic");
-
-  $pubsub->sub($topic, sub {
-    my $body = shift;
-    my $hdr = shift;
-
-    $c->app->log->debug("Got data from $topic: $body");
-  });
-
-  return $c->render(text => "OK");
-}
-
-sub sendm{
-  my $c = shift;
-  my $pubsub = PotNode::PubSubService->new;
-  my $topic = $c->req->json->{topic};
-  my $message = $c->req->json->{message};
-  $pubsub->pub($topic, $message);
-  return $c->render(text => "OK");
-}
 
 sub genInvite{
   my $c = shift;
@@ -53,25 +26,14 @@ sub addNew{
   my $req = $c->req->json;
   my $dev_pubkey = $req->{pubkey};
 
-  $req = PotNode::EncryptedRequest->new(
-    encr_data => $req->{data},
-    encr_aeskey => $req->{aeskey},
-    iv => $req->{iv},
-    dev_pubkey => $req->{pubkey}
-  );
+  $req = PotNode::Encryption::EncryptedRequest->new(req => $req);
 
   return $c->render(json => { error => $req->error }, status => 400)
   if $req->error;
 
   my $decr_data;
-  my $result = eval {
-    $decr_data = decode_json $req->decr_data;
-  };
-
-  unless ($result){
-    $c->render(json => { error => "Encryption error" }, status => 500);
-    return;
-  }
+  eval { $decr_data = decode_json $req->decr_data; }
+  or return $c->render(json => { error => "Decryption error" }, status => 500);
 
   # Checking if posted UUID is generated from node and if it already exists
   my $uuid = $decr_data->{uuid};
@@ -84,10 +46,8 @@ sub addNew{
     $error = "Invalid or expired UUID.";
   }
 
-  if ($error) {
-    $c->render(json => { error => $error }, status => 400);
-    return;
-  }
+  return $c->render(json => { error => $error }, status => 400)
+  if ($error);
 
   # If no errors removes the UUID from the generated and adds it to the device UUIDS
   $c->redis->hdel(REDIS_GEN_UUIDS_KEY, $uuid);

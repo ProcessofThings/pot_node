@@ -1,16 +1,15 @@
-package PotNode::EncryptedRequest;
-
+package PotNode::Encryption::EncryptedRequest;
 use Mojo::Base -base;
 use Mojo::Redis2;
 use Carp;
-use PotNode::EncryptHelpers;
 
 has redis => sub { Mojo::Redis2->new };
-has encr => sub { PotNode::EncryptHelpers->new };
-has 'encr_data';
-has 'dev_pubkey';
-has 'encr_aeskey';
-has 'iv';
+has encr => sub { PotNode::Encryption::Helpers->new };
+has 'req';
+has 'encr_data' => sub { shift->req->{data} };
+has 'dev_pubkey' => sub { shift->req->{pubkey} };
+has 'encr_aeskey' => sub { shift->req->{aeskey} };
+has 'iv' => sub { shift->req->{iv} };
 has node_privkey => sub { my $self = shift; $self->redis->hget('keys', 'privkey')};
 
 sub decr_data{

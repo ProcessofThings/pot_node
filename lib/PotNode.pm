@@ -13,40 +13,10 @@ sub startup {
   # Load configuration from hash returned by "my_app.conf"
   my $config = $self->plugin('Config');
 
-  my $topic = 'test';
-
-  http_request
-    GET => "http://127.0.0.1:5001/api/v0/pubsub/sub?arg=test",
-    # headers => { 'user-agent' => 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0)' },
-    # want_body_handle => 1,
-    # persistent => 1,
-    # keepalive => 1,
-    # sub {
-    #   my $hdl = shift;
-    #   my $hdr = shift;
-    #   $self->debug($hdl, $hdr);
-    #   $self->app->log->debug("TESTTESTTESTTEST");
-    #     $hdl->on_read(sub {
-    #       my ($hdl1) = @_;
-    #
-    #       $self->app->log->debug("data from topic test:".$hdl1->rbuf);
-    #     });
-    # };
-    on_body => sub {
-      my $body = shift;
-      my $headers = shift;
-      $self->debug($headers);
-      $self->app->log->debug("data from topic:".$body);
-      return 1;
-    },
-    sub {
-
-    };
-
   # Documentation browser under "/perldoc"
   $self->plugin('PODRenderer') if $config->{perldoc};
   $self->plugin('PotNode::Helpers');
-  $self->plugin('PotNode::EncryptHelpers');
+  $self->plugin('PotNode::Encryption::Helpers');
   $self->plugin('DebugDumperHelper');
   $self->plugin('Crypto');
   $self->plugin(OpenAPI => {spec => $self->static->file("v1apimultichain.json")->path});
@@ -123,29 +93,16 @@ sub startup {
   $auth->get('/device/new')->to('device#genInvite');
   $auth->post('/device/new')->to('device#addNew');
   $auth->post('/device/listen')->to('device#listen');
-  $auth->post('/device/sendm')->to('device#sendm');
-  
+
+  $auth->post('/device/messages/subscribe')->to('messaging#subscribe');
+  $auth->post('/device/messages/send')->to('messaging#send_msg');
+  $auth->post('/device/messages/get')->to('messaging#get_msgs');
+  $auth->post('/device/messages/move')->to('messaging#move');
+
   $auth->get('/nav')->to('private#api');
   $auth->get('/')->to('private#redirect');
   $auth->get('/assets/*')->to('private#assets');
   $auth->get('/:page')->to('private#load');
-
-
-  # for my $topic_num (0..1000){
-  #   $self->app->log->debug("Listening to $topic_num");
-  #   http_request
-  #     GET => "http://127.0.0.1:5001/api/v0/pubsub/sub?arg=topic".$topic_num,
-  #     on_body => sub {
-  #       my $body = shift;
-  #       my $headers = shift;
-  #       $self->debug($headers);
-  #       $self->app->log->debug("data from topic".$topic_num.":".$body);
-  #       return 1;
-  #     },
-  #     sub {
-  #
-  #     };
-  # }
 }
 
 1;

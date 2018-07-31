@@ -1,5 +1,6 @@
-package PotNode::EncryptHelpers;
-use base 'Mojolicious::Plugin::DebugDumperHelper';
+package PotNode::Encryption::Helpers;
+use base 'Mojolicious::Plugin';
+use Mojo::Redis2;
 use Mojo::JSON qw(decode_json encode_json);
 use Digest::MD5 qw(md5_hex);
 use Crypt::OpenSSL::RSA;
@@ -10,8 +11,8 @@ use Data::UUID;
 use Encode;
 use Carp;
 
-use constant AES_BYTES => 16;
-use constant RSA_BITS => 1024;
+use constant 'AES_BYTES' => 16;
+use constant 'RSA_BITS' => 1024;
 
 my $redis = Mojo::Redis2->new;
 
@@ -19,14 +20,13 @@ sub register {
 
   my ($self, $app) = @_;
 
-  $app->helper(aes_encrypt => \&aes_encrypt);
-  $app->helper(aes_decrypt => \&aes_decrypt);
-  $app->helper(rsa_encrypt => \&rsa_encrypt);
-  $app->helper(rsa_decrypt => \&rsa_decrypt);
-  $app->helper(gen_rsa_keys => \&gen_rsa_keys);
-  $app->helper(redis_rsa_keys => \&redis_rsa_keys);
-  $app->helper(to_hex => \&to_hex);
-  $app->helper(pothash => \&pothash);
+  $app->helper('aes_encrypt' => \&aes_encrypt);
+  $app->helper('aes_decrypt' => \&aes_decrypt);
+  $app->helper('rsa_encrypt' => \&rsa_encrypt);
+  $app->helper('rsa_decrypt' => \&rsa_decrypt);
+  $app->helper('gen_rsa_keys' => \&gen_rsa_keys);
+  $app->helper('redis_rsa_keys' => \&redis_rsa_keys);
+  $app->helper('pothash' => \&pothash);
 }
 
 sub aes_encrypt{
@@ -120,14 +120,6 @@ sub redis_rsa_keys{
     $redis->hset('keys', 'pubkey', $pubkey);
     $redis->hset('keys', 'privkey', $privkey);
   }
-};
-
-sub to_hex{
-  my $self = shift;
-  my $text = shift;
-  Encode::_utf8_off ($text);
-  my $hex = uc unpack "H*", $text;
-  join ('', $hex =~ /(..)/g);
 };
 
 sub pothash{
