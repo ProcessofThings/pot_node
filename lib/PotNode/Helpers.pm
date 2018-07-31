@@ -1,8 +1,8 @@
 package PotNode::Helpers;
 use base 'Mojolicious::Plugin';
-use Data::UUID;
 use Config::IniFiles;
 use PotNode::QRCode;
+use UUID::Tiny ':std';
 use Mojo::JSON qw(decode_json encode_json);
 
 
@@ -345,9 +345,13 @@ sub _publish_status {
 
 sub _uuid {
     my $self = shift;
-    my $ug = Data::UUID->new;
-    my $uuid = $ug->create();
-    return $ug->to_string( $uuid );
+    my $uuid_rand  = uuid_to_string(create_uuid(UUID_RANDOM));
+    my $uuid_binary = create_uuid(UUID_SHA1, UUID_NS_DNS, $uuid_rand);
+    
+		## Converts UUID to uppercase string
+		
+    my $uuid_string = uc(uuid_to_string($uuid_binary));
+    return $uuid_string;
 };
 
 
