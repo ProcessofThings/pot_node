@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious';
 use Mojo::UserAgent;
 use Mojo::JSON qw(decode_json encode_json);
 use Alien::SwaggerUI;
+use Mojolicious::Static;
 
 # This method will run once at server start
 sub startup {
@@ -36,6 +37,7 @@ sub startup {
 
   $r->websocket('/ws')->to('start#ws');
   $r->websocket('/wsapi')->to('api#wsapi');
+
   #Public Functions
   
   $r->get('/node/join')->to('node#join')->name('node');
@@ -89,10 +91,12 @@ sub startup {
   $auth->get('/developer/app/:page')->to('developer#loadApp');
   $auth->get('/developer/app/assets/*')->to('developer#assets');
   $auth->post('/developer/api/createApp')->to('developer#createApp');
+  $auth->any('/dev/*file')->to('developer#static');
   $auth->get('/video')->to('private#video');
   $auth->get('/nav')->to('private#api');
   $auth->get('/')->to('private#redirect');
   $auth->get('/assets/*')->to('private#assets');
+  $auth->get('/ipfs/:id')->to('private#ipfs');
   $auth->get('/ipfs/:id/*file')->to('private#ipfs');
   $auth->get('/:page')->to('private#load');
   

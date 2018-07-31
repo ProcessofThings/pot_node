@@ -262,6 +262,8 @@ sub createApp{
 	my $command = "/usr/local/bin/multichain-util create $hex $options";
 	my $create = qx/$command/;
 	$c->debug("Create : $create");
+	$c->blockchain_change_state($hex);
+	$c->publish_status;
 	$c->render(text => "OK", status => 200);
     
 };
@@ -285,8 +287,9 @@ sub deleteApp{
 			}
 		}
 	}
+	
 	$c->render(text => "OK", status => 200);
-    
+	$c->publish_status;
 };
 
 sub changeAppState {
@@ -309,6 +312,8 @@ sub changeAppState {
 			qx/$command/;
 		}
 	}
+	$c->blockchain_change_state($jsonParams->{'blockChainId'});
+	$c->publish_status;
 	$c->render(text => "OK", status => 200);
 };
 
@@ -325,5 +330,13 @@ sub genQrcode64 {
 	my $jsonParams = $c->req->json;
 	my $data = $c->genqrcode64($jsonParams->{'text'});
 	$c->render(json => $data, status => 200)
+};
+
+sub static {
+	my $c = shift;
+	my $file = $c->param('file');
+	$file = $c->config->{dev}.'/'.$file;
+	$c->res->content->asset(Mojo::Asset::File->new(path => $file));
+  $c->rendered(200);
 };
 1;
