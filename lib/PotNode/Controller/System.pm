@@ -196,7 +196,6 @@ sub check {
     ## Loads PoT Default Config from the Blockchain
     if (!$redis->exists("config_hash")){
         if ($redis->exists("pot_config")){
-            my $ug = Data::UUID->new;
             ## Get PoTChain basics from the 
             my $pot_config = decode_json($redis->get("pot_config"));
             ## Waits for the blochchain to begin
@@ -232,8 +231,7 @@ sub check {
                             $c->app->log->debug("Retreaving Config From Blockchain");
                             ## Converts UUID HEX back to standard UUID format with -
                             ## TODO : Blockchain ID using UUID cannot have the - maybe alter blockchain to allow this later date.
-                            my $uuid = $ug->from_hexstring($pot_config->{'id'});
-                            $uuid = $ug->to_string($uuid);
+                            my $uuid = $c->hex_uuid_to_uuid($pot_config->{'id'});
                             ## Recurring Loop returns to $end when finished passing $result to be passed onto the next step
                             my $end = $delay->begin;
                             $recurringId = Mojo::IOLoop->recurring(
@@ -273,13 +271,11 @@ sub check {
         }
     } else {
 		## Only reload config if the config hash in the blockchain has changed
-		my $ug = Data::UUID->new;
 		$c->app->log->debug("Blockchain Config Loaded - looking for changes");
 		my $pot_config = decode_json($redis->get("pot_config"));
 		my $data = $c->get_rpc_config($pot_config->{'id'});
 		my $URL = Mojo::URL->new("http://127.0.0.1:$data->{'rpcport'}")->userinfo("$data->{'rpcuser'}:$data->{'rpcpassword'}");
-		my $uuid = $ug->from_hexstring($pot_config->{'id'});
-		$uuid = $ug->to_string($uuid);
+		my $uuid = $c->hex_uuid_to_uuid($pot_config->{'id'});
 		my $result = $ua->get($URL => json => {"jsonrpc" => "1.0", "id" => "curltest","method" => "liststreamkeyitems", "params" =>  ["config","$uuid",\0,1,-1]})->result->json;
 		$result = $result->{'result'}->[0]->{'data'};
 		my $config_hash = $redis->get('config_hash');

@@ -238,17 +238,12 @@ sub createApp{
 	my $api;
 	my $url;
 
-	my $uuid = $c->app->uuid();
+	my ($uuid, $hex) = $c->app->uuid();
 
 	$jsonParams->{'containerid'} = $uuid;
 	
 	$c->debug($uuid);
 	
-	my $hex = $ug->from_string($uuid);
-	$hex = $ug->to_hexstring($hex);
-	$hex = substr($hex,2);
-	
-	$c->debug($hex);
 	$c->debug($jsonParams);
 	
 	my @optionlist;

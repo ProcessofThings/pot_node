@@ -3,6 +3,7 @@ use base 'Mojolicious::Plugin';
 use Config::IniFiles;
 use PotNode::QRCode;
 use UUID::Tiny ':std';
+use Data::UUID;
 use Mojo::JSON qw(decode_json encode_json);
 
 
@@ -51,6 +52,7 @@ sub register {
     $app->helper(publish_status => \&_publish_status);
     
     $app->helper(uuid => \&_uuid);
+		$app->helper(hex_uuid_to_uuid => \&_hex_uuid_to_uuid);
     $app->helper(mergeHTML => \&_mergeHTML);
     $app->helper(cache_control.no_caching => \&_cache_control_none);
     $app->helper(get_rpc_config => \&_get_rpc_config);
@@ -344,15 +346,29 @@ sub _publish_status {
 
 
 sub _uuid {
+		## This function returns uuid and hex version of the same UUID
+		
     my $self = shift;
     my $uuid_rand  = uuid_to_string(create_uuid(UUID_RANDOM));
     my $uuid_binary = create_uuid(UUID_SHA1, UUID_NS_DNS, $uuid_rand);
+    $hex =~ tr/-//d;
     
 		## Converts UUID to uppercase string
 		
-    my $uuid_string = uc(uuid_to_string($uuid_binary));
-    return $uuid_string;
+    my $uuid_string = $hex = uc(uuid_to_string($uuid_binary));
+    
+    $hex =~ tr/-//d;
+    
+    return ($uuid_string, $hex);
 };
+
+sub _hex_uuid_to_uuid {
+	my ($self, $hex) = @_;
+	my $ug = Data::UUID->new;
+	my $uuid = $ug->from_hexstring($hex);
+	$uuid = $ug->to_string($uuid);
+	return $uuid;
+}
 
 
 sub _cache_control_none {
