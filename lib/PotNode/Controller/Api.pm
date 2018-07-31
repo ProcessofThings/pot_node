@@ -223,14 +223,4 @@ sub getStatus {
 	$c->render(json => $data, status => 200);
 }
 
-sub changeStatus {
-	my $c = shift;
-	my $hash = $c->req->params->to_hash;
-	my $entry = $hash->{'id'};
-	my $stop = "/home/node/run/$entry\.stop";
-	$c->app->log->debug("Change Status");
-	
-	$c->render(text => "OK", status => 200);
-}
-
 1;

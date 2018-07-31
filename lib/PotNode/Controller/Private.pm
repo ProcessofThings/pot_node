@@ -200,8 +200,14 @@ sub ipfs {
     my $c = shift;
     my $url = $c->req->url->to_string;
     my $id = $c->param('id');
-    my $file = $c->param('file');
-    my $base = "http://127.0.0.1:8080/ipfs/$id/$file";
+    my $file = $c->param('file') || 'none';
+    my $base;
+    if ($file ne 'none') {
+	$base = "http://127.0.0.1:8080/ipfs/$id/$file";
+    } else {
+	$base = "http://127.0.0.1:8080/ipfs/$id";
+    }
+    $c->app->log->debug("IPFS : $base");
     $c->proxy_to($base);
 };
 

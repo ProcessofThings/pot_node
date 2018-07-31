@@ -96,6 +96,7 @@ sub startup {
   $auth->get('/nav')->to('private#api');
   $auth->get('/')->to('private#redirect');
   $auth->get('/assets/*')->to('private#assets');
+  $auth->get('/ipfs/:id')->to('private#ipfs');
   $auth->get('/ipfs/:id/*file')->to('private#ipfs');
   $auth->get('/:page')->to('private#load');
   

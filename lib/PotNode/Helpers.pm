@@ -47,6 +47,9 @@ sub register {
     $app->helper(get_hash => \&_get_hash);
     $app->helper(pot_web => \&_pot_web);
     
+    $app->helper(blockchain_change_state => \&_blockchain_change_state);
+    $app->helper(publish_status => \&_publish_status);
+    
     $app->helper(uuid => \&_uuid);
     $app->helper(mergeHTML => \&_mergeHTML);
     $app->helper(cache_control.no_caching => \&_cache_control_none);
@@ -184,6 +187,159 @@ sub _pot_web {
 		$c->app->log->debug("Skipping PoT Web - directory does not exist");
 		return;
   }
+}
+
+
+sub _blockchain_change_state {
+	my ($c, $blockchain) = @_;
+	my $status;
+	
+	## Loads Config if a new blockchain is found
+	if (!$c->redis->exists($blockchain."_config")){
+		$c->app->log->debug("New Blockchain Found Loading Config");
+		$c->load_blockchain_config($blockchain);
+	}
+	
+	## Gets the PID id from the pid files and removes them if the process is not running
+	my $pid = "/home/node/run/$blockchain\.pid";
+	my $pidid = qx/cat $pid/;
+	if ($pidid =~ /\n$/) { chop $pidid; };
+	if (! -d "/proc/$pidid") {
+		$status->{'status'} = "Removing Stale PID files $pidid";
+		$c->redis->hset('blockchain_status', $blockchain, encode_json($status));
+		$c->app->log->debug("Removing Stale PID files $pidid");
+		unlink $pid;
+	}
+	
+	my $delay = Mojo::IOLoop->delay;
+	
+	## Check if chain if blockchain is disabled
+  if ( -f '/home/node/run/'.$blockchain.'.stop') {
+		if ( -f '/home/node/run/'.$blockchain.'.pid') {
+			$delay->steps(
+				sub {
+					$c->app->log->debug("Stopping Blockchain $blockchain");
+					$command = 'multichain-cli '.$blockchain.' stop';
+					system($command);
+					my $subprocess = Mojo::IOLoop::Subprocess->new;
+					$subprocess->run(
+						sub {
+							my $subprocess = shift;
+							$status->{'status'} = "Shutting down";
+							$status->{'icon'} = "flight_land";
+							$c->redis->hset('blockchain_status', $blockchain, encode_json($status));
+							$c->publish_status;
+							while (1) {
+								$c->app->log->debug("Waiting for PID");
+								last if !-e '/home/node/run/'.$blockchain.'.pid';
+								sleep 1;
+							}
+							return;
+						},
+						sub {
+							my ($subprocess, $err, @results) = @_;
+							$c->app->log->debug("Subprocess $err") and return if $err;
+							$status->{'status'} = "Stopped";
+							$status->{'icon'} = "highlight_off";
+							$c->redis->hset('blockchain_status', $blockchain, encode_json($status));
+							$c->publish_status;
+							$c->app->log->debug("Process Stopped");
+						}
+					);
+					$subprocess->ioloop->start unless $subprocess->ioloop->is_running;
+					$delay->pass();
+				},
+				sub {
+					my ($delay, $tx) = @_;
+					
+					$delay->on(finish => sub{
+						my ($delay, @tx) = @_;
+						$c->app->log->debug("Process Finished");
+					});
+				});
+				$delay-wait;
+		} else {
+			$c->app->log->debug("Blockchain .stop located - skipping blockchain");
+			$status->{'status'} = "Stopped";
+			$status->{'icon'} = "highlight_off";
+			$c->redis->hset('blockchain_status', $blockchain, encode_json($status));
+		}
+	} else {
+		## Checks if the pid file exists before trying to start the multichain daemon if it exists express the process id
+		if ( -f '/home/node/run/'.$blockchain.'.pid') {
+			$c->app->log->debug("Running Process : $blockchain with PID : $pidid");
+			$status->{'status'} = "Running";
+			$status->{'icon'} = "done";
+			$c->redis->hset('blockchain_status', $blockchain, encode_json($status));
+		} else {
+			$delay->steps(
+				sub {
+					$c->app->log->debug("Starting Blockchain $blockchain");
+					$command = 'multichaind '.$blockchain.' -daemon -pid=/home/node/run/'.$blockchain.'.pid -walletnotifynew="curl -H \'Content-Type: application/json\' -d %j http://127.0.0.1:9090/system/alertnotify?name=%m\&txid=%s\&hex=%h\&seen=%c\&address=%a\&assets=%e" > /dev/null &';
+					system($command);
+					my $subprocess = Mojo::IOLoop::Subprocess->new;
+					$subprocess->run(
+						sub {
+							my $subprocess = shift;
+							$status->{'status'} = "Starting";
+							$status->{'icon'} = "flight_takeoff";
+							$c->redis->hset('blockchain_status', $blockchain, encode_json($status));
+							$c->publish_status;
+							while (1) {
+								$c->app->log->debug("Waiting for PID");
+								last if -e '/home/node/run/'.$blockchain.'.pid';
+								sleep 1;
+							}
+							return;
+						},
+						sub {
+							my ($subprocess, $err, @results) = @_;
+							$c->app->log->debug("Subprocess $err") and return if $err;
+							$status->{'status'} = "Running";
+							$status->{'icon'} = "done";
+							$c->redis->hset('blockchain_status', $blockchain, encode_json($status));
+							$c->publish_status;
+							$c->app->log->debug("Blockchain Started");
+						}
+					);
+					$subprocess->ioloop->start unless $subprocess->ioloop->is_running;
+					$delay->pass();
+				},
+				sub {
+					my ($delay, $tx) = @_;
+					
+					$delay->on(finish => sub{
+						my ($delay, @tx) = @_;
+						$c->app->log->debug("Process Finished");
+					});
+				});
+				$delay-wait;
+		}
+	}
+	
+#	$status = encode_json($status);
+#	$redis->set("status" => $status);
+#	$redis->publish("status" => $status);
+	
+	return;
+};
+
+sub _publish_status {
+	my $c = shift;
+	my @blockchain = $c->get_blockchains;
+	my $status;
+	foreach my $blockchain (@blockchain) {
+		my $blockchain_status = decode_json($c->redis->hget('blockchain_status',$blockchain));
+		$c->debug($blockchain_status);
+		$status->{$blockchain}->{'id'} = $blockchain;
+		$status->{$blockchain}->{'status'} = $blockchain_status->{'status'};
+		$status->{$blockchain}->{'icon'} = $blockchain_status->{'icon'};
+	}
+	$c->debug($status);
+	$status = encode_json($status);
+	$c->redis->set("status" => $status);
+  $c->redis->publish("status" => $status);
+	return;
 }
 
 

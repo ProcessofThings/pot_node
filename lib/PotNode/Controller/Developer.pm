@@ -262,6 +262,8 @@ sub createApp{
 	my $command = "/usr/local/bin/multichain-util create $hex $options";
 	my $create = qx/$command/;
 	$c->debug("Create : $create");
+	$c->blockchain_change_state($hex);
+	$c->publish_status;
 	$c->render(text => "OK", status => 200);
     
 };
@@ -285,8 +287,9 @@ sub deleteApp{
 			}
 		}
 	}
+	
 	$c->render(text => "OK", status => 200);
-    
+	$c->publish_status;
 };
 
 sub changeAppState {
@@ -309,6 +312,8 @@ sub changeAppState {
 			qx/$command/;
 		}
 	}
+	$c->blockchain_change_state($jsonParams->{'blockChainId'});
+	$c->publish_status;
 	$c->render(text => "OK", status => 200);
 };
 

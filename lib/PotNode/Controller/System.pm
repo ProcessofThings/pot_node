@@ -93,60 +93,12 @@ sub check {
         }
         
         foreach my $entry (@blockchain) {
-            ## Loads Config if a new blockchain is found
-            if (!$redis->exists($entry."_config")){
-                $c->app->log->debug("New Blockchain Found Loading Config");
-                $c->load_blockchain_config(@blockchain);
-            }
-            my $config = decode_json($redis->get($entry."_config"));
-            $status->{$entry}->{'name'} = $config->{'name'};
-				$status->{$entry}->{'id'} = $entry;
-				
-				
-            ## Finds all directories and filters out all directories apart from those that contain HEX 32 chars
-            ## Gets the PID id from the pid files and removes them if the process is not running
-            my $pid = "/home/node/run/$entry\.pid";
-            my $pidid = qx/cat $pid/;
-            if ($pidid =~ /\n$/) { chop $pidid; };
-            if (! -d "/proc/$pidid") {
-					$status->{$entry}->{'status'} = "Removing Stale PID files $pidid";
-                $c->app->log->debug("Removing Stale PID files $pidid");
-                unlink $pid;
-            }
-            
-            ## Check if chain if blockchain is disabled
-            if ( -f '/home/node/run/'.$entry.'.stop') {
-					if ( -f '/home/node/run/'.$entry.'.pid') {
-						$c->app->log->debug("Stopping Blockchain $entry");
-						$command = 'multichain-cli '.$entry.' stop';
-						system($command);
-						$status->{$entry}->{'status'} = "Shutting down";
-						$status->{$entry}->{'icon'} = "flight_land";
-					} else {
-						$c->app->log->debug("Blockchain .stop located - skipping blockchain");
-						$status->{$entry}->{'status'} = "Stopped";
-						$status->{$entry}->{'icon'} = "highlight_off";
-					}
-				} else {
-					## Checks if the pid file exists before trying to start the multichain daemon if it exists express the process id
-					if ( -f '/home/node/run/'.$entry.'.pid') {
-						$c->app->log->debug("Running Process : $entry with PID : $pidid");
-						$status->{$entry}->{'status'} = "Running";
-						$status->{$entry}->{'icon'} = "done";
-						
-					} else {
-						## launched the daemon using > /dev/null & to return control to mojolicious
-						$command = 'multichaind '.$entry.' -daemon -pid=/home/node/run/'.$entry.'.pid -walletnotifynew="curl -H \'Content-Type: application/json\' -d %j http://127.0.0.1:9090/system/alertnotify?name=%m\&txid=%s\&hex=%h\&seen=%c\&address=%a\&assets=%e" > /dev/null &';
-						system($command);
-						$c->app->log->debug("Starting : $entry");
-						$status->{$entry}->{'status'} = "Starting";
-						$status->{$entry}->{'icon'} = "flight_takeoff";
-					}
-            }
+					$c->app->log->debug("Checking Blockchain $entry");
+					$c->blockchain_change_state($entry);
         }
-        $status = encode_json($status);
-        $redis->set("status" => $status);
-        $redis->publish("status" => $status);
+        
+        $c->publish_status;
+
     } else {
         $command = 'ipfs add -r -w -Q /home/node/pot_node';
         my $value = qx/$command/;
