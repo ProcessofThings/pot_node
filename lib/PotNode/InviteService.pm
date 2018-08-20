@@ -3,10 +3,11 @@ use Mojo::Base -base;
 use Mojo::Redis2;
 use Data::UUID;
 use PotNode::Encryption::Helpers;
+use Net::Address::IP::Local;
 
-use constant REDIS_GEN_UUIDS_KEY => 'generated_uuids';
-use constant REDIS_UUIDS_KEY => 'device_uuids';
-use constant UUIDS_EXPIRE_MIN => 5;
+use constant 'REDIS_GEN_UUIDS_KEY' => 'generated_uuids';
+use constant 'REDIS_UUIDS_KEY' => 'device_uuids';
+use constant 'UUIDS_EXPIRE_MIN' => 5;
 
 has redis => sub { Mojo::Redis2->new };
 has uuid => sub { Data::UUID->new };
@@ -31,7 +32,7 @@ sub gen_new{
   $node_pubkey =~ s/(.*\n){1}$//;
 
   # Adding the host
-  my $host = "http://10.10.40.174:9090/device/new";
+  my $host = Net::Address::IP::Local->public;
   my $invite_str = '';
   if ($contact_id) { $invite_str = $contact_id }
   $invite_str .= $gen_uuid.$node_pubkey.$host;

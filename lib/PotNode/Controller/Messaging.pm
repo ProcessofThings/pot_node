@@ -7,6 +7,7 @@ use PotNode::Messaging::Device;
 use Mojo::JSON qw/encode_json decode_json/;
 
 my $msg_srv = PotNode::Messaging::Service->new;
+my $pubsub = PotNode::PubSubService->new;
 
 sub subscribe {
   my $c = shift;
@@ -32,19 +33,25 @@ sub send_msg{
   eval { $req = decode_json $req->decr_data }
   or return $c->render(json => { error => "Decryption error"} );
 
-  my $sender = $req->{sender};
   my $pubid = $req->{pubid};
-  my $message = $req->{message};
+  my $sender = $req->{sender};
+  my $data = $req->{data};
 
   return $c->render(json => { error => "Invalid request" }, status => 400)
-  unless ($sender && $pubid && $message);
+  unless ($pubid && $sender && $data);
 
-  $msg_srv->send_msg($pubid, $sender, $message);
+  my %payload = (
+    type => "message",
+    sender => $sender,
+    data => $data
+  );
+
+  $msg_srv->send_data($pubid, %payload);
 
   $c->render(json => {"message" => "OK"});
 }
 
-sub get_msgs{
+sub new_contact{
   my $c = shift;
 
   my $req = PotNode::Encryption::EncryptedRequest->new(req => $c->req->json);
@@ -52,40 +59,79 @@ sub get_msgs{
   or return $c->render(json => { error => "Decryption error"} );
 
   my $pubid = $req->{pubid};
-  my @senders = @{$req->{senders}};
+  my $sender = $req->{sender};
+  my $data = $req->{data};
+  my $aeskey = $req->{aeskey};
 
   return $c->render(json => { error => "Invalid request" }, status => 400)
-  unless (@senders && $pubid);
+  unless ($pubid && $sender && $data && $aeskey);
 
-  my @messages = $msg_srv->get_msgs($pubid, @senders);
+  my %payload = (
+    type => "new_contact",
+    sender => $sender,
+    data => $data,
+    aeskey => $aeskey
+  );
+
+  $msg_srv->send_data($pubid, %payload);
+
+  $c->render(json => {"message" => "OK"});
+}
+
+sub new_contact_info{
+  my $c = shift;
+
+  my $req = PotNode::Encryption::EncryptedRequest->new(req => $c->req->json);
+  eval { $req = decode_json $req->decr_data }
+  or return $c->render(json => { error => "Decryption error"} );
+
+  my $pubid = $req->{pubid};
+  my $sender = $req->{sender};
+  my $data = $req->{data};
+
+  return $c->render(json => { error => "Invalid request" }, status => 400)
+  unless ($pubid && $sender && $data);
+
+  my %payload = (
+    type => "new_contact_info",
+    sender => $sender,
+    data => $data
+  );
+
+  $msg_srv->send_data($pubid, %payload);
+
+  $c->render(json => {"message" => "OK"});
+}
+
+sub get_new{
+  my $c = shift;
+
+  my $req = PotNode::Encryption::EncryptedRequest->new(req => $c->req->json);
+  eval { $req = decode_json $req->decr_data }
+  or return $c->render(json => { error => "Decryption error"} );
+
+  my $pubid = $req->{pubid};
+  return $c->render(json => { error => "Invalid request" }, status => 400)
+  unless ($pubid);
+
+  my $messages = $msg_srv->get_msgs($pubid, 1);
+  my $new_contacts = $msg_srv->get_new_contacts($pubid, 1);
+  my $new_contact_info = $msg_srv->get_new_contact_info($pubid, 1);
+
+  $pubsub->ls(sub {
+    my $tx = shift;
+    my $topics = $tx->res->json->{Strings};
+    unless ($topics && $pubid ~~ @$topics){
+      my $dev = PotNode::Messaging::Device->new(pubid => $pubid);
+      $dev->register;
+      PotNode::Controller::Messaging->subscribe($c);
+    }
+  });
 
   $c->render(json => PotNode::Encryption::EncryptedResponse->new({
-    data => encode_json({messages => \@messages}),
+    data => encode_json({messages => $messages, contacts => $new_contacts, contact_info => $new_contact_info}),
     dev_pubkey => $c->req->json->{pubkey}
   })->encr_data);
-
-}
-
-sub move {
-  my $c = shift;
-
-  my $req = PotNode::Encryption::EncryptedRequest->new(req => $c->req->json);
-  eval { $req = decode_json $req->decr_data }
-  or return $c->render(json => { error => "Decryption error"} );
-
-  my $pubid = $req->{pubid};
-  my $movekey = $req->{movekey};
-
-  return $c->render(json => { error => "Invalid request" }, status => 400)
-  unless ($movekey && $pubid);
-
-  my $dev = PotNode::Messaging::Device->new(pubid => $pubid);
-  unless($dev->movekey eq $movekey) {
-    $msg_srv->send_move($pubid);
-    $msg_srv->subscribe($dev);
-  }
-
-  $c->render(json => {"message" => "OK"});
 }
 
 

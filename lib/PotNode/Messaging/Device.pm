@@ -3,6 +3,7 @@ use Mojo::Base -base;
 use Mojo::Redis2;
 use Mojo::JSON qw/encode_json decode_json/;
 use Carp;
+use Data::UUID;
 
 use constant 'REDIS_MSG_DEVICES' => "msg_devices";
 
@@ -27,10 +28,7 @@ sub register{
 }
 
 sub gen_movekey{
-  my @chars = ("A".."Z", "a".."z", 0 .. 9);
-  my $string;
-  $string .= $chars[rand @chars] for 1..8;
-  return $string;
+  return Data::UUID->new->create_str();
 }
 
 sub is_registered{

@@ -5,6 +5,7 @@ use AnyEvent::Proc;
 use Mojo::UserAgent;
 use Mojo::Redis2;
 use Mojo::JSON qw/decode_json encode_json/;
+use Mojo::Util qw/url_escape/;
 use Carp;
 
 use constant 'IPFS_PUBSUB_ENDPOINT' => "http://localhost:5001/api/v0/pubsub/";
@@ -48,9 +49,21 @@ sub pub{
   $AnyEvent::HTTP::PERSISTENT_TIMEOUT = 10000;
   $AnyEvent::HTTP::TIMEOUT = 30000;
 
+  $topic = url_escape($topic);
+  $message = url_escape($message);
   $self->ua->get_p(IPFS_PUBSUB_ENDPOINT."pub?arg=$topic&arg=$message");
 
   # system("curl \"http://localhost:5001/api/v0/pubsub/pub?arg=$topic&arg=$message\"");
+}
+
+sub ls {
+  my $self = shift;
+  my $callback = shift;
+
+  $self->ua->get_p(IPFS_PUBSUB_ENDPOINT."ls")->then(sub {
+    my @value = @_;
+    &$callback($value[0]);
+  });
 }
 
 1;

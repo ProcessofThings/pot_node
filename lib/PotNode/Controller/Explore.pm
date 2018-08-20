@@ -34,7 +34,7 @@ sub load {
     my $blockchain = $c->req->param('chain') || "none";
     my $allparams = $c->req->params->to_hash;
     my $id;
-    
+
     foreach my $item (@{$pot_config->{'config'}->{'9090_layout'}}) {
         if($item->{'name'} eq 'explore') {
             $id = $item->{'ipfs'};
@@ -42,7 +42,7 @@ sub load {
             $c->app->log->debug("Error Page name not found");
         }
     }
-    
+
     if ($blockchain eq "none") {
         if ($c->session('blockchain') ne 'none') {
             $blockchain = $c->session('blockchain');
@@ -53,13 +53,13 @@ sub load {
             $c->redirect_to('/explore/index.html');
         }
     }
-    
+
     if ($c->req->param('chain')) {
         $c->session(blockchain => $blockchain);
     }
     ## Setup Session UUID and Event UUID
     ## These are combined to link and hashed to provide a uniquid that is used to link page config to data processing
-    
+
     my $uuid = $c->app->uuid();
     if (!$c->session('uuid')) {
         $c->app->log->debug("Session Set : $uuid");
@@ -69,7 +69,7 @@ sub load {
         $sessionUuid = $c->session('uuid');
         $c->app->log->debug("Session UUID Exists : $sessionUuid");
     }
-    
+
     ## Create Event Hash
     $eventHash = $c->sha256_hex("$sessionUuid-$uuid");
     $c->app->log->debug("Event Hash : $eventHash");
@@ -91,7 +91,7 @@ sub load {
     $eventConfig->{'config'} = $config;
     $eventConfig->{'allparams'} = $allparams;
     $redis->setex($eventHash,1800, encode_json($eventConfig));
-    
+
 	my $url = 'http://127.0.0.1:8080/ipfs/'.$id.'/'.$page.'.html';
 	$c->app->log->debug("URL : $url");
 #	$c->url_for('page', page => 'index.html')->to_abs;
@@ -107,7 +107,7 @@ sub load {
 #        my $importref = "import_$key";
 #        $c->stash($importref => $encodedfile);
 #    };
-    
+
     $c->render(template => $config->{'template'});
 };
 
@@ -130,7 +130,7 @@ sub blockchain {
     my $eventConfig;
     my $blockchain;
     my $page;
-        
+
 ##    $eventHash = $c->param('eventHash');
 ##    $c->app->log->debug("Event Hash : $eventHash");
 ##    $eventConfig = decode_json($redis->get($eventHash));
@@ -188,11 +188,11 @@ sub api {
     my $blockchain;
     my $page;
     my @config;
-    
+
     $eventHash = $c->param('eventHash');
     $c->app->log->debug("Event Hash : $eventHash");
     $eventConfig = decode_json($redis->get($eventHash));
-    
+
     $blockchain = $eventConfig->{'blockchain'};
     $config = "rpc_$blockchain";
     if (!$redis->exists($config)) {
@@ -213,7 +213,7 @@ sub api {
         @config = @{$eventConfig->{'config'}->{$page}};
         $c->debug(@config);
     }
-     
+
     my $count = @config;
     $c->app->log->debug("Processing Config $count");
     foreach my $item (@config) {
@@ -236,7 +236,7 @@ sub api {
             $c->app->log->debug("Array") if (ref($dataIn) eq "ARRAY");
             $c->app->log->debug("Scalar") if (ref($dataIn) eq "SCALAR");
             $c->app->log->debug("Hash") if (ref($dataIn) eq "HASH");
-            if (ref($dataIn) eq "ARRAY") {
+            if (ref($dataIn) eq "ARRAY") {send_data
                 foreach my $arrayitem (@{$dataIn}) {
                     $custData->{$dom} = $c->app->mergeHTML($arrayitem,$layout);
                     $c->app->log->debug("DataIn ARRAY");
@@ -249,7 +249,7 @@ sub api {
             $c->app->log->debug("DataArray $method");
         }
     }
-    
+
     $c->debug($dataOut);
     $c->render(json => $dataOut, status => 200);
 };

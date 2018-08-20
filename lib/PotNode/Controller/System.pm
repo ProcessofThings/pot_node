@@ -520,28 +520,30 @@ sub genqrcode64 {
     ## 62mm No Text size 5 60mmX60mm Version 5
     my $c = shift;
     my $text = $c->param('text');
-    my $size = $c->param('s') || 3;
-    my $version = $c->param('v') || 5;
-    my $blank = $c->param('b') || 'no';
-    if ($blank eq 'no') {
-            $text = 'https://pot.ec/'.$text;
-    }
-    my $mqr  = Api::QRCode->new(
-    text   => $text,
-    qrcode => {size => $size,margin => 2,version => $version,level => 'H'}
-    );
-    my $logo = Imager->new(file => "public/appimages/potlogolarge.png") || die Imager->errstr;
-    $mqr->logo($logo);
-    $mqr->to_png_base64("public/images/test.png");
-
-    $c->render(json => {'message' => 'Ok','image' => $mqr->to_png_base64("public/images/test.png")},status => 200);
+    return $c->render(json => { error => "Text required."}, status => 200) unless $text;
+    # my $size = $c->param('s') || 3;
+    # my $version = $c->param('v') || 5;
+    # my $blank = $c->param('b') || 'no';
+    # if ($blank eq 'no') {
+    #         $text = 'https://pot.ec/'.$text;
+    # }
+    # my $mqr  = Api::QRCode->new(
+    # text   => $text,
+    # qrcode => {size => $size,margin => 2,version => $version,level => 'H'}
+    # );
+    # my $logo = Imager->new(file => "public/appimages/potlogolarge.png") || die Imager->errstr;
+    # $mqr->logo($logo);
+    # $mqr->to_png_base64("public/images/test.png");
+    #
+    # $c->render(json => {'message' => 'Ok','image' => $mqr->to_png_base64("public/images/test.png")},status => 200);
+    return $c->render(json => $c->genqrcode64($text), status => 200);
 }
 
 
 sub start_urls {
     my ($ua, $queue, $cb) = @_;
 
-    
+
     # Limit parallel connections to 4
     state $idle = 4;
     state $delay = Mojo::IOLoop->delay(

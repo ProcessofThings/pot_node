@@ -9,7 +9,6 @@ sub startup {
   my $self = shift;
   my $redis = Mojo::Redis2->new;
   my $uanb = Mojo::UserAgent->new;
-
   # Load configuration from hash returned by "my_app.conf"
   my $config = $self->plugin('Config');
 
@@ -91,13 +90,18 @@ sub startup {
   $auth->post('/developer/api/createApp')->to('developer#createApp');
 
   $auth->get('/device/new')->to('device#genInvite');
+  $auth->post('/device/invite')->to('device#genDeviceInvite');
   $auth->post('/device/new')->to('device#addNew');
-  $auth->post('/device/listen')->to('device#listen');
+  $auth->post('/device/genqrcode')->to('device#genqrcode');
 
   $auth->post('/device/messages/subscribe')->to('messaging#subscribe');
   $auth->post('/device/messages/send')->to('messaging#send_msg');
-  $auth->post('/device/messages/get')->to('messaging#get_msgs');
+  $auth->post('/device/messages/new_contact')->to('messaging#new_contact');
+  $auth->post('/device/messages/new_contact_info')->to('messaging#new_contact_info');
+  $auth->post('/device/messages/get')->to('messaging#get_new');
   $auth->post('/device/messages/move')->to('messaging#move');
+
+  $auth->post('/code')->to('testing#code');
 
   $auth->get('/nav')->to('private#api');
   $auth->get('/')->to('private#redirect');

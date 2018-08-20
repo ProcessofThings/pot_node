@@ -3,6 +3,9 @@ use Mojo::Base -base;
 use Mojo::Redis2;
 use Carp;
 
+use Mojo::Log;
+my $log = Mojo::Log->new(path => '/home/node/log/pot_node.log');
+
 has redis => sub { Mojo::Redis2->new };
 has encr => sub { PotNode::Encryption::Helpers->new };
 has 'req';
