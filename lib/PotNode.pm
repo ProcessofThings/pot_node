@@ -9,6 +9,7 @@ sub startup {
   my $self = shift;
   my $redis = Mojo::Redis2->new;
   my $uanb = Mojo::UserAgent->new;
+  my $msg_srv = PotNode::Messaging::Service->new;
   # Load configuration from hash returned by "my_app.conf"
   my $config = $self->plugin('Config');
 
@@ -55,6 +56,34 @@ sub startup {
     $c->app->log->debug("Requested Port Not Allowed ");
     return undef;
   });
+
+  # Starting IPFS PubSub listeners for buffered messages
+  my $cursor_messages = $self->scan(0, MATCH => 'messages_*');
+  while (my $r = $cursor_messages->next) {
+    my @results = @$r;
+    for my $result (@results){
+      my $pubid = substr $result, 10;
+      $msg_srv->subscribe(PotNode::Messaging::Device->new(pubid => $pubid));
+    }
+  }
+
+  my $cursor_contacts = $self->scan(0, MATCH => 'new_contacts_*');
+  while (my $r = $cursor_contacts->next) {
+    my @results = @$r;
+    for my $result (@results){
+      my $pubid = substr $result, 13;
+      $msg_srv->subscribe(PotNode::Messaging::Device->new(pubid => $pubid));
+    }
+  }
+
+  my $cursor_contact_info = $self->scan(0, MATCH => 'new_contact_info_*');
+  while (my $r = $cursor_contact_info->next) {
+    my @results = @$r;
+    for my $result (@results){
+      my $pubid = substr $result, 17;
+      $msg_srv->subscribe(PotNode::Messaging::Device->new(pubid => $pubid));
+    }
+  }
 
 
   # These functions can only be access thought the local lan or via ssh tunnel from your computer
