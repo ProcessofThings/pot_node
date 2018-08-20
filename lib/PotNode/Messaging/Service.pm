@@ -139,7 +139,7 @@ sub subscribe {
       for my $message(reverse @$all_messages){
         $message = decode_json $message;
         my %payload = %$message;
-        my $payload{type} = "message";
+        $payload{type} = "message";
         $self->send_data($dev->pubid, %payload);
       }
 
@@ -147,7 +147,7 @@ sub subscribe {
       for my $contact(reverse @$all_contacts){
         $contact = decode_json $contact;
         my %payload = %$contact;
-        my $payload{type} = "new_contact";
+        $payload{type} = "new_contact";
         $self->send_data($dev->pubid, %payload);
       }
 
@@ -155,7 +155,7 @@ sub subscribe {
       for my $contact_info(reverse @$all_contact_info){
         $contact_info = decode_json $contact_info;
         my %payload = %$contact_info;
-        my $payload{type} = "new_contact_info";
+        $payload{type} = "new_contact_info";
         $self->send_data($dev->pubid, %payload);
       }
       return 0;
