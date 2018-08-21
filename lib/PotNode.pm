@@ -4,6 +4,8 @@ use Mojo::UserAgent;
 use Mojo::JSON qw(decode_json encode_json);
 use Alien::SwaggerUI;
 use AnyEvent::HTTP;
+use PotNode::Messaging::Service;
+use PotNode::Messaging::Device;
 # This method will run once at server start
 sub startup {
   my $self = shift;
@@ -58,7 +60,7 @@ sub startup {
   });
 
   # Starting IPFS PubSub listeners for buffered messages
-  my $cursor_messages = $self->scan(0, MATCH => 'messages_*');
+  my $cursor_messages = $redis->scan(0, MATCH => 'messages_*');
   while (my $r = $cursor_messages->next) {
     my @results = @$r;
     for my $result (@results){
@@ -67,7 +69,7 @@ sub startup {
     }
   }
 
-  my $cursor_contacts = $self->scan(0, MATCH => 'new_contacts_*');
+  my $cursor_contacts = $redis->scan(0, MATCH => 'new_contacts_*');
   while (my $r = $cursor_contacts->next) {
     my @results = @$r;
     for my $result (@results){
@@ -76,7 +78,7 @@ sub startup {
     }
   }
 
-  my $cursor_contact_info = $self->scan(0, MATCH => 'new_contact_info_*');
+  my $cursor_contact_info = $redis->scan(0, MATCH => 'new_contact_info_*');
   while (my $r = $cursor_contact_info->next) {
     my @results = @$r;
     for my $result (@results){

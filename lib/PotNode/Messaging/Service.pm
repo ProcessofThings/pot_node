@@ -1,4 +1,4 @@
-contact_infopackage PotNode::Messaging::Service;
+package PotNode::Messaging::Service;
 use Mojo::Base 'Mojolicious::Controller';
 use PotNode::PubSubService;
 use Mojo::Redis2;
