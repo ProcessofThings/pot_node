@@ -32,10 +32,10 @@ sub load {
     my $blockchain = $c->req->param('chain') || "none";
     my $allparams = $c->req->params->to_hash;
     my $template;
-    
+
 	my $static = Mojolicious::Static->new;
 	push @{$static->paths}, '/home/node/dev';
-    
+
     foreach my $item (@{$pot_config->{'config'}->{'9090_layout'}}) {
         if($item->{'name'} eq $page) {
             $id = $item->{'ipfs'};
@@ -224,5 +224,7 @@ sub api {
     my $data = decode_json($redis->get('index'));
     $c->render(json => $data);
 };
+
+}
 
 1;
