@@ -32,13 +32,10 @@ sub load {
     my $blockchain = $c->req->param('chain') || "none";
     my $allparams = $c->req->params->to_hash;
     my $template;
-<<<<<<< HEAD
-
-=======
-		my $static = Mojolicious::Static->new;
-		push @{$static->paths}, '/home/node/dev';
     
->>>>>>> 762653bbc79e3fba90ecc2e9978c997f8d372364
+	my $static = Mojolicious::Static->new;
+	push @{$static->paths}, '/home/node/dev';
+    
     foreach my $item (@{$pot_config->{'config'}->{'9090_layout'}}) {
         if($item->{'name'} eq $page) {
             $id = $item->{'ipfs'};
@@ -130,17 +127,14 @@ sub load {
 							if ($option->{'href'}) {
 									$option->{'ipfs'} = $ipfsHash;
 									## To override loading vue files from ipfs add the array bellow
-<<<<<<< HEAD
 									my @list = ['developer'];
 									if ($option->{'href'} ~~ @list) {
 										$component = $option->{'href'}.': httpVueLoader( "/vue/'.$option->{'href'}.'.vue" )';
-=======
 									my $devdirectory = $c->config->{dev}.'/'.$ipfsHash;
 									$c->app->log->debug($devdirectory);
 									if (-d $devdirectory) {
 										$c->app->log->debug("Developer Tool - Detected local copy");
 										$component = $option->{'href'}.': httpVueLoader( "/dev/'.$ipfsHash.'/'.$option->{'href'}.'.vue" )';
->>>>>>> 762653bbc79e3fba90ecc2e9978c997f8d372364
 									} else {
 										$component = $option->{'href'}.': httpVueLoader( "/ipfs/'.$ipfsHash.'/'.$option->{'href'}.'.vue" )';
 									}
