@@ -6,6 +6,9 @@ use Alien::SwaggerUI;
 use AnyEvent::HTTP;
 use PotNode::Messaging::Service;
 use PotNode::Messaging::Device;
+
+use Mojolicious::Static;
+
 # This method will run once at server start
 sub startup {
   my $self = shift;
@@ -21,6 +24,7 @@ sub startup {
   $self->plugin('PotNode::Encryption::Helpers');
   $self->plugin('DebugDumperHelper');
   $self->plugin('Crypto');
+  $self->plugin ('proxy');
   $self->plugin(OpenAPI => {spec => $self->static->file("v1apimultichain.json")->path});
   $self->mode('development');
 
@@ -38,11 +42,11 @@ sub startup {
 
   $r->websocket('/ws')->to('start#ws');
   $r->websocket('/wsapi')->to('api#wsapi');
+
   #Public Functions
 
   $r->get('/node/join')->to('node#join')->name('node');
   $r->get('/node/alive')->to('node#alive')->name('node');
-
   $r->get('/ipfs/:ipfs')->to('public#load');
 
   my $auth = $r->under ( sub {
@@ -132,11 +136,14 @@ sub startup {
   $auth->post('/device/messages/get')->to('messaging#get_new');
   $auth->post('/device/messages/move')->to('messaging#move');
 
-  $auth->post('/code')->to('testing#code');
+  $auth->any('/dev/*file')->to('developer#static');
+  $auth->get('/video')->to('private#video');
 
   $auth->get('/nav')->to('private#api');
   $auth->get('/')->to('private#redirect');
   $auth->get('/assets/*')->to('private#assets');
+  $auth->get('/ipfs/:id')->to('private#ipfs');
+  $auth->get('/ipfs/:id/*file')->to('private#ipfs');
   $auth->get('/:page')->to('private#load');
 }
 

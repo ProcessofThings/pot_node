@@ -32,7 +32,13 @@ sub load {
     my $blockchain = $c->req->param('chain') || "none";
     my $allparams = $c->req->params->to_hash;
     my $template;
+<<<<<<< HEAD
 
+=======
+		my $static = Mojolicious::Static->new;
+		push @{$static->paths}, '/home/node/dev';
+    
+>>>>>>> 762653bbc79e3fba90ecc2e9978c997f8d372364
     foreach my $item (@{$pot_config->{'config'}->{'9090_layout'}}) {
         if($item->{'name'} eq $page) {
             $id = $item->{'ipfs'};
@@ -82,7 +88,6 @@ sub load {
     my $config = $ua->get('http://127.0.0.1:8080/ipfs/'.$id.'/config.json')->result->body;
     if ($config =~ /\n$/) { chop $config; };
     $config = decode_json($config);
-    $c->debug($config);
     $c->app->log->debug("Blockchain : $blockchain");
     $eventConfig->{'blockchain'} = $blockchain;
     $eventConfig->{'page'} = $page;
@@ -117,7 +122,7 @@ sub load {
 			my $config = $ua->get('http://127.0.0.1:8080/ipfs/'.$ipfsHash.'/config.json')->result->body;
 			if ($config =~ /\n$/) { chop $config; };
 			$config = decode_json($config);
-			$component = 'mainPage: httpVueLoader( "http://127.0.0.1:8080/ipfs/'.$ipfsHash.'/main.vue" )';
+			$component = 'mainPage: httpVueLoader( "/ipfs/'.$ipfsHash.'/main.vue" )';
 			push @components, $component;
 			if ($config->{'navitems'}) {
 					foreach my $item (@{$config->{'navitems'}}) {
@@ -125,11 +130,19 @@ sub load {
 							if ($option->{'href'}) {
 									$option->{'ipfs'} = $ipfsHash;
 									## To override loading vue files from ipfs add the array bellow
+<<<<<<< HEAD
 									my @list = ['developer'];
 									if ($option->{'href'} ~~ @list) {
 										$component = $option->{'href'}.': httpVueLoader( "/vue/'.$option->{'href'}.'.vue" )';
+=======
+									my $devdirectory = $c->config->{dev}.'/'.$ipfsHash;
+									$c->app->log->debug($devdirectory);
+									if (-d $devdirectory) {
+										$c->app->log->debug("Developer Tool - Detected local copy");
+										$component = $option->{'href'}.': httpVueLoader( "/dev/'.$ipfsHash.'/'.$option->{'href'}.'.vue" )';
+>>>>>>> 762653bbc79e3fba90ecc2e9978c997f8d372364
 									} else {
-										$component = $option->{'href'}.': httpVueLoader( "http://127.0.0.1:8080/ipfs/'.$ipfsHash.'/'.$option->{'href'}.'.vue" )';
+										$component = $option->{'href'}.': httpVueLoader( "/ipfs/'.$ipfsHash.'/'.$option->{'href'}.'.vue" )';
 									}
 									$c->config($component);
 									push @components, $component;
@@ -163,7 +176,10 @@ sub load {
 
 	$c->render(template => $template);
 };
-
+sub video {
+	my $c = shift;
+	$c->render(template => 'system/video');
+};
 sub assets {
     my $c = shift;
     my $url = $c->req->url->to_string;
@@ -188,6 +204,21 @@ sub assets {
 
         $c->render(data => $file, format => $content);
     });
+};
+
+sub ipfs {
+    my $c = shift;
+    my $url = $c->req->url->to_string;
+    my $id = $c->param('id');
+    my $file = $c->param('file') || 'none';
+    my $base;
+    if ($file ne 'none') {
+	$base = "http://127.0.0.1:8080/ipfs/$id/$file";
+    } else {
+	$base = "http://127.0.0.1:8080/ipfs/$id";
+    }
+    $c->app->log->debug("IPFS : $base");
+    $c->proxy_to($base);
 };
 
 sub api {

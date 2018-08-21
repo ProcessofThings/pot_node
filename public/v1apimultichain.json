@@ -681,6 +681,53 @@
         }
       }
     },
+	"/genQrcode64/{blockchainId}": {
+      "get": {
+        "tags": [
+				"general"
+        ],
+        "x-mojo-to": [
+          "developer#genQrcode64"
+        ],
+        "x-mojo-name": "genQrcode64",
+        "summary": "Invite PoT Mobile",
+        "description": "Dapps may be accessed via PoT Mobile app but must be invite",
+        "operationId": "genQrcode64",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "blockchainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "text",
+            "in": "formData",
+            "description": "data for the qrcode",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    },
 	"/blockchainStatus": {
       "get": {
         "tags": [

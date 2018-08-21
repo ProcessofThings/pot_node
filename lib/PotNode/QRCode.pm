@@ -95,7 +95,7 @@ Here is how to generate an image with qrcode with a logo in the middle.
 
     use Mojo::QRCode;
 
-    my $mqr = Mojo::QRCode->new(text=>'алабаланица', qrcode =>{...});
+    my $mqr = Mojo::QRCode->new(text=>'???????????', qrcode =>{...});
     my $base64_img_data = $mqr->to_png_base64();
     # or
     my $binary_img_data = $mqr->to_png->file->slurp();
@@ -152,7 +152,7 @@ char at H level, with 57X57 modules and plenty of Error-Correction to go around.
 there are additional tracking boxes>". See
 L<https://en.wikipedia.org/wiki/QR_code#Storage>. Default values:
 
-  $mqr->new(text=>'алабаланица')
+  $mqr->new(text=>'???????????')
     ->qrcode(
       size => 10,
       casesensitive => 1,
@@ -167,10 +167,10 @@ L<https://en.wikipedia.org/wiki/QR_code#Storage>. Default values:
 Returns a base 64 encoded representation of the binary png code which can be added to the
 C<src> attribute of a n C<img> HTML tag or embedded as value in a JSON response.
 
-  <img src="<%= Mojo::QRCode->new(text=>'алабаланица')->to_png_base64() %>"
+  <img src="<%= Mojo::QRCode->new(text=>'???????????')->to_png_base64() %>"
 
   $c->render(json => {
-    foo_img_src => Mojo::QRCode->new(text=>'алабаланица')->to_png_base64()
+    foo_img_src => Mojo::QRCode->new(text=>'???????????')->to_png_base64()
   });
 
 =head2 to_png($path = '')
@@ -181,7 +181,7 @@ C<$self-E<gt>file>. Returns C<self> on success or croaks otherwise.
 
 =head1 AUTHOR
 
-Краси Беров, C<< <k.berov at gmail.com> >>
+????? ?????, C<< <k.berov at gmail.com> >>
 
 =head1 BUGS
 
@@ -221,7 +221,7 @@ L<http://search.cpan.org/dist/Mojo-QRCode/>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2017 Краси Беров.
+Copyright 2017 ????? ?????.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the the Artistic License (2.0). You may obtain a

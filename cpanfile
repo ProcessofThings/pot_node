@@ -3,6 +3,7 @@ requires 'Mojo::Redis2';
 requires 'Mojolicious::Plugin::OpenAPI';
 requires 'Imager::QRCode';
 requires 'Data::UUID';
+requires 'UUID::Tiny';
 requires 'File::Find::Object';
 requires 'Log::Any';
 requires 'Log::Any::Adapter';
