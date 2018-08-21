@@ -51,6 +51,10 @@ sub check {
     ## TODO : Multichain params (./multichain/DIR/params & RPC info from multichain.conf
     ## TODO : Find chain-description = pot
     ## TODO : Store default-network-port, default-rpc-port, chain-name
+    
+    # Clear expired generated uuids
+    $c->app->log->debug("Clearing expired generated UUIDs.");
+    PotNode::InviteService->new->clear_expired_uuids;
 
 		eval{
 			$c->redis->exists('system');
