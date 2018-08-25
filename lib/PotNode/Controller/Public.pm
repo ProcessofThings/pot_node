@@ -66,6 +66,19 @@ sub assets {
     });
 };
 
+
+sub authUser {
+	my $c = shift;
+	my $spec = $c->openapi->spec;
+	my $jsonParams = $c->req->json;
+	my $blockChainId = $c->param('blockchainId');
+	my $hash = $c->req->params->to_hash;
+	my $input = $c->validation->output;
+	$c->debug($blockChainId);
+	$c->render(text => "Ok", status => 200);
+};
+
+
 sub api {
     my $c = shift;
     $c->res->headers->header('Access-Control-Allow-Origin' => '*');

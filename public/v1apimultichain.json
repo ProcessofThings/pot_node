@@ -27,6 +27,10 @@
     {
 		"name": "Realtime",
 		"description": "Functions needed for updating realtime subscriptions"
+    },
+    {
+		"name": "Dapp",
+		"description": "Basic functions for Multichain based dapps"
     }
   ],
   "schemes": [
@@ -747,6 +751,128 @@
           "application/json"
         ],
         "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    },
+    	"/session/{blockchainId}": {
+      "post": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#authUser"
+        ],
+        "x-mojo-name": "authUser",
+        "summary": "Authentificates user against dapp data",
+        "description": "This function is used to authorise a users request to connect",
+        "operationId": "authUser",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+					{
+            "name": "blockchainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userLogin",
+            "in": "query",
+            "description": "Pass the user login id of the user",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userPassword",
+            "in": "query",
+            "description": "Pass the password of the user",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    },
+	"/registerUser/{blockchainId}": {
+      "post": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#registerUser"
+        ],
+        "x-mojo-name": "publish",
+        "summary": "Authentificates user against dapp data",
+        "description": "This function is used to authorise a users request to connect",
+        "operationId": "registerUser",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+					{
+            "name": "blockchainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userLogin",
+            "in": "query",
+            "description": "Pass the user login id of the user",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userPassword",
+            "in": "query",
+            "description": "Pass the password of the user",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userMobile",
+            "in": "query",
+            "description": "Mobile Number of user",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userEmail",
+            "in": "query",
+            "description": "Email Address",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "successful operation",

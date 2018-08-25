@@ -283,7 +283,7 @@ sub check {
 		my $result = $ua->get($URL => json => {"jsonrpc" => "1.0", "id" => "curltest","method" => "liststreamkeyitems", "params" =>  ["config","$uuid",\0,1,-1]})->result->json;
 		$result = $result->{'result'}->[0]->{'data'};
 		my $config_hash = $redis->get('config_hash');
-		if ($config_hash != $result) {
+		if ($config_hash ne $result) {
 			$c->app->log->debug("Change in blockchain config detected");
 			$redis->del('config_hash');
 		} else {
