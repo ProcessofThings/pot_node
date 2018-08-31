@@ -5,16 +5,18 @@ use PotNode::QRCode;
 use UUID::Tiny ':std';
 use Data::UUID;
 use Mojo::JSON qw(decode_json encode_json);
-
-
+use File::List;
+use Archive::Tar;
+use Archive::Zip;
+use File::chdir;
 
 sub register {
-    
+
     my ($self, $app) = @_;
 
-    $app->helper(redis => 
+    $app->helper(redis =>
 	    sub { shift->stash->{redis} ||= Mojo::Redis2->new; });
-	    
+
     $app->helper(merge => sub {
         my ($self,$custData,$custLayout) = @_;
         my $dataOut;
@@ -26,31 +28,31 @@ sub register {
                                 $dataOut->{$key} = $value;
                         }
         }
-        
+
         return $dataOut;
     });
-    
+
 
 	$app->helper(layout => sub {
         my ($self,$custData,$custLayout) = @_;
          foreach my $items (@{$custLayout}) {
                          my ($key,$type,$text,$value) = split(/,/,$items);
                          $custLayout->{$key} = $value;
-                 }      
+                 }
         return $custLayout;
-    });    
-    
+    });
+
     ## System Check Helper Functions
-    
+
     $app->helper(pid => \&_pid);
     $app->helper(directory => \&_directory);
     $app->helper(ipfs_status => \&_ipfs_status);
     $app->helper(get_hash => \&_get_hash);
     $app->helper(pot_web => \&_pot_web);
-    
+
     $app->helper(blockchain_change_state => \&_blockchain_change_state);
     $app->helper(publish_status => \&_publish_status);
-    
+
     $app->helper(uuid => \&_uuid);
 		$app->helper(hex_uuid_to_uuid => \&_hex_uuid_to_uuid);
     $app->helper(mergeHTML => \&_mergeHTML);
@@ -59,7 +61,9 @@ sub register {
     $app->helper(get_blockchains => \&_get_blockchains);
     $app->helper(load_blockchain_config => \&_load_blockchain_config);
     $app->helper(genqrcode64 => \&_genqrcode64);
-    
+    $app->helper(tar => \&_tar);
+    $app->helper(zip => \&_zip);
+
 
 }
 
@@ -452,11 +456,12 @@ sub _genqrcode64 {
     ## 38mm Label needs size 3 Version 5 (default)
     ## 62mm With Text size 4 Version 5
     ## 62mm No Text size 5 60mmX60mm Version 5
-    my ($self,$text) = @_;
+    my $self = shift;
+    my $text = shift;
+    my $size = shift || 5;
+    my $version = shift || 5;
+    my $blank = shift || 'no';
     my $timestamp = time();
-    my $size = 5;
-    my $version = 5;
-    my $blank = 'no';
     my $data;
     if ($blank eq 'no') {
             $text = 'https://pot.ec/'.$text;
@@ -471,5 +476,37 @@ sub _genqrcode64 {
 	 $data->{'image'} = $mqr->to_png_base64("/home/node/tmp/qr-$timestamp.png");
     return $data;
 };
+
+sub _tar {
+  my $self = shift;
+  my $source_dir = shift;
+  my $input_dir = shift;
+  my $output_file = shift;
+
+  $CWD = $source_dir;
+  my $search = new File::List($input_dir);
+  $search->show_empty_dirs();
+  my @files  = @{ $search->find("\.\$") };
+
+  my $tar = Archive::Tar->new();
+  $tar->add_files(@files);
+  $tar->write($output_file);
+}
+
+sub _zip{
+  my $self = shift;
+  my $source_dir = shift;
+  my $input_dir = shift;
+  my $output_file = shift;
+
+  $CWD = $source_dir;
+
+  my $zip = Archive::Zip->new();
+  $zip->addTree({
+    root => $input_dir,
+    compressionLevel => 0
+  });
+  $zip->writeToFileNamed($output_file);
+}
 
 1;

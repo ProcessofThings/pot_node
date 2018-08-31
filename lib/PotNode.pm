@@ -22,6 +22,7 @@ sub startup {
   $self->plugin('PODRenderer') if $config->{perldoc};
   $self->plugin('PotNode::Helpers');
   $self->plugin('PotNode::Encryption::Helpers');
+  $self->plugin('RenderFile');
   $self->plugin('DebugDumperHelper');
   $self->plugin('Crypto');
   $self->plugin ('proxy');
@@ -138,6 +139,8 @@ sub startup {
 
   $auth->any('/dev/*file')->to('developer#static');
   $auth->get('/video')->to('private#video');
+
+  $auth->post('/dapp/get_files')->to('dapp#get_files');
 
   $auth->get('/nav')->to('private#api');
   $auth->get('/')->to('private#redirect');

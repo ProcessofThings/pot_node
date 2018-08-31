@@ -16,6 +16,9 @@ use constant 'RSA_BITS' => 1024;
 
 my $redis = Mojo::Redis2->new;
 
+use Mojo::Log;
+my $log = Mojo::Log->new(path => '/home/node/log/pot_node.log');
+
 sub register {
 
   my ($self, $app) = @_;
@@ -34,8 +37,8 @@ sub aes_encrypt{
   my $raw_data = shift;
   my $bytes = shift || $self->AES_BYTES;
 
-  my $key = Crypt::CBC->random_bytes($bytes);
-  my $iv = Crypt::CBC->random_bytes($bytes);
+  my $key = Crypt::CBC->random_bytes($bytes) || decode_base64 shift;
+  my $iv = Crypt::CBC->random_bytes($bytes) || decode_base64 shift;
 
   my %settings = (key         => "$key",
                   iv          => "$iv",
@@ -49,6 +52,74 @@ sub aes_encrypt{
 
   (encode_base64 ($encr_data), encode_base64($key), encode_base64($iv));
 };
+
+sub aes_encrypt_file{
+  my $self = shift;
+  my $input_file = shift;
+  my $output_file = shift;
+
+  my $bytes = shift || $self->AES_BYTES;
+
+  my $key = decode_base64 shift;
+  my $iv = decode_base64 shift;
+
+  my %settings = (key         => "$key",
+                  iv          => "$iv",
+                  cipher      => "Cipher::AES",
+                  header      => "none",
+                  literal_key => 1,
+                  keysize     => $bytes);
+
+  my $cipher = Crypt::CBC->new(\%settings);
+  $cipher->start("encryption");
+
+  open(INPUT, "<", $input_file);
+  open(OUTPUT, ">", $output_file);
+
+  while(read(INPUT, $buffer, 1024)){
+    print OUTPUT $cipher->crypt($buffer);
+  }
+  print OUTPUT $cipher->finish;
+
+  close INPUT;
+  close OUTPUT;
+
+  (encode_base64($key), encode_base64($iv));
+}
+
+sub aes_decrypt_file{
+  my $self = shift;
+  my $input_file = shift;
+  my $output_file = shift;
+
+  my $bytes = shift || $self->AES_BYTES;
+
+  my $key = decode_base64 shift;
+  my $iv = decode_base64 shift;
+
+  my %settings = (key         => "$key",
+                  iv          => "$iv",
+                  cipher      => "Cipher::AES",
+                  header      => "none",
+                  literal_key => 1,
+                  keysize     => $bytes);
+
+  my $cipher = Crypt::CBC->new(\%settings);
+  $cipher->start("decryption");
+
+  open(INPUT, "<", $input_file);
+  open(OUTPUT, ">", $output_file);
+
+  while(read(INPUT, $buffer, 1024)){
+    print OUTPUT $cipher->crypt($buffer);
+  }
+  print OUTPUT $cipher->finish;
+
+  close INPUT;
+  close OUTPUT;
+
+  (encode_base64($key), encode_base64($iv));
+}
 
 sub aes_decrypt{
   my $self = shift;
