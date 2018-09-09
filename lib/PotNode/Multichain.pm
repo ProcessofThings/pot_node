@@ -2,7 +2,7 @@ package PotNode::Multichain;
 use Mojo::Base -base;
 
 use Mojo::UserAgent;
-use Mojo::JSON qw/encode_json/;
+use Mojo::JSON qw(decode_json encode_json);
 use Mojo::Util qw/monkey_patch decode/;
 use Data::Dumper;
 
@@ -218,19 +218,20 @@ sub _call {
 
     return $tx->res->json if $tx->success;
 
-    die $self->_error( $method, $tx );
+    return $self->_error( $method, $tx );
+#		return $tx->res->json;
   }
 }
 
 sub _error {
   my ( $self, $method, $tx ) = @_;
-
   $tx->error->{message} = decode 'UTF-8', $tx->error->{message};
 
   if ( $tx->error->{code} ) {
+		my $errormessage = decode_json($tx->res->body);
     my $format = "%s HTTP error: %s %s";
-    my @values = ( $method, @{ $tx->error }{ qw/code message/ } );
-
+#    my @values = ( $method, @{ $tx->error }{ qw/code message/ } );
+		my @values = (400,$errormessage->{error}->{message} );
     return sprintf $format, @values;
   }
 

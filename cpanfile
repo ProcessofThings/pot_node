@@ -18,4 +18,7 @@ requires 'JavaScript::V8';
 requires 'OpenAPI::Client';
 requires 'YAML::XS';
 requires 'Alien::SwaggerUI';
-required 'Crypt::OpenSSL::RSA';
+requires 'Crypt::OpenSSL::RSA';
+requires 'Net::Address::IP::Local';
+requires 'Encode::Base58::GMP';
+requires 'File::Grep';

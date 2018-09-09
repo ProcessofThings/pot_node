@@ -24,8 +24,12 @@ sub startup {
   $self->plugin('PotNode::Encryption::Helpers');
   $self->plugin('DebugDumperHelper');
   $self->plugin('Crypto');
-  $self->plugin ('proxy');
-  $self->plugin(OpenAPI => {spec => $self->static->file("v1apimultichain.json")->path});
+  $self->plugin ('proxy', {
+		symmetric_cipher => 1,
+    digest           => 1,
+    mac              => 1
+  });
+  $self->plugin(OpenAPI => {log_level => 'debug', spec => $self->static->file("v1apimultichain.json")->path});
   $self->mode('development');
 
   $self->log->path('/home/node/log/pot_node.log');
@@ -44,6 +48,8 @@ sub startup {
   $r->websocket('/wsapi')->to('api#wsapi');
 
   #Public Functions
+  
+  $r->any('/testapi')->to('public#test');
 
   $r->get('/node/join')->to('node#join')->name('node');
   $r->get('/node/alive')->to('node#alive')->name('node');

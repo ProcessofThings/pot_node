@@ -818,7 +818,7 @@
         }
       }
     },
-	"/registerUser/{blockchainId}": {
+	"/registerUser/{blockChainId}": {
       "post": {
         "tags": [
 				"Dapps"
@@ -826,7 +826,9 @@
         "x-mojo-to": [
           "public#registerUser"
         ],
-        "x-mojo-name": "publish",
+        "x-mojo-name": "registerUser",
+        "x-mojo-function": "publish",
+        "x-mojo-streamid": "profiles",
         "summary": "Authentificates user against dapp data",
         "description": "This function is used to authorise a users request to connect",
         "operationId": "registerUser",
@@ -838,14 +840,14 @@
         ],
         "parameters": [
 					{
-            "name": "blockchainId",
+            "name": "blockChainId",
             "in": "path",
             "description": "Information returned for the Blockchain ID passed",
             "required": true,
             "type": "string"
           },
           {
-            "name": "userLogin",
+            "name": "userName",
             "in": "query",
             "description": "Pass the user login id of the user",
             "required": true,
@@ -881,7 +883,385 @@
             }
           },
           "400": {
-            "description": "Invalid ID supplied"
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    	"/loginUser/{blockChainId}": {
+      "get": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#loginUser"
+        ],
+        "x-mojo-name": "loginUser",
+        "x-mojo-function": "liststreamkeyitems",
+        "x-mojo-streamid": "profiles",
+        "summary": "Get Login details from the blockchain",
+        "description": "This function is used to verify the password against the blockchain",
+        "operationId": "loginUser",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+					{
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userName",
+            "in": "query",
+            "description": "Pass the user login id of the user",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userPassword",
+            "in": "query",
+            "description": "Pass the password of the user",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/getCustomers/{blockChainId}": {
+      "get": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#getCustomers"
+        ],
+        "x-mojo-name": "getCustomers",
+        "x-mojo-function": "publish",
+        "x-mojo-streamid": "custc",
+        "summary": "Get Login details from the blockchain",
+        "description": "This function is used to verify the password against the blockchain",
+        "operationId": "getCustomers",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+					{
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+		"/createCustomer/{blockChainId}": {
+      "post": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#createCustomer"
+        ],
+        "x-mojo-name": "createCustomer",
+        "x-mojo-function": "publish",
+        "x-mojo-streamid": "custc",
+        "summary": "adfasdfasdfasdfasdf",
+        "description": "adfasdfasdfasdfasdf",
+        "operationId": "createCustomer",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+					{
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "companyName",
+            "in": "query",
+            "description": "Company Name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "companyWebsite",
+            "in": "query",
+            "description": "Company Website",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "companyAddress",
+            "in": "query",
+            "description": "Company Address",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+		"/updateCustomer/{blockChainId}": {
+      "post": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#updateCustomer"
+        ],
+        "x-mojo-name": "updateCustomer",
+        "x-mojo-function": "publish",
+        "x-mojo-streamid": "custc",
+        "summary": "adfasdfasdfasdfasdf",
+        "description": "adfasdfasdfasdfasdf",
+        "operationId": "updateCustomer",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+					{
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "companyName",
+            "in": "query",
+            "description": "Company Name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "companyWebsite",
+            "in": "query",
+            "description": "Company Website",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "companyAddress",
+            "in": "query",
+            "description": "Company Address",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/deleteCustomer/{blockChainId}": {
+      "post": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#deleteCustomer"
+        ],
+        "x-mojo-name": "deleteCustomer",
+        "x-mojo-function": "publish",
+        "x-mojo-streamid": "custc",
+        "summary": "adfasdfasdfasdfasdf",
+        "description": "adfasdfasdfasdfasdf",
+        "operationId": "deleteCustomer",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+					{
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "containerId",
+            "in": "query",
+            "description": "Company Address",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+		"/createSlot/{blockChainId}": {
+      "post": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#createSlot"
+        ],
+        "x-mojo-name": "createSlot",
+        "x-mojo-function": "publish",
+        "x-mojo-streamid": "custc",
+        "summary": "adfasdfasdfasdfasdf",
+        "description": "adfasdfasdfasdfasdf",
+        "operationId": "createSlot",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+					{
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "containerId",
+            "in": "query",
+            "description": "Container Id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/deleteSlot/{blockChainId}": {
+      "post": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#deleteSlot"
+        ],
+        "x-mojo-name": "deleteSlot",
+        "x-mojo-function": "publish",
+        "x-mojo-streamid": "custc",
+        "summary": "adfasdfasdfasdfasdf",
+        "description": "adfasdfasdfasdfasdf",
+        "operationId": "deleteSlot",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+					{
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          },
+					{
+            "name": "containerId",
+            "in": "query",
+            "description": "Container Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "slotId",
+            "in": "query",
+            "description": "Slot Id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
           }
         }
       }

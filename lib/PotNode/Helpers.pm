@@ -5,6 +5,8 @@ use PotNode::QRCode;
 use UUID::Tiny ':std';
 use Data::UUID;
 use Mojo::JSON qw(decode_json encode_json);
+use PotNode::Multichain;
+use String::HexConvert ':all';
 
 
 
@@ -59,6 +61,12 @@ sub register {
     $app->helper(get_blockchains => \&_get_blockchains);
     $app->helper(load_blockchain_config => \&_load_blockchain_config);
     $app->helper(genqrcode64 => \&_genqrcode64);
+    
+		$app->helper(create_stream => \&_create_stream);
+		$app->helper(publish_stream => \&_publish_stream);
+		$app->helper(delete_stream_item => \&_delete_stream_item);
+		$app->helper(get_stream_item => \&_get_stream_item);
+		$app->helper(get_all_stream_item => \&_get_all_stream_item);
     
 
 }
@@ -470,6 +478,146 @@ sub _genqrcode64 {
     $mqr->to_png_base64("/home/node/tmp/qr-$timestamp.png");
 	 $data->{'image'} = $mqr->to_png_base64("/home/node/tmp/qr-$timestamp.png");
     return $data;
+};
+
+sub _create_stream {
+	my ($self, $blockChainId, $streamId) = @_;
+	my $config = "rpc_$blockChainId";
+	if (!$self->redis->exists($config)) {
+			$config = $self->get_rpc_config($blockChainId);
+	} else {
+			$config = decode_json($self->redis->get($config));
+	}
+
+	my $url = "$config->{'rpcuser'}:$config->{'rpcpassword'}\@127.0.0.1:$config->{'rpcport'}";
+	
+	my $api =  PotNode::Multichain->new( url => $url );
+	
+	my @params = ["$streamId"];
+	my $stream = $api->liststreams( @params );
+	$self->app->debug($stream);
+	if ($stream =~ /^400.*not\sfound/) {
+		@params = ["stream","$streamId",\0];
+		my $createstream = $api->create( @params );
+		@params = ["$streamId"];
+		$api->subscribe( @params );
+	}
+	
+	if (!$stream->{subscribed}) {
+		$api->subscribe( @params );
+	}
+	
+	return 1;
+};
+
+sub _publish_stream {
+	my ($self, $blockChainId, $streamId, $container) = @_;
+	$self->app->debug("Publish");
+	my $config = "rpc_$blockChainId";
+	if (!$self->redis->exists($config)) {
+			$config = $c->get_rpc_config($blockChainId);
+	} else {
+			$config = decode_json($self->redis->get($config));
+	}
+	
+	my $url = "$config->{'rpcuser'}:$config->{'rpcpassword'}\@127.0.0.1:$config->{'rpcport'}";
+	my $api =  PotNode::Multichain->new( url => $url );
+	
+	my $json = encode_json($container);
+	$json = ascii_to_hex($json);
+	$self->app->debug($json);
+	@params = ["$streamId", $container->{'containerid'}, $json];
+	
+	$self->app->debug(@params);
+	
+	$dataOut = $api->publish( @params );
+	
+	return $dataOut;
+};
+
+sub _delete_stream_item {
+	my ($self, $blockChainId, $streamId, $container) = @_;
+	$self->app->debug("Publish");
+	my $config = "rpc_$blockChainId";
+	if (!$self->redis->exists($config)) {
+			$config = $c->get_rpc_config($blockChainId);
+	} else {
+			$config = decode_json($self->redis->get($config));
+	}
+	
+	my $url = "$config->{'rpcuser'}:$config->{'rpcpassword'}\@127.0.0.1:$config->{'rpcport'}";
+	my $api =  PotNode::Multichain->new( url => $url );
+	
+	@params = ["$streamId", $container->{'containerid'}, "ff"];
+	
+	$dataOut = $api->publish( @params );
+	
+	return $dataOut;
+};
+
+sub _get_stream_item {
+	my ($self, $blockChainId, $streamId, $containerid) = @_;
+	$self->app->debug("Stream Item");
+	my $config = "rpc_$blockChainId";
+	if (!$self->redis->exists($config)) {
+			$config = $c->get_rpc_config($blockChainId);
+	} else {
+			$config = decode_json($self->redis->get($config));
+	}
+	
+	my $url = "$config->{'rpcuser'}:$config->{'rpcpassword'}\@127.0.0.1:$config->{'rpcport'}";
+	my $api =  PotNode::Multichain->new( url => $url );
+
+	@params = ["$streamId", $containerid];
+	$dataOut = $api->liststreamkeyitems( @params );
+	
+	my $json = hex_to_ascii($json);
+	$json = decode_json($container);
+	
+	$self->app->debug($json);
+	
+	return $json;
+};
+
+sub _get_all_stream_item {
+	my ($self, $blockChainId, $streamId, $containerid) = @_;
+	my $dataOut;
+	$self->app->debug("Get all Stream Item");
+	my $config = "rpc_$blockChainId";
+	if (!$self->redis->exists($config)) {
+			$config = $c->get_rpc_config($blockChainId);
+	} else {
+			$config = decode_json($self->redis->get($config));
+	}
+	
+	my $url = "$config->{'rpcuser'}:$config->{'rpcpassword'}\@127.0.0.1:$config->{'rpcport'}";
+	my $api =  PotNode::Multichain->new( url => $url );
+	
+	@params = ["$streamId", "*"];
+	my $query = $api->liststreamkeyitems( @params );
+
+	$self->app->debug($query);
+	
+	foreach my $item (@{$query->{'result'}}) {
+		if($item->{'data'} ne 'ff') {
+			my $json = hex_to_ascii($item->{'data'});
+			$json = decode_json($json);
+			$self->app->debug($json);
+			if (defined($json->{'cdata'})) {
+				$dataOut->{$json->{'containerid'}}->{'containerid'} = $json->{'containerid'};
+				$dataOut->{$json->{'containerid'}}->{'cdata'} = $json->{'cdata'};
+				$dataOut->{$json->{'containerid'}}->{'slots'} = $json->{'cdata'}->{'slots'};
+			}
+		}
+		if ($item->{'data'} eq 'ff') {
+			$self->app->debug("Item Deleted");
+			delete $dataOut->{$item->{'key'}};
+		}
+	}
+	
+	$self->app->debug($dataOut);
+	
+ 	return $dataOut;
 };
 
 1;
