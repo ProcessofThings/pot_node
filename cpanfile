@@ -19,3 +19,7 @@ requires 'OpenAPI::Client';
 requires 'YAML::XS';
 requires 'Alien::SwaggerUI';
 requires 'Crypt::OpenSSL::RSA';
+requires 'AnyEvent::HTTP';
+requires 'AnyEvent::Proc';
+requires 'Mojolicious::Plugin::Proxy';
+requires 'Net::Address::IP::Local';
