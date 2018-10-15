@@ -154,14 +154,14 @@ sub _pot_web {
 			if ($system->{'hash'} ne $value) {
 					$c->app->log->debug("PoT Web hash has changed - reloading");
 					$system->{'hash'} = $value;
-					$command = "/home/node/perl5/perlbrew/perls/perl-5.24.3/bin/hypnotoad $directory/pot_web.pl";
+					$command = "/home/node/perl5/perlbrew/perls/perl-5.24.3/bin/hypnotoad $directory/script/pot_web.pl";
 					my $value = qx/$command/;
 					$value =~ s/\R//g;
 			}
 		}
 		
 		if (!-f $pid) {
-			$command = "/home/node/perl5/perlbrew/perls/perl-5.24.3/bin/hypnotoad $directory/pot_web.pl";
+			$command = "/home/node/perl5/perlbrew/perls/perl-5.24.3/bin/hypnotoad $directory/script/pot_web.pl";
 			$c->app->log->debug("Starting PoT Web - $command");
 			my $value = qx/$command/;
 			$value =~ s/\R//g;
