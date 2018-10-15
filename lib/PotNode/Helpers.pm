@@ -523,9 +523,10 @@ sub _publish_stream {
 	my $url = "$config->{'rpcuser'}:$config->{'rpcpassword'}\@127.0.0.1:$config->{'rpcport'}";
 	my $api =  PotNode::Multichain->new( url => $url );
 	
+	$self->app->debug($container->{'containerid'});
+	
 	my $json = encode_json($container);
 	$json = ascii_to_hex($json);
-	$self->app->debug($json);
 	@params = ["$streamId", $container->{'containerid'}, $json];
 	
 	$self->app->debug(@params);
@@ -557,6 +558,7 @@ sub _delete_stream_item {
 
 sub _get_stream_item {
 	my ($self, $blockChainId, $streamId, $containerid) = @_;
+	my $dataOut;
 	$self->app->debug("Stream Item");
 	my $config = "rpc_$blockChainId";
 	if (!$self->redis->exists($config)) {
@@ -569,18 +571,32 @@ sub _get_stream_item {
 	my $api =  PotNode::Multichain->new( url => $url );
 
 	@params = ["$streamId", $containerid];
-	$dataOut = $api->liststreamkeyitems( @params );
+	my $query = $api->liststreamkeyitems( @params );
+	foreach my $item (@{$query->{'result'}}) {
+		if($item->{'data'} ne 'ff') {
+			my $json = hex_to_ascii($item->{'data'});
+			$json = decode_json($json);
+			$self->app->debug('Stream Item Data');
+			$self->app->debug($json);
+			if (defined($json->{'cdata'})) {
+				$dataOut->{$json->{'containerid'}}->{'containerid'} = $json->{'containerid'};
+				$dataOut->{$json->{'containerid'}}->{'cdata'} = $json->{'cdata'};
+				$dataOut->{$json->{'containerid'}}->{'attribs'} = $json->{'attribs'} if defined($json->{'attribs'});
+			}
+		}
+		if ($item->{'data'} eq 'ff') {
+			$self->app->debug("Item Deleted");
+			delete $dataOut->{$item->{'key'}};
+		}
+	}
 	
-	my $json = hex_to_ascii($json);
-	$json = decode_json($container);
+	$self->app->debug($dataOut);
 	
-	$self->app->debug($json);
-	
-	return $json;
+	return $dataOut;
 };
 
 sub _get_all_stream_item {
-	my ($self, $blockChainId, $streamId, $containerid) = @_;
+	my ($self, $blockChainId, $streamId, $containerid, $count) = @_;
 	my $dataOut;
 	$self->app->debug("Get all Stream Item");
 	my $config = "rpc_$blockChainId";
@@ -593,25 +609,38 @@ sub _get_all_stream_item {
 	my $url = "$config->{'rpcuser'}:$config->{'rpcpassword'}\@127.0.0.1:$config->{'rpcport'}";
 	my $api =  PotNode::Multichain->new( url => $url );
 	
-	@params = ["$streamId", "*"];
+	@params = ["$streamId"];
+	my $querycount = $api->liststreamkeys( @params );
+	
+	$self->app->debug($querycount);
+	
+	$dataOut->{'count'} = @{$querycount->{'result'}};
+	
+	my $count = $dataOut->{'count'} + 10;
+	
+	@params = ["$streamId", "*", \1, $count];
 	my $query = $api->liststreamkeyitems( @params );
 
 	$self->app->debug($query);
 	
-	foreach my $item (@{$query->{'result'}}) {
-		if($item->{'data'} ne 'ff') {
-			my $json = hex_to_ascii($item->{'data'});
-			$json = decode_json($json);
-			$self->app->debug($json);
-			if (defined($json->{'cdata'})) {
-				$dataOut->{$json->{'containerid'}}->{'containerid'} = $json->{'containerid'};
-				$dataOut->{$json->{'containerid'}}->{'cdata'} = $json->{'cdata'};
-				$dataOut->{$json->{'containerid'}}->{'slots'} = $json->{'cdata'}->{'slots'};
+	if (scalar @{$query->{'result'}} == 0) {
+		$dataOut->{'00'}->{'containerid'} = "00";
+		$dataOut->{'00'}->{'cdata'}->{'companyName'} = "Empty";
+	} else {
+		foreach my $item (@{$query->{'result'}}) {
+			if($item->{'data'} ne 'ff') {
+				my $json = hex_to_ascii($item->{'data'});
+				$json = decode_json($json);
+				$self->app->debug($json);
+				if (defined($json->{'cdata'})) {
+					$dataOut->{$json->{'containerid'}}->{'containerid'} = $json->{'containerid'};
+					$dataOut->{$json->{'containerid'}}->{'cdata'} = $json->{'cdata'};
+				}
 			}
-		}
-		if ($item->{'data'} eq 'ff') {
-			$self->app->debug("Item Deleted");
-			delete $dataOut->{$item->{'key'}};
+			if ($item->{'data'} eq 'ff') {
+				$self->app->debug("Item Deleted");
+				delete $dataOut->{$item->{'key'}};
+			}
 		}
 	}
 	

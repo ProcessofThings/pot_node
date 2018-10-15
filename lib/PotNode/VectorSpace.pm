@@ -1,12 +1,16 @@
-package Search::VectorSpace;
-
+package PotNode::VectorSpace;
+use Mojo::Base -base;
 use warnings;
 use strict;
 use Lingua::Stem;
 use Carp;
 use PDL;
+use DBM::Deep;
 
 our $VERSION = '0.01';
+
+use Mojo::Log;
+my $log = Mojo::Log->new(path => '/home/node/log/pot_node.log');
 
 =head1 TITLE
 
@@ -48,7 +52,7 @@ between zero and one, to serve as a relevance cutoff for search results.
 
 sub new {
 	my ( $class, %params ) = @_;
-	croak 'Usage: Search::VectorSpace->new( docs => \@docs);' unless
+	croak 'Usage: PotNode::VectorSpace->new( docs => \@docs);' unless
 		exists ( $params{'docs'} ) and
 		ref( $params{'docs'} ) and
 		ref( $params{'docs'}) eq 'ARRAY';
@@ -72,7 +76,6 @@ word list for the document collection.
 
 sub build_index() {
 	my ( $self ) = @_;
-	print "Making word list:\n";
 	$self->make_word_list();
 	my @vecs;
 	foreach my $doc ( @{ $self->{'docs'} }) {
@@ -80,7 +83,6 @@ sub build_index() {
 		push @vecs, norm $vec;
 	}
 	$self->{'doc_vectors'} = \@vecs;
-	print "Finished with word list\n";
 }
 
 =item search QUERY
@@ -96,13 +98,15 @@ zero and one.
 
 sub search {
 	my ( $self, $query ) = @_;
+	$log->debug($query);
 	my $qvec = $self->make_vector( $query );
-	
 	my %result_list = $self->get_cosines( norm $qvec );
 	my %documents;
 	foreach my $index ( keys %result_list ) {
 		my $doc = $self->{'docs'}->[$index];
 		my $relevance = $result_list{$index};
+		$log->debug('relevance');
+		$log->debug($relevance);
 		$documents{$doc} = $relevance;
 	}
 	return %documents;
@@ -124,9 +128,10 @@ sub get_words {
 	my @words = map { stem($_) }
 				grep { !( exists $self->{'stop_list'}->{$_} ) }
 				map { lc($_) } 
-				map {  $_ =~/([a-z\-']+)/i} 
+#				map {  $_ =~/([a-z\-']+)/i} 
 				split /\s+/, $text;
 	do { $_++ } for @doc_words{@words};
+	
 	return %doc_words;
 }	
 
@@ -139,7 +144,8 @@ Convenience wrapper for Lingua::Stem::stem()
 sub stem {
 		my ( $word) = @_;
 		my $stemref = Lingua::Stem::stem( $word );
-		return $stemref->[0];
+#		return $stemref->[0];
+		return $word
 }
 
 
@@ -168,7 +174,6 @@ sub make_vector {
 	my ( $self, $doc ) = @_;
 	my %words = $self->get_words( $doc );	
 	my $vector = zeroes $self->{'word_count'};
-	
 	foreach my $w ( keys %words ) {
 		my $value = $words{$w};
 		my $offset = $self->{'word_index'}->{$w};
@@ -180,10 +185,12 @@ sub make_vector {
 
 sub get_cosines {
 	my ( $self, $query_vec ) = @_;
+	$log->debug('Get Cosines');
 	my %cosines;
 	my $index = 0;
 	foreach my $vec ( @{ $self->{'doc_vectors'}  }) {
 		my $cosine = cosine( $vec, $query_vec );
+		$log->debug($cosine);
 		$cosines{$index} = $cosine if $cosine > $self->{'threshold'};
 		$index++;
 	}
@@ -193,17 +200,21 @@ sub get_cosines {
 # Assumes both incoming vectors are normalized
 sub cosine {
 	my ( $vec1, $vec2 ) = @_;
-	my $cos = inner( $vec1, $vec2 );	# inner product
-	return $cos->sclr();  # converts PDL object to Perl scalar
+	my $n1 = norm $vec1;
+	my $n2 = norm $vec2;
+	my $cos = inner( $n1, $n2 );	# inner product
+	my $sclr = $cos->sclr();
+	return $sclr;  # converts PDL object to Perl scalar
 }
 
 
 sub load_stop_list {
 	my %stop_words;
-	while (<DATA>) {
-		chomp;
-		$stop_words{$_}++;
-	}
+	my $db = DBM::Deep->new( 
+		file => "/home/node/search/stop_words.db",
+		type => DBM::Deep->TYPE_HASH
+	);
+	%stop_words = %$db;
 	return \%stop_words;
 }
 
