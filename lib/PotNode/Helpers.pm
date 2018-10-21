@@ -9,12 +9,12 @@ use Mojo::JSON qw(decode_json encode_json);
 
 
 sub register {
-    
+
     my ($self, $app) = @_;
 
-    $app->helper(redis => 
+    $app->helper(redis =>
 	    sub { shift->stash->{redis} ||= Mojo::Redis2->new; });
-	    
+
     $app->helper(merge => sub {
         my ($self,$custData,$custLayout) = @_;
         my $dataOut;
@@ -26,31 +26,31 @@ sub register {
                                 $dataOut->{$key} = $value;
                         }
         }
-        
+
         return $dataOut;
     });
-    
+
 
 	$app->helper(layout => sub {
         my ($self,$custData,$custLayout) = @_;
          foreach my $items (@{$custLayout}) {
                          my ($key,$type,$text,$value) = split(/,/,$items);
                          $custLayout->{$key} = $value;
-                 }      
+                 }
         return $custLayout;
-    });    
-    
+    });
+
     ## System Check Helper Functions
-    
+
     $app->helper(pid => \&_pid);
     $app->helper(directory => \&_directory);
     $app->helper(ipfs_status => \&_ipfs_status);
     $app->helper(get_hash => \&_get_hash);
     $app->helper(pot_web => \&_pot_web);
-    
+
     $app->helper(blockchain_change_state => \&_blockchain_change_state);
     $app->helper(publish_status => \&_publish_status);
-    
+
     $app->helper(uuid => \&_uuid);
 		$app->helper(hex_uuid_to_uuid => \&_hex_uuid_to_uuid);
     $app->helper(mergeHTML => \&_mergeHTML);
@@ -59,7 +59,7 @@ sub register {
     $app->helper(get_blockchains => \&_get_blockchains);
     $app->helper(load_blockchain_config => \&_load_blockchain_config);
     $app->helper(genqrcode64 => \&_genqrcode64);
-    
+
 
 }
 
@@ -154,14 +154,14 @@ sub _pot_web {
 			if ($system->{'hash'} ne $value) {
 					$c->app->log->debug("PoT Web hash has changed - reloading");
 					$system->{'hash'} = $value;
-					$command = "/home/node/perl5/perlbrew/perls/perl-5.24.3/bin/hypnotoad $directory/script/pot_web.pl";
+					$command = "/home/node/perl5/perlbrew/perls/perl-5.24.3/bin/hypnotoad $directory/pot_web.pl";
 					my $value = qx/$command/;
 					$value =~ s/\R//g;
 			}
 		}
-		
+
 		if (!-f $pid) {
-			$command = "/home/node/perl5/perlbrew/perls/perl-5.24.3/bin/hypnotoad $directory/script/pot_web.pl";
+			$command = "/home/node/perl5/perlbrew/perls/perl-5.24.3/bin/hypnotoad $directory/pot_web.pl";
 			$c->app->log->debug("Starting PoT Web - $command");
 			my $value = qx/$command/;
 			$value =~ s/\R//g;
@@ -195,13 +195,13 @@ sub _pot_web {
 sub _blockchain_change_state {
 	my ($c, $blockchain) = @_;
 	my $status;
-	
+
 	## Loads Config if a new blockchain is found
 	if (!$c->redis->exists($blockchain."_config")){
 		$c->app->log->debug("New Blockchain Found Loading Config");
 		$c->load_blockchain_config($blockchain);
 	}
-	
+
 	## Gets the PID id from the pid files and removes them if the process is not running
 	my $pid = "/home/node/run/$blockchain\.pid";
 	my $pidid = qx/cat $pid/;
@@ -212,9 +212,9 @@ sub _blockchain_change_state {
 		$c->app->log->debug("Removing Stale PID files $pidid");
 		unlink $pid;
 	}
-	
+
 	my $delay = Mojo::IOLoop->delay;
-	
+
 	## Check if chain if blockchain is disabled
   if ( -f '/home/node/run/'.$blockchain.'.stop') {
 		if ( -f '/home/node/run/'.$blockchain.'.pid') {
@@ -253,7 +253,7 @@ sub _blockchain_change_state {
 				},
 				sub {
 					my ($delay, $tx) = @_;
-					
+
 					$delay->on(finish => sub{
 						my ($delay, @tx) = @_;
 						$c->app->log->debug("Process Finished");
@@ -309,7 +309,7 @@ sub _blockchain_change_state {
 				},
 				sub {
 					my ($delay, $tx) = @_;
-					
+
 					$delay->on(finish => sub{
 						my ($delay, @tx) = @_;
 						$c->app->log->debug("Process Finished");
@@ -318,11 +318,11 @@ sub _blockchain_change_state {
 				$delay-wait;
 		}
 	}
-	
+
 #	$status = encode_json($status);
 #	$redis->set("status" => $status);
 #	$redis->publish("status" => $status);
-	
+
 	return;
 };
 
@@ -347,18 +347,18 @@ sub _publish_status {
 
 sub _uuid {
 		## This function returns uuid and hex version of the same UUID
-		
+
     my $self = shift;
     my $uuid_rand  = uuid_to_string(create_uuid(UUID_RANDOM));
     my $uuid_binary = create_uuid(UUID_SHA1, UUID_NS_DNS, $uuid_rand);
     $hex =~ tr/-//d;
-    
+
 		## Converts UUID to uppercase string
-		
+
     my $uuid_string = $hex = uc(uuid_to_string($uuid_binary));
-    
+
     $hex =~ tr/-//d;
-    
+
     return ($uuid_string, $hex);
 };
 
@@ -431,7 +431,7 @@ sub _mergeHTML {
     my $dataOut;
     foreach my $items (@{$custLayout}) {
                     my ($key,$type,$text,$value) = split(/,/,$items);
-                    
+
                     if ($custData->{$key}) {
                             my @newArray = [$key,$type,$text,$custData->{$key}];
                             push @{$dataOut->{'layout'}}, @newArray;
@@ -444,7 +444,7 @@ sub _mergeHTML {
 };
 
 sub _blockchain_api {
-    
+
 };
 
 sub _genqrcode64 {
@@ -452,11 +452,12 @@ sub _genqrcode64 {
     ## 38mm Label needs size 3 Version 5 (default)
     ## 62mm With Text size 4 Version 5
     ## 62mm No Text size 5 60mmX60mm Version 5
-    my ($self,$text) = @_;
+    my $self = shift;
+    my $text = shift;
     my $timestamp = time();
-    my $size = 5;
-    my $version = 5;
-    my $blank = 'no';
+    my $size = shift || 5;
+    my $version = shift || 5;
+    my $blank = shift || 'no';
     my $data;
     if ($blank eq 'no') {
             $text = 'https://pot.ec/'.$text;
