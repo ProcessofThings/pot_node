@@ -320,11 +320,11 @@ sub inviteMobile {
 	
 };
 
-sub editDapp {
-	my $c = shift;
-	my $jsonParams = $c->req->json;
-	$c->render(json => $data, status => 200)
-};
+# sub editDapp {
+# 	my $c = shift;
+# 	my $jsonParams = $c->req->json;
+# 	$c->render(json => $data, status => 200)
+# };
 
 sub genQrcode64 {
 	my $c = shift;

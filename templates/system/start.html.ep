@@ -158,6 +158,7 @@
 						{ icon: 'home', text: 'Home', com: 'mainPage'},
 						{ icon: 'code', text: 'dApps', com: 'developer'}
 					]
+//											{ icon: 'person_add', text: 'Invite Device', com: 'inviteDevice'},
 				},
 				store,
 				ws,

@@ -262,13 +262,14 @@ sub getCustomers {
 	my $hash = $c->req->params->to_hash;
 	my $container;
 	my $method = $spec->{'x-mojo-function'};
-	
+#	$streamId = 'test12314';
 	## Move to Registration User Module when building the dapp
 	$c->create_stream($blockChainId, $streamId);
 	
 	my $outData = $c->get_all_stream_item($blockChainId, $streamId);
-	
-# 	$c->debug($outData);
+
+	$c->debug('getcustomers');
+ 	$c->debug($outData);
 
 	$c->render(json => $outData, status => 200);
 };
@@ -387,9 +388,9 @@ sub updateSlot {
 
 	## Update Existing Index position or push into array
 	if (defined($index)) {
-		$db->put($index, "$json->{'containerid'} $json->{'cdata'}->{'title'} $json->{'cdata'}->{'words'} $json->{'cdata'}->{'sections'} $json->{'cdata'}->{'county'} $towns");
+		$db->put($index, "$json->{'containerid'} $json->{'cdata'}->{'sections'} $towns");
 	} else {
-		push(@$db, "$json->{'containerid'} $json->{'cdata'}->{'title'} $json->{'cdata'}->{'words'} $json->{'cdata'}->{'sections'} $json->{'cdata'}->{'county'} $towns");
+		push(@$db, "$json->{'containerid'} $json->{'cdata'}->{'sections'} $towns");
 	}
 	
 	## Image Management and Image Resizing images are uploaded using javascript base64
@@ -558,6 +559,55 @@ sub deleteSlot {
 	$c->render(text => "Ok", status => 200);
 };
 
+sub buildSearch {
+	my $c = shift;
+	my $spec = $c->openapi->spec;
+	my $blockChainId = $c->param('blockChainId');
+	my $streamId = $spec->{'x-mojo-streamid'};
+	my $hash = $c->req->params->to_hash;
+	my $container;
+	my $method = $spec->{'x-mojo-function'};
+	
+ 	my $db = DBM::Deep->new( 
+ 		file => "/home/node/search/$blockChainId-new-$streamId.db",
+ 		type => DBM::Deep->TYPE_ARRAY
+ 	);
+	
+	my $processData = $c->get_all_stream_item($blockChainId, $streamId);
+	
+	delete $processData->{'count'};
+	
+	$c->debug($processData);
+	
+	foreach my $key (keys %{$processData}) {
+#		if (defined($ads->))
+		$c->debug("Build Search");
+		if (defined($processData->{$key}->{'cdata'}->{'towns'})) {
+			my $json = $processData->{$key};
+			my @array = @$db;
+			
+			## Gets the Index of the any matching search container
+			my ($index) = grep { $array[$_] =~ /$json->{'containerid'}/ }  0..$#array;
+			
+			my $towns = join(' ', @{$json->{'cdata'}->{'towns'}});
+			
+			## Update Existing Index position or push into array
+			if (defined($index)) {
+				$db->put($index, "$json->{'containerid'} $json->{'cdata'}->{'sections'} $towns");
+			} else {
+				push(@$db, "$json->{'containerid'}  $json->{'cdata'}->{'sections'} $towns");
+			}			
+		}
+	}
+	$c->debug(@$db);
+
+	my @array = @$db;
+	my (@searchindex) = grep(/Accountant/, @array);
+	
+	$c->debug(@searchindex);
+	$c->render(text => "Ok", status => 200);
+};
+
 sub search {
 	my $c = shift;
 	my $spec = $c->openapi->spec;
@@ -568,29 +618,36 @@ sub search {
 	my $container;
 	my $method = $spec->{'x-mojo-function'};
 	my $db = DBM::Deep->new( 
-		file => "/home/node/search/$blockChainId-$streamId.db",
+		file => "/home/node/search/$blockChainId-new-$streamId.db",
 		type => DBM::Deep->TYPE_ARRAY
 	);
 	my $outData;
 	my @docs = @$db;
-	my $engine = PotNode::VectorSpace->new( docs => \@docs, threshold => 0.05);
-	my $search = $json->{'search'};
+	my $engine = PotNode::VectorSpace->new( docs => \@docs, threshold => 0.20);
+# 	my $search = $json->{'search'};
+	my $search = "$json->{'search'}->{'section'} $json->{'search'}->{'town'}";
 	
 	$engine->build_index();
 	
-	my $searchresults;
-	while ( my $query = $search ) {
-		my %results = $engine->search( $query );
-		foreach my $result ( sort { $results{$b} <=> $results{$a} } keys %results ) {
-			my $resultlist;		
-			$resultlist->{'relevance'} = $results{$result};
-			$resultlist->{'containerid'} = substr($result, 0, 36);
-			my $slot  = $c->get_stream_item($blockChainId, 'slotsh', $resultlist->{'containerid'});
-			$slot->{$resultlist->{'containerid'}}->{'relevance'} = $results{$result};
-			push(@{$searchresults}, $slot);
-		}
-		last;
-	}
+#	$c->debug($json);
+	$c->debug("Search Query");
+	$c->debug($search);
+	$c->debug(@docs);
+	my (@searchindex) = grep(/$search/, @docs);
+	
+ 	my $searchresults;
+ 	while ( my $query = $search ) {
+ 		my %results = $engine->search( $query );
+ 		foreach my $result ( sort { $results{$b} <=> $results{$a} } keys %results ) {
+ 			my $resultlist;		
+ 			$resultlist->{'relevance'} = $results{$result};
+ 			$resultlist->{'containerid'} = substr($result, 0, 36);
+ 			my $slot  = $c->get_stream_item($blockChainId, 'slotsh', $resultlist->{'containerid'});
+ 			$slot->{$resultlist->{'containerid'}}->{'relevance'} = $results{$result};
+ 			push(@{$searchresults}, $slot);
+ 		}
+ 		last;
+ 	}
     
 	$c->debug($searchresults);
 	
