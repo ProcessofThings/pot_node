@@ -617,7 +617,21 @@ sub search {
 	);
 	my $outData;
 	my @docs = @$db;
-	my $engine = PotNode::VectorSpace->new( docs => \@docs, threshold => 0.20);
+	my $threshold;
+	my $records = @docs;
+	my (@searchindex) = grep(/$json->{'search'}->{'section'}/, @docs);
+	my $sectioncount = @searchindex;
+	(@searchindex) = grep(/$json->{'search'}->{'town'}/, @docs);
+	my $locationcount = @searchindex;
+	
+	$c->debug("Total Records : $records with $sectioncount Section Count and $locationcount");
+	
+	if ($locationcount < 1) { $threshold = 0.25};
+	if ($locationcount > 1) { $threshold = $sectioncount/$locationcount*0.05};
+	
+	$c->debug("Threshold is $threshold");
+	
+	my $engine = PotNode::VectorSpace->new( docs => \@docs, threshold => 0.10);
 # 	my $search = $json->{'search'};
 	my $search = "$json->{'search'}->{'section'} $json->{'search'}->{'town'}";
 	
