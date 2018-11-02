@@ -569,7 +569,7 @@ sub buildSearch {
 	my $method = $spec->{'x-mojo-function'};
 	
  	my $db = DBM::Deep->new( 
- 		file => "/home/node/search/$blockChainId-new-$streamId.db",
+ 		file => "/home/node/search/$blockChainId-$streamId.db",
  		type => DBM::Deep->TYPE_ARRAY
  	);
 	
@@ -599,12 +599,6 @@ sub buildSearch {
 			}			
 		}
 	}
-	$c->debug(@$db);
-
-	my @array = @$db;
-	my (@searchindex) = grep(/Accountant/, @array);
-	
-	$c->debug(@searchindex);
 	$c->render(text => "Ok", status => 200);
 };
 
@@ -618,7 +612,7 @@ sub search {
 	my $container;
 	my $method = $spec->{'x-mojo-function'};
 	my $db = DBM::Deep->new( 
-		file => "/home/node/search/$blockChainId-new-$streamId.db",
+		file => "/home/node/search/$blockChainId-$streamId.db",
 		type => DBM::Deep->TYPE_ARRAY
 	);
 	my $outData;
