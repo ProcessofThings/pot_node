@@ -618,7 +618,7 @@ sub _get_all_stream_item {
 	
 	my $count = $dataOut->{'count'} + 10;
 	
-	@params = ["$streamId", "*", \1, $count];
+	@params = ["$streamId", "*", \1, 1000];
 	my $query = $api->liststreamkeyitems( @params );
 
 	$self->app->debug($query);

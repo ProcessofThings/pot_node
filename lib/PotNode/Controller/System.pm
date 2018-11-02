@@ -313,7 +313,7 @@ sub check {
             $config = decode_json($config);
             $count = qx/grep -c "$config->{'config'}->{'pot_node'}" $filename/;
             $count =~ s/\R//g;
-            if ($count eq '0') {
+            if ($count eq 'Skip0') {
                 $c->app->log->debug("Upgrading pot_node");
                 $command = "ipfs pin add $config->{'config'}->{'pot_node'}";
                 my $cmdreturn = qx/$command/;
