@@ -21,7 +21,9 @@ requires 'Crypt::OpenSSL::RSA', '== 0.30';
 requires 'Net::Address::IP::Local';
 requires 'Encode::Base58::GMP','== 1.00';
 requires 'File::Grep', '== 0.02';
+requires 'AnyEvent::HTTP';
 requires 'AnyEvent::Proc', '== 0.105';
 requires 'AnyEvent::Process', '== 0.02';
 requires 'Mojolicious::Plugin::Proxy', '== 0.6';
 requires 'String::HexConvert', '== 0.02';
+

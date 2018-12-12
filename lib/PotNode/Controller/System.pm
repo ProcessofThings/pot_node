@@ -126,7 +126,9 @@ sub check {
                 my ($delay, $tx) = @_;
                 $c->app->log->debug("Processing Data");
                 $network = $tx->result->body;          
+		$c->debug($network);
                 my @ans = split(/\n/, $network);
+		$c->debug(@ans);
                 ## TODO IFPF: Create Test to check IPFS Format
                 @ans = grep(/"Type":4/, @ans);
                 my $count =  @ans;

@@ -17,7 +17,7 @@ my $msg_srv = PotNode::Messaging::Service->new;
 sub genInvite{
   my $c = shift;
   my $invite = PotNode::InviteService->new->gen_new();
-  $c->render(json => $c->genqrcode64($invite), status => 200);
+  $c->render(json => $c->genqrcode64($invite, 5, 5, 'yes'), status => 200);
 }
 
 sub genDeviceInvite{
