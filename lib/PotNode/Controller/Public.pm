@@ -619,6 +619,7 @@ sub search {
 	my @docs = @$db;
 	my $threshold;
 	my $records = @docs;
+  my $search;
 	my (@searchindex) = grep(/$json->{'search'}->{'section'}/, @docs);
 	my $sectioncount = @searchindex;
 	(@searchindex) = grep(/$json->{'search'}->{'town'}/, @docs);
@@ -631,9 +632,15 @@ sub search {
 	
 	$c->debug("Threshold is $threshold");
 	
-	my $engine = PotNode::VectorSpace->new( docs => \@docs, threshold => 0.10);
+	my $engine = PotNode::VectorSpace->new( docs => \@docs, threshold => int($threshold));
 # 	my $search = $json->{'search'};
-	my $search = "$json->{'search'}->{'section'} $json->{'search'}->{'town'}";
+  if (defined($json->{'search'}->{'town'})) {
+    $c->debug("Search No Town");
+    $search = "$json->{'search'}->{'section'}";
+  } else {
+    $c->debug("Search With Town");
+    $search = "$json->{'search'}->{'section'} $json->{'search'}->{'town'}";
+  }
 	
 	$engine->build_index();
 	
@@ -671,5 +678,122 @@ sub api {
     my $data = decode_json($redis->get('index'));
     $c->render(json => $data);
 };
-  
+
+sub localstore_post {
+
+  my ($self) = @_;
+  my $c = shift;
+  my $block_chain_id = $c->param('blockChainId');
+  my $container;
+  my $ipfs_hash = '';
+  my $json = $c->req->json;
+#  my $config = $ua->get('http://127.0.0.1:8080/ipfs/'.$ipfsHash.'/config.json')->result->body;
+#  if ($config =~ /\n$/) { chop $config; };
+#  $config = decode_json($config);
+  my $tempjson = '{"localstore": {"storename": "mailchimp","encode" : [],"index":"userId"}}';
+  my $config = decode_json($tempjson);
+  my ($containerid,undef) = $c->uuid();
+  my @array;
+  my $index;
+  my $path = "/home/node/search/$block_chain_id";
+  my $file;
+  my $filename;
+  my $method;
+  my $sub_name = (caller(0))[3];
+  $sub_name = (split '::', $sub_name)[-1];
+  ($sub_name,$method) = (split '_', $sub_name);
+
+  #Path does not exist create it
+  if (not -d $path) {
+    mkdir $path;
+  }
+
+  #Generate Container
+  $container->{'containerid'} = $containerid;
+	$container->{'cdata'} = $json;
+
+  #run encoding from config (encoding insures that private data is encrypted)
+  #ideally encryption should be done on the client before passing important information
+
+  #TODO: search config file for the encode array of variables against
+  # contents of the cdata->hash
+
+  #Build Array for local storage
+  #Array first element must be the containerid
+  push(@array, "CID$containerid");
+  push(@array, "$container->{'cdata'}->{$config->{$sub_name}->{'index'}}");
+  #convert array to flat index string
+  $index = join(' ', @array);
+
+  $filename = $config->{$sub_name}->{'storename'};
+  $file = "$path/$filename.txt";
+
+  if (not -e $file) {
+    open(my $fh, '>>', $file) or die "Could not open file '$file' $!";
+			say $fh $index;
+		close $fh;
+  } else {
+    my @matches = fgrep { /$container->{'cdata'}->{$config->{$sub_name}->{'index'}}/ } $file;
+    if (@matches[0]->{'count'} < 1) {
+      open(my $fh, '>>', $file) or die "Could not open file '$file' $!";
+				say $fh $index;
+			close $fh;
+      $c->render(openapi => {message => 'not_found', info => "The requested $config->{$sub_name}->{'index'} with data $container->{'cdata'}->{$config->{$sub_name}->{'index'}} was not found."}
+    } else {
+      $c->render(openapi => {message => 'found'});
+    }
+  }
+};
+
+sub localstore_get {
+
+  my ($self) = @_;
+  my $c = shift;
+  my $block_chain_id = $c->param('blockChainId');
+  my $container;
+  my $ipfs_hash = '';
+  my $hash = $c->req->params->to_hash;
+  my $json = $c->req->json;
+  my $tempjson = '{"localstore": {"storename": "mailchimp","encode" : [],"index": "userId"}}';
+  my $config = decode_json($tempjson);
+  my ($containerid,undef) = $c->uuid();
+  my $path = "/home/node/search/$block_chain_id";
+  my $file;
+  my $filename;
+  my $method;
+  my $sub_name = (caller(0))[3];
+  $sub_name = (split '::', $sub_name)[-1];
+  ($sub_name,$method) = (split '_', $sub_name);
+
+  #Path does not exist create it
+  if (not -d $path) {
+    mkdir $path;
+    $c->render(openapi => {error => 'no_data_created', info => 'Has not been used yet or the database does not exist it will be automatically created when you use it'});
+  }
+
+  #Generate Container
+  $container->{'containerid'} = $containerid;
+	$container->{'cdata'} = $hash;
+
+  #run encoding from config (encoding insures that private data is encrypted)
+  #ideally encryption should be done on the client before passing important information
+
+  #TODO: search config file for the encode array of variables against
+  # contents of the cdata->hash
+
+  $filename = $config->{$sub_name}->{'storename'};
+  $file = "$path/$filename.txt";
+
+  if (not -e $file) {
+    $c->render(openapi => {error => 'no_data_created', info => 'Has not been used yet or the database does not exist it will be automatically created when you use it'});
+  } else {
+    my @matches = fgrep { /$container->{'cdata'}->{$config->{$sub_name}->{'index'}}/ } $file;
+    if (@matches[0]->{'count'} < 1) {
+      $c->render(openapi => {message => 'not_found', info => "The requested $config->{$sub_name}->{'index'} with data $container->{'cdata'}->{$config->{$sub_name}->{'index'}} was not found."});
+    } else {
+      $c->render(openapi => {message => 'found'});
+    }
+  }
+};
+
 1;

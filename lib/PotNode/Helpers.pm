@@ -1,5 +1,7 @@
 package PotNode::Helpers;
 use base 'Mojolicious::Plugin';
+use strict;
+use warnings;
 use Config::IniFiles;
 use PotNode::QRCode;
 use UUID::Tiny ':std';
@@ -56,7 +58,7 @@ sub register {
     $app->helper(uuid => \&_uuid);
 		$app->helper(hex_uuid_to_uuid => \&_hex_uuid_to_uuid);
     $app->helper(mergeHTML => \&_mergeHTML);
-    $app->helper(cache_control.no_caching => \&_cache_control_none);
+    $app->helper(cache_control_no_caching => \&_cache_control_none);
     $app->helper(get_rpc_config => \&_get_rpc_config);
     $app->helper(get_blockchains => \&_get_blockchains);
     $app->helper(load_blockchain_config => \&_load_blockchain_config);
@@ -133,7 +135,7 @@ sub _get_hash {
 	my ($c, $directory) = @_;
 	my $system;
 	if (-d $directory) {
-		$command = "ipfs add -r -w -Q $directory";
+		my $command = "ipfs add -r -w -Q $directory";
 		my $value = qx/$command/;
 		$value =~ s/\R//g;
 		$c->app->log->debug("Directory $directory - Hash : $value");
@@ -152,7 +154,7 @@ sub _pot_web {
 	my $system;
 	my $pot_web;
 	if (-d $directory) {
-	  $command = "ipfs add -r -w -Q $directory";
+	  my $command = "ipfs add -r -w -Q $directory";
 		my $value = qx/$command/;
 		if (!$c->redis->hexists('system','pot_web')) {
 			$c->app->log->debug("PoT Web found saving hash $value");
@@ -162,7 +164,7 @@ sub _pot_web {
 			if ($system->{'hash'} ne $value) {
 					$c->app->log->debug("PoT Web hash has changed - reloading");
 					$system->{'hash'} = $value;
-					$command = "/home/node/perl5/perlbrew/perls/perl-5.24.3/bin/hypnotoad $directory/pot_web.pl";
+					my $command = "/home/node/perl5/perlbrew/perls/perl-5.24.3/bin/hypnotoad $directory/pot_web.pl";
 					my $value = qx/$command/;
 					$value =~ s/\R//g;
 			}
@@ -229,7 +231,7 @@ sub _blockchain_change_state {
 			$delay->steps(
 				sub {
 					$c->app->log->debug("Stopping Blockchain $blockchain");
-					$command = 'multichain-cli '.$blockchain.' stop';
+					my $command = 'multichain-cli '.$blockchain.' stop';
 					system($command);
 					my $subprocess = Mojo::IOLoop::Subprocess->new;
 					$subprocess->run(
@@ -267,7 +269,7 @@ sub _blockchain_change_state {
 						$c->app->log->debug("Process Finished");
 					});
 				});
-				$delay-wait;
+				$delay->wait;
 		} else {
 			$c->app->log->debug("Blockchain .stop located - skipping blockchain");
 			$status->{'status'} = "Stopped";
@@ -285,7 +287,7 @@ sub _blockchain_change_state {
 			$delay->steps(
 				sub {
 					$c->app->log->debug("Starting Blockchain $blockchain");
-					$command = 'multichaind '.$blockchain.' -daemon -pid=/home/node/run/'.$blockchain.'.pid -walletnotifynew="curl -H \'Content-Type: application/json\' -d %j http://127.0.0.1:9090/system/alertnotify?name=%m\&txid=%s\&hex=%h\&seen=%c\&address=%a\&assets=%e" > /dev/null &';
+					my $command = 'multichaind '.$blockchain.' -daemon -pid=/home/node/run/'.$blockchain.'.pid -walletnotifynew="curl -H \'Content-Type: application/json\' -d %j http://127.0.0.1:9090/system/alertnotify?name=%m\&txid=%s\&hex=%h\&seen=%c\&address=%a\&assets=%e" > /dev/null &';
 					system($command);
 					my $subprocess = Mojo::IOLoop::Subprocess->new;
 					$subprocess->run(
@@ -323,7 +325,7 @@ sub _blockchain_change_state {
 						$c->app->log->debug("Process Finished");
 					});
 				});
-				$delay-wait;
+				$delay->wait;
 		}
 	}
 
@@ -359,6 +361,7 @@ sub _uuid {
     my $self = shift;
     my $uuid_rand  = uuid_to_string(create_uuid(UUID_RANDOM));
     my $uuid_binary = create_uuid(UUID_SHA1, UUID_NS_DNS, $uuid_rand);
+    my $hex;
     $hex =~ tr/-//d;
 
 		## Converts UUID to uppercase string
@@ -405,7 +408,7 @@ sub _get_blockchains {
     my ($self,$blockchain) = @_;
     my $multichain = $self->config->{multichain};
     my @dirList = glob("$multichain/*");
-    my @dirList = grep(/\w{32}$/, @dirList);
+    @dirList = grep(/\w{32}$/, @dirList);
     my @dataOut;
     foreach my $dir (@dirList) {
         $dir =~ /\w{32}$/;
@@ -513,10 +516,13 @@ sub _create_stream {
 
 sub _publish_stream {
 	my ($self, $blockChainId, $streamId, $container) = @_;
+  my $dataOut;
+  my @params;
+
 	$self->app->debug("Publish");
 	my $config = "rpc_$blockChainId";
 	if (!$self->redis->exists($config)) {
-			$config = $c->get_rpc_config($blockChainId);
+			$config = $self->get_rpc_config($blockChainId);
 	} else {
 			$config = decode_json($self->redis->get($config));
 	}
@@ -539,10 +545,12 @@ sub _publish_stream {
 
 sub _delete_stream_item {
 	my ($self, $blockChainId, $streamId, $container) = @_;
+  my @params;
+  my $dataOut;
 	$self->app->debug("Publish");
 	my $config = "rpc_$blockChainId";
 	if (!$self->redis->exists($config)) {
-			$config = $c->get_rpc_config($blockChainId);
+			$config = $self->get_rpc_config($blockChainId);
 	} else {
 			$config = decode_json($self->redis->get($config));
 	}
@@ -563,7 +571,7 @@ sub _get_stream_item {
 	$self->app->debug("Stream Item");
 	my $config = "rpc_$blockChainId";
 	if (!$self->redis->exists($config)) {
-			$config = $c->get_rpc_config($blockChainId);
+			$config = $self->get_rpc_config($blockChainId);
 	} else {
 			$config = decode_json($self->redis->get($config));
 	}
@@ -571,7 +579,7 @@ sub _get_stream_item {
 	my $url = "$config->{'rpcuser'}:$config->{'rpcpassword'}\@127.0.0.1:$config->{'rpcport'}";
 	my $api =  PotNode::Multichain->new( url => $url );
 
-	@params = ["$streamId", $containerid];
+	my @params = ["$streamId", $containerid];
 	my $query = $api->liststreamkeyitems( @params );
 	foreach my $item (@{$query->{'result'}}) {
 		if($item->{'data'} ne 'ff') {
@@ -599,10 +607,12 @@ sub _get_stream_item {
 sub _get_all_stream_item {
 	my ($self, $blockChainId, $streamId, $containerid, $count) = @_;
 	my $dataOut;
+  my @params;
+
 	$self->app->debug("Get all Stream Item");
 	my $config = "rpc_$blockChainId";
 	if (!$self->redis->exists($config)) {
-			$config = $c->get_rpc_config($blockChainId);
+			$config = $self->get_rpc_config($blockChainId);
 	} else {
 			$config = decode_json($self->redis->get($config));
 	}
@@ -617,7 +627,7 @@ sub _get_all_stream_item {
 	
 	$dataOut->{'count'} = @{$querycount->{'result'}};
 	
-	my $count = $dataOut->{'count'} + 10;
+	$count = $dataOut->{'count'} + 10;
 	
 	@params = ["$streamId", "*", \1, 1000];
 	my $query = $api->liststreamkeyitems( @params );

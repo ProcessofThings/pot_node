@@ -928,6 +928,87 @@
         }
       }
     },
+    "/localstore/{blockChainId}": {
+      "post": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#localstore_post"
+        ],
+        "x-mojo-name": "localstore_post",
+        "x-mojo-function": "publish",
+        "x-mojo-streamid": "profiles",
+        "summary": "localstore allows you to store a indexable value to a flat file, this can be used for verification",
+        "description": "This function is used to authorise a users request to connect",
+        "operationId": "localstore_post",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+					{
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#localstore_get"
+        ],
+        "x-mojo-name": "localstore_get",
+        "x-mojo-function": "publish",
+        "summary": "localstore allows you to store a indexable value to a flat file, this can be used for verification",
+        "description": "This function is used to authorise a users request to connect",
+        "operationId": "localstore_get",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+					{
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     	"/loginUser/{blockChainId}": {
       "get": {
         "tags": [

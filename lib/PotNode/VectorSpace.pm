@@ -209,13 +209,12 @@ sub cosine {
 
 
 sub load_stop_list {
-	my %stop_words;
-	my $db = DBM::Deep->new( 
-		file => "/home/node/search/stop_words.db",
-		type => DBM::Deep->TYPE_HASH
-	);
-	%stop_words = %$db;
-	return \%stop_words;
+  my %stop_words;
+  while (<DATA>) {
+    chomp;
+    $stop_words{$_}++;
+  }
+  return \%stop_words;
 }
 
 
@@ -231,6 +230,12 @@ Maciej Ceglowski <maciej@ceglowski.com>
 This program is free software, released under the same terms as Perl itself
 
 =cut
+
+__DATA__
+
+and
+
+
 
 __DATA__
 

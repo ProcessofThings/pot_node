@@ -387,6 +387,7 @@ sub alertnotify {
     my $c = shift;
     my $params = $c->req->params->to_hash;
     my $json = $c->req->json;
+    $c->debug("Alert Notification");
     $c->debug($params);
     $c->debug($json);
     $c->render(text => 'Ok', status => 200);
