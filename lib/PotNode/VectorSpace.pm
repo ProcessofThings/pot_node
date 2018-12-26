@@ -126,7 +126,7 @@ sub get_words {
 	my ( $self, $text ) = @_;
 	my %doc_words;  
 	my @words = map { stem($_) }
-				grep { !( exists $self->{'stop_list'}->{$_} ) }
+				grep { !/and/ }
 				map { lc($_) } 
 #				map {  $_ =~/([a-z\-']+)/i} 
 				split /\s+/, $text;
