@@ -370,7 +370,7 @@ sub resetPassword {
                                                 -smtp=>'smtp.gmail.com',
                                                  -login=>$gmail_config->{login},
                                                  -pass=>$gmail_config->{password});
-          $mail->send(-to=>$container->{cdata}->{userName}, -subject=>'Password Reset', -body=>"Please click on the following link to reset your password<br><br>https://pinkpagesonline.co.uk/login.html?reset=$container->{cdata}->{userName}&id=$container->{cdata}->{userResetId}",-contenttype=>'text/html');
+          $mail->send(-to=>$container->{cdata}->{userName}, -subject=>'Password Reset', -body=>'Please click on the following link to reset your password<br><br><a href="https://pinkpagesonline.co.uk/login.html?reset='.$container->{cdata}->{userName}.'&id='.$container->{cdata}->{userResetId}.'">Reset Password</a>',-contenttype=>'text/html');
           $mail->bye;
 
 
