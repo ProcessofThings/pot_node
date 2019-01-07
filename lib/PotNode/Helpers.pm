@@ -695,7 +695,7 @@ sub _mailchimp_subscribe {
   $mc_config->{apikey} = 'anystring:somekey';
   $mc_config->{listid} = 'somelistid';
   $mc_config = encode_json($mc_config);
-  my $requrl = $c->req->headers->header('X-Url');
+  my $requrl = $self->req->headers->header('X-Url');
   $self->app->debug($requrl);
   if (!$self->redis->exists('mc_config')) {
     $self->redis->set('mc_config', $mc_config);
