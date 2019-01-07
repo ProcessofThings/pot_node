@@ -697,10 +697,10 @@ sub _mailchimp_subscribe {
   $mc_config = encode_json($mc_config);
   my $requrl = $c->req->headers->header('X-Url');
   $self->app->debug($requrl);
-  if (!$redis->exists('mc_config')) {
-    $redis->set('mc_config', $mc_config);
+  if (!$self->redis->exists('mc_config')) {
+    $self->redis->set('mc_config', $mc_config);
   } else {
-    $mc_config = decode_json($redis->get('mc_config'));
+    $mc_config = decode_json($self->redis->get('mc_config'));
   }
   my $key = b64_encode($mc_config->{apikey},'');
   my $ua  = Mojo::UserAgent->new;
