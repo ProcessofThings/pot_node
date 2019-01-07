@@ -651,31 +651,31 @@ sub _get_all_stream_item {
 					$dataOut->{$json->{'containerid'}}->{'cdata'} = $json->{'cdata'};
 				}
 			}
-      if ($item->{'data'} eq 'ff') {
-        $self->app->debug("Item Deleted");
-        $self->app->debug($item);
-        @params = [ "$streamId", "$item->{'key'}", \1, 10, -2 ];
-        my $deletedQuery = $api->liststreamkeyitems(@params);
-        $self->app->debug($deletedQuery);
-        foreach my $item (@{$query->{'result'}}) {
-          if ($item->{'data'} ne 'ff') {
-            my $json = hex_to_ascii($item->{'data'});
-            $json = decode_json($json);
-            $self->app->debug($json);
-            if (defined($json->{'cdata'})) {
-              $dataOut->{$json->{'containerid'}}->{'containerid'} = $json->{'containerid'};
-              $json->{'cdata'}->{'deleted'} = "true";
-              $dataOut->{$json->{'containerid'}}->{'cdata'} = $json->{'cdata'};
-            }
-          }
-        }
-      }
-      if (! $deleted) {
+#      if ($item->{'data'} eq 'ff') {
+#        $self->app->debug("Item Deleted");
+#        $self->app->debug($item);
+#        @params = [ "$streamId", "$item->{'key'}", \1, 10, -2 ];
+#        my $deletedQuery = $api->liststreamkeyitems(@params);
+#        $self->app->debug($deletedQuery);
+#        foreach my $item (@{$query->{'result'}}) {
+#          if ($item->{'data'} ne 'ff') {
+#            my $json = hex_to_ascii($item->{'data'});
+#            $json = decode_json($json);
+#            $self->app->debug($json);
+#            if (defined($json->{'cdata'})) {
+#              $dataOut->{$json->{'containerid'}}->{'containerid'} = $json->{'containerid'};
+#              $json->{'cdata'}->{'deleted'} = "true";
+#              $dataOut->{$json->{'containerid'}}->{'cdata'} = $json->{'cdata'};
+#            }
+#          }
+#        }
+#      }
+#      if (! $deleted) {
         if ($item->{'data'} eq 'ff') {
           $self->app->debug("Item Deleted");
           delete $dataOut->{$item->{'key'}};
         }
-      }
+ #     }
 		}
 	}
 	
