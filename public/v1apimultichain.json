@@ -928,6 +928,153 @@
         }
       }
     },
+    "/userExists/{blockChainId}": {
+      "get": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#userExists"
+        ],
+        "x-mojo-name": "userExists",
+        "x-mojo-function": "publish",
+        "x-mojo-streamid": "profiles",
+        "summary": "Authentificates user against dapp data",
+        "description": "This function is used to authorise a users request to connect",
+        "operationId": "userExists",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userName",
+            "in": "query",
+            "description": "Pass the user login id of the user",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/updatePassword/{blockChainId}": {
+      "post": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#updatePassword"
+        ],
+        "x-mojo-name": "updatePassword",
+        "x-mojo-function": "publish",
+        "x-mojo-streamid": "profiles",
+        "summary": "Authentificates user against dapp data",
+        "description": "This function is used to authorise a users request to connect",
+        "operationId": "updatePassword",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userName",
+            "in": "query",
+            "description": "Pass the user login id of the user",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/resetPassword/{blockChainId}": {
+      "post": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#resetPassword"
+        ],
+        "x-mojo-name": "resetPassword",
+        "x-mojo-function": "publish",
+        "x-mojo-streamid": "profiles",
+        "summary": "Authentificates user against dapp data",
+        "description": "This function is used to authorise a users request to connect",
+        "operationId": "resetPassword",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userName",
+            "in": "query",
+            "description": "Pass the user login id of the user",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/localstore/{blockChainId}": {
       "post": {
         "tags": [

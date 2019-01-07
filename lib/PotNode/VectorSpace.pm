@@ -61,7 +61,7 @@ sub new {
 	{ 
 		docs 	  => $params{'docs'},
 		threshold => $params{'threshold'} || .001,
-		stop_list => load_stop_list(),
+		stop_list => $params{'filter'}
 	};
 		  
 	return bless $self, $class;
@@ -124,9 +124,11 @@ sub get_words {
 	
 	# Splits on whitespace and strips some punctuation		
 	my ( $self, $text ) = @_;
-	my %doc_words;  
+	my %doc_words;
+  $log->debug('Get Words');
+  $log->debug($self->{'stop_list'});
 	my @words = map { stem($_) }
-				grep { !/and/ }
+				grep { ! (exists $self->{stop_list}->{$_}) }
 				map { lc($_) } 
 #				map {  $_ =~/([a-z\-']+)/i} 
 				split /\s+/, $text;
@@ -234,6 +236,7 @@ This program is free software, released under the same terms as Perl itself
 __DATA__
 
 and
+cleaners
 
 
 

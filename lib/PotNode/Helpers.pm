@@ -7,6 +7,7 @@ use PotNode::QRCode;
 use UUID::Tiny ':std';
 use Data::UUID;
 use Mojo::JSON qw(decode_json encode_json);
+use Mojo::Util qw(b64_decode b64_encode);
 use PotNode::Multichain;
 use String::HexConvert ':all';
 
@@ -69,7 +70,7 @@ sub register {
 		$app->helper(delete_stream_item => \&_delete_stream_item);
 		$app->helper(get_stream_item => \&_get_stream_item);
 		$app->helper(get_all_stream_item => \&_get_all_stream_item);
-
+    $app->helper(mailchimp_subscribe => \&_mailchimp_subscribe);
 
 }
 
@@ -584,6 +585,7 @@ sub _get_stream_item {
 	foreach my $item (@{$query->{'result'}}) {
 		if($item->{'data'} ne 'ff') {
 			my $json = hex_to_ascii($item->{'data'});
+      $self->app->debug($json);
 			$json = decode_json($json);
 			$self->app->debug('Stream Item Data');
 			$self->app->debug($json);
@@ -605,7 +607,7 @@ sub _get_stream_item {
 };
 
 sub _get_all_stream_item {
-	my ($self, $blockChainId, $streamId, $containerid, $count) = @_;
+	my ($self, $blockChainId, $streamId, $count, $deleted) = @_;
 	my $dataOut;
   my @params;
 
@@ -645,19 +647,63 @@ sub _get_all_stream_item {
 				$self->app->debug($json);
 				if (defined($json->{'cdata'})) {
 					$dataOut->{$json->{'containerid'}}->{'containerid'} = $json->{'containerid'};
+          $json->{'cdata'}->{'deleted'} = "false";
 					$dataOut->{$json->{'containerid'}}->{'cdata'} = $json->{'cdata'};
 				}
 			}
-			if ($item->{'data'} eq 'ff') {
-				$self->app->debug("Item Deleted");
-				delete $dataOut->{$item->{'key'}};
-			}
+      if ($item->{'data'} eq 'ff') {
+        $self->app->debug("Item Deleted");
+        $self->app->debug($item);
+        @params = [ "$streamId", "$item->{'key'}", \1, 10, -2 ];
+        my $deletedQuery = $api->liststreamkeyitems(@params);
+        $self->app->debug($deletedQuery);
+        foreach my $item (@{$query->{'result'}}) {
+          if ($item->{'data'} ne 'ff') {
+            my $json = hex_to_ascii($item->{'data'});
+            $json = decode_json($json);
+            $self->app->debug($json);
+            if (defined($json->{'cdata'})) {
+              $dataOut->{$json->{'containerid'}}->{'containerid'} = $json->{'containerid'};
+              $json->{'cdata'}->{'deleted'} = "true";
+              $dataOut->{$json->{'containerid'}}->{'cdata'} = $json->{'cdata'};
+            }
+          }
+        }
+      }
+      if (! $deleted) {
+        if ($item->{'data'} eq 'ff') {
+          $self->app->debug("Item Deleted");
+          delete $dataOut->{$item->{'key'}};
+        }
+      }
 		}
 	}
 	
 	$self->app->debug($dataOut);
 	
  	return $dataOut;
+};
+
+sub _mailchimp_subscribe {
+  my ($self, $container) = @_;
+  my $mailchimp;
+  $mailchimp->{email_address} = $container->{'cdata'}->{'userEmail'};
+  $mailchimp->{status} = 'subscribed';
+  $mailchimp->{merge_fields}->{FNAME} = $container->{'cdata'}->{'userFirstName'};
+  $mailchimp->{merge_fields}->{LNAME} = $container->{'cdata'}->{'userLastName'};
+#  my $json = '{ "email_address": "craig.harper@chainsolutions.net", "status": "subscribed", "merge_fields": { "FNAME": "dexter", "LNAME": "uk"}}';
+  my $key = b64_encode('anystring:392271f823610c4577d6c5bc16334524','');
+  my $ua  = Mojo::UserAgent->new;
+  $ua->max_redirects(10);
+  $ua->on(start => sub {
+    my ($ua, $tx) = @_;
+    $tx->req->headers->authorization("Basic $key");
+  });
+  my $url = Mojo::URL->new("https://us7.api.mailchimp.com/3.0/lists/4d789e07c9/members")->userinfo("anystring:392271f823610c4577d6c5bc16334524");
+  my $responce = $ua->post( $url => json => $mailchimp)->res->body;
+  $self->app->debug('Mailchimp');
+  $self->app->debug($responce);
+  return 1;
 };
 
 1;

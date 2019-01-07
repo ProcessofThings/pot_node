@@ -16,7 +16,7 @@ use DBM::Deep;
 use Devel::Size qw(total_size);
 use Encode::Base58::GMP;
 use File::Grep qw/ fgrep /;
-use Mojo::Util qw(b64_decode);
+use Mojo::Util qw(b64_decode b64_encode);
 use Image::Scale;
 use PotNode::VectorSpace;
 
@@ -113,7 +113,7 @@ sub registerUser {
 	## build container
 	$container->{'containerid'} = $containerid;
 	$container->{'cdata'} = $hash;
-	
+
 	my @array;
 	push(@array, "CID$containerid");
 	push(@array, Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userEmail'}));
@@ -126,6 +126,7 @@ sub registerUser {
 		open(my $fh, '>>', $file) or die "Could not open file '$file' $!";
 			say $fh $index;
 		close $fh;
+    $c->mailchimp_subscribe($container);
 		$c->debug("Publish to Stream");
 		$c->publish_stream($blockChainId, $streamId, $container);
 	} else {
@@ -137,6 +138,7 @@ sub registerUser {
 		$c->debug(@matches[0]);
 		$c->debug(@matches[0]->{'count'});
 		if (@matches[0]->{'count'} < 1) {
+      $c->mailchimp_subscribe($container);
 			$c->debug("Search Entry Not Found");
 			$c->publish_stream($blockChainId, $streamId, $container);
 			open(my $fh, '>>', $file) or die "Could not open file '$file' $!";
@@ -149,6 +151,229 @@ sub registerUser {
 $c->render(text => "Ok", status => 200);
 };
 
+sub userExists {
+	my $c = shift;
+	my $spec = $c->openapi->spec;
+	my $blockChainId = $c->param('blockChainId');
+	my $streamId = $spec->{'x-mojo-streamid'};
+	my $hash = $c->req->params->to_hash;
+	my $container;
+	my $method = $spec->{'x-mojo-function'};
+  my $outData;
+  my $message;
+
+  $c->debug("userExists");
+
+	## Move to Registration User Module when building the dapp
+	$c->create_stream($blockChainId, $streamId);
+
+	my ($containerid,undef) = $c->uuid();
+
+
+	## build container
+	$container->{'containerid'} = $containerid;
+	$container->{'cdata'} = $hash;
+
+	my @array;
+	push(@array, "CID$containerid");
+	push(@array, Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'}));
+	my $index = join(' ', @array);
+	$c->debug("Index : $index");
+	my $file = "/home/node/search/$streamId.txt";
+	if (not -e $file) {
+		$c->debug("File Not found adding Index");
+	} else {
+		$c->debug("Search");
+		my $userName = Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'});
+		$c->debug("$userName");
+		my @matches = fgrep { /$userName/ } $file;
+		$c->debug(@matches[0]);
+		$c->debug(@matches[0]->{'count'});
+		if (@matches[0]->{'count'} < 1) {
+			$c->debug("Search Entry Not Found");
+      $c->render(openapi => {message => 'not_found'});
+		} else {
+      $c->debug("Search Found");
+      $c->debug(@matches[0]->{'matches'});
+      my $search = @matches[0]->{'matches'};
+      $c->debug($search);
+      foreach my $key (keys %{$search}) {
+        my $result = @matches[0]->{'matches'}->{$key};
+        ($result) = split(/ /, $result);
+        $result = substr($result, 3);
+        my $userInfo  = $c->get_stream_item($blockChainId, 'profiles', $result);
+		    foreach ( keys%{ $userInfo } ){
+          $outData->{ $_ } = $userInfo->{ $_ } ;
+		    }
+        $c->debug($outData);
+        if (!defined($outData->{$result}->{cdata}->{userPassword})) {
+          $message = 'setup';
+        } else {
+          $message = 'user_found';
+          if (defined($outData->{$result}->{cdata}->{userResetId})) {
+            if ($outData->{$result}->{cdata}->{userResetId} eq $container->{cdata}->{userResetId}) {
+              $message = 'reset_password';
+            }
+          }
+        }
+      }
+      $c->render(openapi => {message => $message});
+		}
+	}
+};
+
+sub updatePassword {
+  my $c = shift;
+	my $spec = $c->openapi->spec;
+	my $blockChainId = $c->param('blockChainId');
+	my $streamId = $spec->{'x-mojo-streamid'};
+	my $hash = $c->req->params->to_hash;
+	my $container;
+	my $method = $spec->{'x-mojo-function'};
+  my $outData;
+  my $message;
+	## Move to Registration User Module when building the dapp
+	$c->create_stream($blockChainId, $streamId);
+
+	my ($containerid,undef) = $c->uuid();
+
+
+	## build container
+	$container->{'containerid'} = $containerid;
+	$container->{'cdata'} = $hash;
+
+  $c->debug($container);
+
+	my @array;
+	push(@array, "CID$containerid");
+	push(@array, Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'}));
+	my $index = join(' ', @array);
+	my $file = "/home/node/search/$streamId.txt";
+	if (not -e $file) {
+		$c->debug("File Not found adding Index");
+	} else {
+		my $userName = Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'});
+		my @matches = fgrep { /$userName/ } $file;
+		if (@matches[0]->{'count'} < 1) {
+			$c->debug("Search Entry Not Found");
+      $c->render(openapi => {message => 'not_found'});
+		} else {
+      my $search = @matches[0]->{'matches'};
+      foreach my $key (keys %{$search}) {
+        my $result = @matches[0]->{'matches'}->{$key};
+        ($result) = split(/ /, $result);
+        $result = substr($result, 3);
+        my $userInfo  = $c->get_stream_item($blockChainId, 'profiles', $result);
+		    foreach ( keys%{ $userInfo } ){
+          $outData->{ $_ } = $userInfo->{ $_ } ;
+		    }
+        if (!defined($outData->{$result}->{cdata}->{userPassword})) {
+          $c->debug("Password Found");
+          $outData->{$result}->{cdata}->{userPassword} = $container->{cdata}->{userPassword};
+          $container->{containerid} =  $outData->{$result}->{containerid};
+          $container->{cdata} = $outData->{$result}->{cdata};
+          $c->publish_stream($blockChainId, $streamId, $container);
+          $message = 'password_changed';
+        } else {
+          $message = 'user_found';
+          if (defined($outData->{$result}->{cdata}->{userResetId})) {
+            $c->debug("userResetId Found");
+            if ($outData->{$result}->{cdata}->{userResetId} eq $container->{cdata}->{userResetId}) {
+              $c->debug("userResetId Match");
+              $outData->{$result}->{cdata}->{userPassword} = $container->{cdata}->{userPassword};
+              $container->{containerid} =  $outData->{$result}->{containerid};
+              delete $outData->{$result}->{cdata}->{userResetId};
+              $container->{cdata} = $outData->{$result}->{cdata};
+              $c->debug($container);
+              $c->publish_stream($blockChainId, $streamId, $container);
+              $message = 'password_reset';
+            } else {
+              $c->debug("userResetId No Match");
+              $message = 'invalid_reset_id';
+            }
+          }
+        }
+      }
+      $c->render(openapi => {message => $message});
+		}
+	}
+};
+
+sub resetPassword {
+  use Email::Send::SMTP::Gmail;
+
+  my $c = shift;
+	my $spec = $c->openapi->spec;
+	my $blockChainId = $c->param('blockChainId');
+	my $streamId = $spec->{'x-mojo-streamid'};
+	my $hash = $c->req->params->to_hash;
+	my $container;
+	my $method = $spec->{'x-mojo-function'};
+  my $outData;
+  my $message;
+	## Move to Registration User Module when building the dapp
+	$c->create_stream($blockChainId, $streamId);
+
+	my ($containerid,undef) = $c->uuid();
+
+
+	## build container
+	$container->{'containerid'} = $containerid;
+	$container->{'cdata'} = $hash;
+  $container->{cdata}->{userResetId} = Encode::Base58::GMP::md5_base58($containerid);
+
+	my @array;
+	push(@array, "CID$containerid");
+	push(@array, Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'}));
+	my $index = join(' ', @array);
+	my $file = "/home/node/search/$streamId.txt";
+	if (not -e $file) {
+		$c->debug("File Not found adding Index");
+	} else {
+		my $userName = Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'});
+		my @matches = fgrep { /$userName/ } $file;
+		if (@matches[0]->{'count'} < 1) {
+			$c->debug("Search Entry Not Found");
+      $c->render(openapi => {message => 'not_found'});
+		} else {
+      my $search = @matches[0]->{'matches'};
+      foreach my $key (keys %{$search}) {
+        my $result = @matches[0]->{'matches'}->{$key};
+        ($result) = split(/ /, $result);
+        $result = substr($result, 3);
+        my $userInfo  = $c->get_stream_item($blockChainId, 'profiles', $result);
+		    foreach ( keys%{ $userInfo } ){
+          $outData->{ $_ } = $userInfo->{ $_ } ;
+		    }
+        if (defined($outData->{$result}->{cdata}->{userPassword})) {
+          $outData->{$result}->{cdata}->{userResetId} = $container->{cdata}->{userResetId};
+          $container->{containerid} =  $outData->{$result}->{containerid};
+          $container->{cdata} = $outData->{$result}->{cdata};
+          $c->publish_stream($blockChainId, $streamId, $container);
+          # Send Email to request password change
+          $c->debug($container);
+          $c->debug("Sending Email");
+          my $email = -1;
+          my ($mail,$error)=Email::Send::SMTP::Gmail->new(-layer=>'ssl',
+                                                -port=>'465',
+                                                -smtp=>'smtp.gmail.com',
+                                                 -login=>'craig.harper@chainsolutions.net',
+                                                 -pass=>'3Hsch8278+');
+          $mail->send(-to=>$container->{cdata}->{userName}, -subject=>'Password Reset', -body=>"Please click on the following link to reset your password<br>https://pinkpagesonline.co.uk/login.html?reset=$container->{cdata}->{userName}&id=$container->{cdata}->{userResetId}");
+          $mail->bye;
+
+
+
+          $c->debug($container->{cdata}->{userResetId});
+          $message = 'email_sent';
+        }
+      }
+      $c->render(openapi => {message => $message});
+		}
+	}
+};
+
+
 sub loginUser {
 	my $c = shift;
 	my $spec = $c->openapi->spec;
@@ -158,23 +383,52 @@ sub loginUser {
 	my $container;
 	my $method = $spec->{'x-mojo-function'};
 	my $file = "/home/node/search/$streamId.txt";
-	my $sessionid;
+  my $outData;
+  my $message;
+  my $session;
 	
-	$c->debug($hash);
+  my ($session_key,undef) = $c->uuid();
+  $session_key = Encode::Base58::GMP::md5_base58($session_key);
+  $container->{'cdata'} = $hash;
+		$container->{cdata}->{userName} = Encode::Base58::GMP::md5_base58($hash->{'userName'});
+
+ 	$c->debug($container->{cdata}->{userName});
 	
-	my $userName = Encode::Base58::GMP::md5_base58($hash->{'userName'});
-	my ($sessionid,undef) = $c->uuid();
-	$sessionid = Encode::Base58::GMP::md5_base58($sessionid);
-	
- 	$c->debug($userName);
-	
-	my @matches = fgrep { /$userName/ } $file;
+	my @matches = fgrep { /$container->{cdata}->{userName}/ } $file;
 	$c->debug(@matches[0]);
 	if (@matches[0]->{'count'} < 1) {
 		$c->debug("Search Entry Not Found");
 		$c->render(json => {'error' => "Username and Password did not match"}, status => 404);
 	} else {
-		$c->render(json => {'sessionid' => $sessionid}, status => 200);
+    my $search = @matches[0]->{'matches'};
+      foreach my $key (keys %{$search}) {
+        my $result = @matches[0]->{'matches'}->{$key};
+        ($result) = split(/ /, $result);
+        $result = substr($result, 3);
+        my $userInfo = $c->get_stream_item($blockChainId, 'profiles', $result);
+        foreach (keys %{$userInfo}) {
+          $outData->{ $_ } = $userInfo->{ $_ };
+        }
+        $c->debug($container->{cdata}->{userPassword});
+        $c->debug($outData->{$result}->{cdata}->{userPassword});
+        if ($outData->{$result}->{cdata}->{userPassword} eq $container->{cdata}->{userPassword}) {
+          if ($redis->exists("session_userid_".$result)) {
+            $c->debug("Delete Old Session");
+            my $old_session = $redis->get("session_userid_".$result);
+            $redis->del('session_'.$old_session);
+          }
+          $session->{session_key} = $session_key;
+          $session->{user_id} = $result;
+          $session->{cdata} = $outData->{$result}->{cdata};
+          $c->debug("Create New Session");
+          $redis->setex('session_'.$session_key,1800, encode_json($session));
+          $redis->setex('session_userid_'.$result,1800, $session_key);
+          $message = {'message' => 'success','sessionKey' => $session_key, 'status' => 200};
+        } else {
+          $message = {'message' => 'Problem with Username or Password', 'status' => 400};
+        }
+      }
+    $c->render(openapi => { 'res' => $message }, status => $message->{status});
 	}
 	#$c->render(text => "Ok", status => 200);
 };
@@ -260,13 +514,28 @@ sub getCustomers {
 	my $blockChainId = $c->param('blockChainId');
 	my $streamId = $spec->{'x-mojo-streamid'};
 	my $hash = $c->req->params->to_hash;
+  my $json = $c->req->json;
+  my $headers = $c->req->headers;
 	my $container;
+  my $deleted = 1;
 	my $method = $spec->{'x-mojo-function'};
+  $c->debug('Get Customers Start');
+  $c->debug($c->req->headers->header('X-Url'));
+  $c->debug($hash);
+  $c->debug($json);
+  my $host = $c->req->url->to_abs->host;
+  $c->debug($host);
+
+  #if ($redis->exists('session_'.$hash->{sessionKey})) {
+  #  my $admin_id = $redis->get('session_'.$hash->{sessionKey});
+  #  if (!$redis->exists())
+  #}
+
 #	$streamId = 'test12314';
 	## Move to Registration User Module when building the dapp
 	$c->create_stream($blockChainId, $streamId);
 	
-	my $outData = $c->get_all_stream_item($blockChainId, $streamId);
+	my $outData = $c->get_all_stream_item($blockChainId, $streamId,-1,$deleted);
 
 	$c->debug('getcustomers');
  	$c->debug($outData);
@@ -282,14 +551,13 @@ sub getSubAds {
 	my $hash = $c->req->params->to_hash;
 	my $container;
 	my $method = $spec->{'x-mojo-function'};
-	
+
 	## Move to Registration User Module when building the dapp
 	$c->create_stream($blockChainId, $streamId);
 	
 	my $outData = $c->get_all_stream_item($blockChainId, $streamId);
 	
 # 	$c->debug($outData);
-
 	$c->render(json => $outData, status => 200);
 };
 
@@ -620,19 +888,20 @@ sub search {
 	my $threshold;
 	my $records = @docs;
   my $search;
+  my %filter;
 	my (@searchindex) = grep(/$json->{'search'}->{'section'}/, @docs);
 	my $sectioncount = @searchindex;
 	(@searchindex) = grep(/$json->{'search'}->{'town'}/, @docs);
 	my $locationcount = @searchindex;
-	
+	%filter = ('and' => '1', 'cleaners'=> '1');
 	$c->debug("Total Records : $records with $sectioncount Section Count and $locationcount");
 	
 	if ($locationcount < 1) { $threshold = 0.25};
 	if ($locationcount > 1) { $threshold = $sectioncount/$locationcount*0.05};
 	
 	$c->debug("Threshold is $threshold");
-	
-	my $engine = PotNode::VectorSpace->new( docs => \@docs, threshold => int($threshold));
+
+	my $engine = PotNode::VectorSpace->new( docs => \@docs, threshold => int($threshold), filter => \%filter);
 # 	my $search = $json->{'search'};
   if (defined($json->{'search'}->{'town'})) {
     $c->debug("Search No Town");
@@ -667,6 +936,23 @@ sub search {
 	$c->debug($searchresults);
 	
 	$c->render(json => $searchresults, status => 200);	
+};
+
+sub cleandata {
+  my $c = shift;
+	my $spec = $c->openapi->spec;
+	my $blockChainId = $c->param('blockChainId');
+	my $streamId = $spec->{'x-mojo-streamid'};
+	my $hash = $c->req->params->to_hash;
+	my $container;
+  my $customerData;
+  my $slotData;
+	my $method = $spec->{'x-mojo-function'};
+
+  ## Get all customers and check if they have been deleted and remove any related slots
+  my $customerData = $c->get_all_stream_item($blockChainId, $streamId);
+
+
 };
 
 sub api {
@@ -738,7 +1024,7 @@ sub localstore_post {
       open(my $fh, '>>', $file) or die "Could not open file '$file' $!";
 				say $fh $index;
 			close $fh;
-      $c->render(openapi => {message => 'not_found', info => "The requested $config->{$sub_name}->{'index'} with data $container->{'cdata'}->{$config->{$sub_name}->{'index'}} was not found."}
+      $c->render(openapi => {message => 'not_found', info => "The requested $config->{$sub_name}->{'index'} with data $container->{'cdata'}->{$config->{$sub_name}->{'index'}} was not found."});
     } else {
       $c->render(openapi => {message => 'found'});
     }
