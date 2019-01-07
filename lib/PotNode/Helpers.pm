@@ -691,15 +691,25 @@ sub _mailchimp_subscribe {
   $mailchimp->{status} = 'subscribed';
   $mailchimp->{merge_fields}->{FNAME} = $container->{'cdata'}->{'userFirstName'};
   $mailchimp->{merge_fields}->{LNAME} = $container->{'cdata'}->{'userLastName'};
-#  my $json = '{ "email_address": "craig.harper@chainsolutions.net", "status": "subscribed", "merge_fields": { "FNAME": "dexter", "LNAME": "uk"}}';
-  my $key = b64_encode('anystring:392271f823610c4577d6c5bc16334524','');
+  my $mc_config;
+  $mc_config->{apikey} = 'anystring:somekey';
+  $mc_config->{listid} = 'somelistid';
+  $mc_config = encode_json($mc_config);
+  my $requrl = $c->req->headers->header('X-Url');
+  $c->debug($requrl);
+  if (!$redis->exists('mc_config')) {
+    $redis->set('mc_config', $mc_config);
+  } else {
+    $mc_config = decode_json($redis->get('mc_config'));
+  }
+  my $key = b64_encode($mc_config->{apikey},'');
   my $ua  = Mojo::UserAgent->new;
   $ua->max_redirects(10);
   $ua->on(start => sub {
     my ($ua, $tx) = @_;
     $tx->req->headers->authorization("Basic $key");
   });
-  my $url = Mojo::URL->new("https://us7.api.mailchimp.com/3.0/lists/4d789e07c9/members")->userinfo("anystring:392271f823610c4577d6c5bc16334524");
+  my $url = Mojo::URL->new("https://us7.api.mailchimp.com/3.0/lists/$mc_config->{listid}/members")->userinfo($mc_config->{apikey});
   my $responce = $ua->post( $url => json => $mailchimp)->res->body;
   $self->app->debug('Mailchimp');
   $self->app->debug($responce);
