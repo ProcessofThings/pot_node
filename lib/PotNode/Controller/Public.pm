@@ -353,13 +353,24 @@ sub resetPassword {
           # Send Email to request password change
           $c->debug($container);
           $c->debug("Sending Email");
+          my $gmail_config;
+          $gmail_config->{login} = 'some@emailaddress';
+          $gmail_config->{password} = 'password';
+          $gmail_config = encode_json($gmail_config);
+          my $requrl = $c->req->headers->header('X-Url');
+          $c->debug($requrl);
+          if (!$redis->exists('gmail')) {
+            $redis->set('gmail', $gmail_config);
+          } else {
+            $gmail_config = decode_json($redis->get('gmail'));
+          }
           my $email = -1;
           my ($mail,$error)=Email::Send::SMTP::Gmail->new(-layer=>'ssl',
                                                 -port=>'465',
                                                 -smtp=>'smtp.gmail.com',
-                                                 -login=>'craig.harper@chainsolutions.net',
-                                                 -pass=>'3Hsch8278+');
-          $mail->send(-to=>$container->{cdata}->{userName}, -subject=>'Password Reset', -body=>"Please click on the following link to reset your password<br>https://pinkpagesonline.co.uk/login.html?reset=$container->{cdata}->{userName}&id=$container->{cdata}->{userResetId}");
+                                                 -login=>$gmail_config->{login},
+                                                 -pass=>$gmail_config->{password});
+          $mail->send(-to=>$container->{cdata}->{userName}, -subject=>'Password Reset', -body=>"Please click on the following link to reset your password<br><br>https://pinkpagesonline.co.uk/login.html?reset=$container->{cdata}->{userName}&id=$container->{cdata}->{userResetId}",-contenttype=>'text/html');
           $mail->bye;
 
 
@@ -888,12 +899,24 @@ sub search {
 	my $threshold;
 	my $records = @docs;
   my $search;
+  my $filter;
   my %filter;
 	my (@searchindex) = grep(/$json->{'search'}->{'section'}/, @docs);
 	my $sectioncount = @searchindex;
 	(@searchindex) = grep(/$json->{'search'}->{'town'}/, @docs);
 	my $locationcount = @searchindex;
-	%filter = ('and' => '1', 'cleaners'=> '1');
+
+  $filter->{'and'} = '1';
+  $filter->{'cleaners'} = '1';
+  $filter->{'services'} = '1';
+  $filter = encode_json($filter);
+  if (!$redis->exists('word_filter')) {
+    $redis->set('word_filter', $filter);
+  } else {
+    $filter = decode_json($redis->get('word_filter'));
+    %filter = %$filter;
+  }
+
 	$c->debug("Total Records : $records with $sectioncount Section Count and $locationcount");
 	
 	if ($locationcount < 1) { $threshold = 0.25};
