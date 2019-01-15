@@ -10,6 +10,8 @@ use Mojo::JSON qw(decode_json encode_json);
 use Mojo::Util qw(b64_decode b64_encode);
 use PotNode::Multichain;
 use String::HexConvert ':all';
+use Encode::Base58::GMP;
+use File::Grep qw/ fgrep /;
 
 
 
@@ -71,6 +73,7 @@ sub register {
 		$app->helper(get_stream_item => \&_get_stream_item);
 		$app->helper(get_all_stream_item => \&_get_all_stream_item);
     $app->helper(mailchimp_subscribe => \&_mailchimp_subscribe);
+    $app->helper(create_index => \&_create_index);
 
 }
 
@@ -625,11 +628,10 @@ sub _get_all_stream_item {
 	@params = ["$streamId"];
 	my $querycount = $api->liststreamkeys( @params );
 	
-	$self->app->debug($querycount);
-	
 	$dataOut->{'count'} = @{$querycount->{'result'}};
 	
 	$count = $dataOut->{'count'} + 10;
+  $self->app->debug($count);
 	
 	@params = ["$streamId", "*", \1, 1000];
 	my $query = $api->liststreamkeyitems( @params );
@@ -643,12 +645,20 @@ sub _get_all_stream_item {
 		foreach my $item (@{$query->{'result'}}) {
 			if($item->{'data'} ne 'ff') {
 				my $json = hex_to_ascii($item->{'data'});
-				$json = decode_json($json);
-				$self->app->debug($json);
+        $json = eval { decode_json($json) };
+        if ($@)
+        {
+            $self->app->debug("decode_json failed, invalid json. error:$@ - $item->{'key'}");
+            my $container;
+            $container->{'containerid'} = $item->{'key'};
+            $self->app->delete_stream_item($blockChainId,$streamId,$container);
+        }
+        $self->app->debug($json);
+#				$json = decode_json($json);
+	#			$self->app->debug($json);
 				if (defined($json->{'cdata'})) {
 					$dataOut->{$json->{'containerid'}}->{'containerid'} = $json->{'containerid'};
-          $json->{'cdata'}->{'deleted'} = "false";
-					$dataOut->{$json->{'containerid'}}->{'cdata'} = $json->{'cdata'};
+  				$dataOut->{$json->{'containerid'}}->{'cdata'} = $json->{'cdata'};
 				}
 			}
 #      if ($item->{'data'} eq 'ff') {
@@ -679,7 +689,7 @@ sub _get_all_stream_item {
 		}
 	}
 	
-	$self->app->debug($dataOut);
+	#$self->app->debug($dataOut);
 	
  	return $dataOut;
 };
@@ -694,6 +704,7 @@ sub _mailchimp_subscribe {
   my $mc_config;
   $mc_config->{apikey} = 'anystring:somekey';
   $mc_config->{listid} = 'somelistid';
+  $mc_config->{run} = 'no';
   $mc_config = encode_json($mc_config);
   my $requrl = $self->req->headers->header('X-Url');
   $self->app->debug($requrl);
@@ -702,18 +713,58 @@ sub _mailchimp_subscribe {
   } else {
     $mc_config = decode_json($self->redis->get('mc_config'));
   }
-  my $key = b64_encode($mc_config->{apikey},'');
-  my $ua  = Mojo::UserAgent->new;
-  $ua->max_redirects(10);
-  $ua->on(start => sub {
-    my ($ua, $tx) = @_;
-    $tx->req->headers->authorization("Basic $key");
-  });
-  my $url = Mojo::URL->new("https://us7.api.mailchimp.com/3.0/lists/$mc_config->{listid}/members")->userinfo($mc_config->{apikey});
-  my $responce = $ua->post( $url => json => $mailchimp)->res->body;
-  $self->app->debug('Mailchimp');
-  $self->app->debug($responce);
+  if ($mc_config->{run} eq 'yes') {
+    my $key = b64_encode($mc_config->{apikey}, '');
+    my $ua = Mojo::UserAgent->new;
+    $ua->max_redirects(10);
+    $ua->on(start => sub {
+      my ($ua, $tx) = @_;
+      $tx->req->headers->authorization("Basic $key");
+    });
+    my $url = Mojo::URL->new("https://us7.api.mailchimp.com/3.0/lists/$mc_config->{listid}/members")->userinfo($mc_config->{apikey});
+    my $responce = $ua->post($url => json => $mailchimp)->res->body;
+    $self->app->debug('Mailchimp');
+    $self->app->debug($responce);
+  }
   return 1;
 };
+
+sub _create_index {
+  my ($c, $streamId, $container) = @_;
+  my @array;
+  my $message;
+	push(@array, "CID$container->{'containerid'}");
+	push(@array, Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userEmail'}));
+	push(@array, Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'}));
+	my $index = join(' ', @array);
+	$c->app->debug("Index : $index");
+	my $file = "/home/node/search/$streamId.txt";
+	if (not -e $file) {
+		$c->app->debug("File Not found adding Index");
+    open(my $fh, '>>', $file) or die "Could not open file '$file' $!";
+      say $fh $index;
+    close $fh;
+    $message = {'message' => 'Success', 'status' => 200};
+	} else {
+		$c->app->debug("Search");
+		my $userName = Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'});
+		$c->app->debug("$userName");
+		my @matches = fgrep { /$userName/ } $file;
+		$c->app->debug(@matches[0]);
+		$c->app->debug(@matches[0]->{'count'});
+		if (@matches[0]->{'count'} < 1) {
+			$c->app->debug("Search Entry Not Found");
+      open(my $fh, '>>', $file) or die "Could not open file '$file' $!";
+      say $fh $index;
+      close $fh;
+      $message = {'message' => 'Success', 'status' => 200};
+		} else {
+      $message = {'message' => 'Problem adding to Index', 'status' => 400};
+		}
+	}
+  return $message;
+};
+
+
 
 1;

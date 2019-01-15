@@ -1075,6 +1075,47 @@
         }
       }
     },
+    "/sendContact/{blockChainId}": {
+      "get": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#sendContact"
+        ],
+        "x-mojo-name": "sendContact",
+        "x-mojo-function": "publish",
+        "summary": "Send Contact information via gmail",
+        "description": "This function is used to authorise a users request to connect",
+        "operationId": "sendContact",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/localstore/{blockChainId}": {
       "post": {
         "tags": [
@@ -1296,6 +1337,47 @@
         }
       }
     },
+    "/createContainer/{blockChainId}": {
+      "post": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#createContainer"
+        ],
+        "x-mojo-name": "createContainer",
+        "x-mojo-function": "publish",
+        "summary": "adfasdfasdfasdfasdf",
+        "description": "adfasdfasdfasdfasdf",
+        "operationId": "createContainer",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
 		"/createCustomer/{blockChainId}": {
       "post": {
         "tags": [
@@ -1454,6 +1536,97 @@
             "name": "containerId",
             "in": "query",
             "description": "Company Address",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/deleteContainer/{blockChainId}": {
+      "post": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#deleteContainer"
+        ],
+        "x-mojo-name": "deleteContainer",
+        "x-mojo-function": "publish",
+        "x-mojo-streamid": "custh",
+        "summary": "adfasdfasdfasdfasdf",
+        "description": "adfasdfasdfasdfasdf",
+        "operationId": "deleteContainer",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+					{
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "containerId",
+            "in": "query",
+            "description": "Company Address",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/deleteContainers/{blockChainId}": {
+      "post": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#deleteContainers"
+        ],
+        "x-mojo-name": "deleteContainers",
+        "x-mojo-function": "publish",
+        "x-mojo-streamid": "custh",
+        "summary": "adfasdfasdfasdfasdf",
+        "description": "adfasdfasdfasdfasdf",
+        "operationId": "deleteContainers",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+					{
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
             "required": true,
             "type": "string"
           }
@@ -1681,6 +1854,48 @@
         "summary": "adfasdfasdfasdfasdf",
         "description": "adfasdfasdfasdfasdf",
         "operationId": "buildSearch",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+					{
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+       "/buildUsers/{blockChainId}": {
+      "get": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#buildUsers"
+        ],
+        "x-mojo-name": "buildUsers",
+        "x-mojo-function": "publish",
+        "x-mojo-streamid": "profiles",
+        "summary": "adfasdfasdfasdfasdf",
+        "description": "adfasdfasdfasdfasdf",
+        "operationId": "buildUsers",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],

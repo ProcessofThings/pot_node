@@ -103,16 +103,41 @@ sub registerUser {
 	my $hash = $c->req->params->to_hash;
 	my $container;
 	my $method = $spec->{'x-mojo-function'};
-	
+  my $create_user = 'no';
+  my $message;
+  my $package_attribs;
+
+
+
+  $c->debug("register user");
+  $c->debug($hash);
+
 	## Move to Registration User Module when building the dapp
 	$c->create_stream($blockChainId, $streamId);
 
 	my ($containerid,undef) = $c->uuid();
+  my ($groupid,undef) = $c->uuid();
 	
 
 	## build container
 	$container->{'containerid'} = $containerid;
 	$container->{'cdata'} = $hash;
+  $container->{'cdata'}->{'groupid'} = $groupid;
+
+  # Normalise Website
+  if (lc($container->{'cdata'}->{'website'}) !~ /^http/) {
+    $container->{'cdata'}->{'website'} = 'http://'.$container->{'cdata'}->{'website'};
+  }
+
+  #Remove package as this is only required for the slot, additional slots and packages will be created manually
+
+  ## Setup Packages Attributes
+  $package_attribs = {'package' => 'Starter', 'ad' => \1, 'pos3' => \0, 'banner' => \0, 'sub' => \0} if ($hash->{'package'} =~ /^starter/);
+  $package_attribs = {'package' => 'Premier', 'ad' => \1, 'pos3' => \1, 'banner' => \0, 'sub' => \0} if ($hash->{'package'} =~ /^premier/);
+  $package_attribs = {'package' => 'Gold', 'ad' => \1, 'pos3' => \1, 'banner' => \1, 'sub' => \0} if ($hash->{'package'} =~ /^gold/);
+  $package_attribs = {'package' => 'Platinum', 'ad' => \1, 'pos3' => \1, 'banner' => \1, 'sub' => \1} if ($hash->{'package'} =~ /^platinum/);
+
+  $c->debug($package_attribs);
 
 	my @array;
 	push(@array, "CID$containerid");
@@ -123,12 +148,7 @@ sub registerUser {
 	my $file = "/home/node/search/$streamId.txt";
 	if (not -e $file) {
 		$c->debug("File Not found adding Index");
-		open(my $fh, '>>', $file) or die "Could not open file '$file' $!";
-			say $fh $index;
-		close $fh;
-    $c->mailchimp_subscribe($container);
-		$c->debug("Publish to Stream");
-		$c->publish_stream($blockChainId, $streamId, $container);
+    $create_user = 'yes';
 	} else {
 		$c->debug("Search");
 		my $userName = Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'});
@@ -138,17 +158,52 @@ sub registerUser {
 		$c->debug(@matches[0]);
 		$c->debug(@matches[0]->{'count'});
 		if (@matches[0]->{'count'} < 1) {
-      $c->mailchimp_subscribe($container);
 			$c->debug("Search Entry Not Found");
-			$c->publish_stream($blockChainId, $streamId, $container);
-			open(my $fh, '>>', $file) or die "Could not open file '$file' $!";
-				say $fh $index;
-			close $fh;
+      $create_user = 'yes';
 		} else {
+      $message = {'message' => 'Problem with Email Address or Password', 'status' => 400};
 			$c->render(text => "User Exists", status => 400);
 		}
 	}
-$c->render(text => "Ok", status => 200);
+  if ($create_user eq 'yes') {
+    $c->debug("Create New User");
+    ## Subscribe to MailChimp
+    $c->mailchimp_subscribe($container);
+    ## Create Profile
+    $c->publish_stream($blockChainId, $streamId, $container);
+    ## Create Company Profile
+    my $customer;
+    $customer->{'containerid'} = $containerid;
+    $customer->{'groupid'} = $groupid;
+    $customer->{'cdata'}->{'companyName'} = $container->{'cdata'}->{'companyName'};
+    $customer->{'cdata'}->{'companyWebsite'} = $container->{'cdata'}->{'website'};
+    ## Link Default Slot to Company Profile
+    $customer->{'cdata'}->{'slots'} = [$containerid];
+    $c->publish_stream($blockChainId, 'custh', $customer);
+    ## Create Default Slot
+    my $slot;
+    $slot->{'containerid'} = $containerid;
+    $slot->{'cdata'}->{'title'} = $container->{'cdata'}->{'companyName'};
+    $slot->{'attribs'} = $package_attribs;
+
+    $c->create_stream($blockChainId, 'slotsh');
+    $c->publish_stream($blockChainId, 'slotsh', $slot);
+    #Setup Social Marketing Information If Ordered
+    $c->debug('Check Social');
+    if ($hash->{'package'} =~ /social$/) {
+      $c->debug('Save Social');
+      $c->create_stream($blockChainId, 'socialh');
+      $c->publish_stream($blockChainId, 'socialh', $container);
+    }
+
+    ## Create User Index
+    open(my $fh, '>>', $file) or die "Could not open file '$file' $!";
+      say $fh $index;
+    close $fh;
+    $message = {'message' => 'user_created', 'status' => 200};
+
+  }
+  $c->render(openapi => { 'res' => $message }, status => $message->{status});
 };
 
 sub userExists {
@@ -185,7 +240,7 @@ sub userExists {
 	} else {
 		$c->debug("Search");
 		my $userName = Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'});
-		$c->debug("$userName");
+		$c->debug("$userName $file");
 		my @matches = fgrep { /$userName/ } $file;
 		$c->debug(@matches[0]);
 		$c->debug(@matches[0]->{'count'});
@@ -364,6 +419,11 @@ sub resetPassword {
           } else {
             $gmail_config = decode_json($redis->get('gmail'));
           }
+          $c->debug($requrl);
+          if ($requrl !~ /pinkpagesonline.co.uk$/) {
+            $c->debug('Diverting Email to sendTo');
+            $container->{cdata}->{userName} = $gmail_config->{'sendTo'};
+          }
           my $email = -1;
           my ($mail,$error)=Email::Send::SMTP::Gmail->new(-layer=>'ssl',
                                                 -port=>'465',
@@ -377,13 +437,51 @@ sub resetPassword {
 
           $c->debug($container->{cdata}->{userResetId});
           $message = 'email_sent';
+        } else {
+          $message = 'initial_password not setup';
         }
+
       }
       $c->render(openapi => {message => $message});
 		}
 	}
 };
 
+sub sendContact {
+  use Email::Send::SMTP::Gmail;
+
+  my $c = shift;
+	my $spec = $c->openapi->spec;
+	my $blockChainId = $c->param('blockChainId');
+	my $streamId = $spec->{'x-mojo-streamid'};
+	my $hash = $c->req->params->to_hash;
+  my $message;
+	## Move to Registration User Module when building the dapp
+
+  $c->debug("Sending Email");
+  my $gmail_config;
+  $gmail_config->{login} = 'some@emailaddress';
+  $gmail_config->{password} = 'password';
+  $gmail_config->{sendTo} = 'some@emailaddress';
+  $gmail_config = encode_json($gmail_config);
+  my $requrl = $c->req->headers->header('X-Url');
+  $c->debug($requrl);
+  if (!$redis->exists('gmail')) {
+    $redis->set('gmail', $gmail_config);
+  } else {
+    $gmail_config = decode_json($redis->get('gmail'));
+  }
+  my $email = -1;
+  my ($mail,$error)=Email::Send::SMTP::Gmail->new(-layer=>'ssl',
+                                        -port=>'465',
+                                        -smtp=>'smtp.gmail.com',
+                                         -login=>$gmail_config->{login},
+                                         -pass=>$gmail_config->{password});
+  $mail->send(-to=>$gmail_config->{sendTo}, -subject=>'Request for Information', -body=>'Please find the following information submitted via your contact form<br><br>Name : '.$hash->{Name}.'<br>Phone : '.$hash->{Phone}.'<br>Email: '.$hash->{Email}.'<br>Info : '.$hash->{Info}.'<br>Thank you',-contenttype=>'text/html');
+  $mail->bye;
+  $message = 'email_sent';
+  $c->render(openapi => {message => $message});
+};
 
 sub loginUser {
 	my $c = shift;
@@ -408,8 +506,9 @@ sub loginUser {
 	my @matches = fgrep { /$container->{cdata}->{userName}/ } $file;
 	$c->debug(@matches[0]);
 	if (@matches[0]->{'count'} < 1) {
-		$c->debug("Search Entry Not Found");
-		$c->render(json => {'error' => "Username and Password did not match"}, status => 404);
+	  $c->debug("Search Entry Not Found");
+    $message = {'message' => 'Email Address does not exists', 'status' => 400};
+    $c->render(openapi => { 'res' => $message }, status => $message->{status});
 	} else {
     my $search = @matches[0]->{'matches'};
       foreach my $key (keys %{$search}) {
@@ -436,7 +535,7 @@ sub loginUser {
           $redis->setex('session_userid_'.$result,1800, $session_key);
           $message = {'message' => 'success','sessionKey' => $session_key, 'status' => 200};
         } else {
-          $message = {'message' => 'Problem with Username or Password', 'status' => 400};
+          $message = {'message' => 'Problem with Email Address or Password', 'status' => 400};
         }
       }
     $c->render(openapi => { 'res' => $message }, status => $message->{status});
@@ -519,6 +618,108 @@ sub deleteCustomer {
 	$c->render(text => "Ok", status => 200);
 };
 
+sub deleteContainer {
+	my $c = shift;
+	my $spec = $c->openapi->spec;
+	my $blockChainId = $c->param('blockChainId');
+	my $streamId = $spec->{'x-mojo-streamid'};
+	my $hash = $c->req->params->to_hash;
+	my $container;
+	my $method = $spec->{'x-mojo-function'};
+  my $message;
+
+  $streamId = $hash->{streamId} if (defined($hash->{streamId}));
+
+  $c->debug("Delete Container");
+
+  if ($c->redis->exists('session_'.$hash->{sessionKey})) {
+    $c->debug("Valid Session $streamId");
+
+    ## Move to Registration User Module when building the dapp
+    $c->create_stream($blockChainId, $streamId);
+
+    ## build container
+    $container->{'containerid'} = $hash->{'containerid'};
+    $c->debug($container);
+    my $returndata = $c->delete_stream_item($blockChainId, $streamId, $container);
+    $c->debug($returndata);
+    $message->{'message'} = 'container_deleted';
+    $message->{'data'} = $container;
+
+  } else {
+    $message = {'message' => 'no_session', 'status' => 400};
+  }
+  $c->render(openapi => { 'res' => $message }, status => $message->{status} || 200);
+};
+
+sub deleteContainers {
+	my $c = shift;
+	my $spec = $c->openapi->spec;
+	my $blockChainId = $c->param('blockChainId');
+	my $streamId = $spec->{'x-mojo-streamid'};
+  my $json = $c->req->json;
+  my $container;
+  my $message;
+
+  ## Pass { streamId: [containerid] }
+  if ($c->redis->exists('session_'.$json->{'config'}->{sessionKey})) {
+    delete $json->{'config'};
+    foreach (keys %{$json}) {
+      foreach my $item (@{$json->{$_}}) {
+        $container->{'containerid'} = $item;
+        my $returndata = $c->delete_stream_item($blockChainId, $_, $container);
+        $c->debug($returndata);
+      }
+    }
+    $message->{'message'} = 'containers_deleted';
+  } else {
+    $message = {'message' => 'no_session', 'status' => 400};
+  }
+  $c->render(openapi => { 'res' => $message }, status => $message->{status} || 200);
+};
+
+sub createContainer {
+	my $c = shift;
+	my $spec = $c->openapi->spec;
+	my $blockChainId = $c->param('blockChainId');
+	my $hash = $c->req->params->to_hash;
+	my $json = $c->req->json;
+  my $message;
+  my $streamId;
+
+  if (defined($json->{'config'}->{'streamId'})) {
+    $streamId = $json->{'config'}->{'streamId'};
+    delete $json->{'config'};
+
+    ## Move to Registration User Module when building the dapp
+	  $c->create_stream($blockChainId, $streamId);
+
+    ## Use passed containerid if not generate one
+    my ($containerid,undef) = $json->{'containerid'} || $c->uuid();
+
+    ## build container
+		$json->{'containerid'} = $containerid;
+
+    ## Normalise
+    if (lc($json->{'cdata'}->{'website'}) !~ /^http/) {
+      $json->{'cdata'}->{'website'} = 'http://'.$json->{'cdata'}->{'website'};
+    }
+    $json->{'cdata'}->{'userEmail'} = lc($json->{'cdata'}->{'userEmail'}) if (defined($json->{'cdata'}->{'userEmail'}));
+    $json->{'cdata'}->{'userName'} = lc($json->{'cdata'}->{'userName'}) if (defined($json->{'cdata'}->{'userName'}));
+    $json->{'cdata'}->{'website'} = lc($json->{'cdata'}->{'website'}) if (defined($json->{'cdata'}->{'website'}));
+
+    ## Create Container
+    $c->publish_stream($blockChainId, $streamId, $json);
+
+    $message = {'message' => 'created', 'status' => 200};
+
+  } else {
+    $message = {'message' => 'no_streamId', 'info' => 'you must pass a config->streamId', 'status' => 400};
+  }
+
+  $c->render(openapi => { 'res' => $message }, status => $message->{status} || 200);
+};
+
 sub getCustomers {
 	my $c = shift;
 	my $spec = $c->openapi->spec;
@@ -527,11 +728,13 @@ sub getCustomers {
 	my $hash = $c->req->params->to_hash;
   my $json = $c->req->json;
   my $headers = $c->req->headers;
+  my $outData;
 	my $container;
   my $deleted = 1;
 	my $method = $spec->{'x-mojo-function'};
   $c->debug('Get Customers Start');
-  $c->debug($c->req->headers->header('X-Url'));
+  my $xurl = $c->req->headers->header('X-Url');
+  my $session;
   $c->debug($hash);
   $c->debug($json);
   my $host = $c->req->url->to_abs->host;
@@ -544,9 +747,19 @@ sub getCustomers {
 
 #	$streamId = 'test12314';
 	## Move to Registration User Module when building the dapp
+  $streamId = $hash->{streamId} if (defined($hash->{streamId}));
+
 	$c->create_stream($blockChainId, $streamId);
-	
-	my $outData = $c->get_all_stream_item($blockChainId, $streamId,-1,$deleted);
+
+  if ($c->redis->exists("session_$hash->{sessionKey}")) {
+   $session = decode_json($c->redis->get('session_'.$hash->{sessionKey}));
+    my $admin = $xurl.'_admin_'.$session->{user_id};
+    $c->debug($admin);
+    if ($c->redis->exists($admin)) {
+      $outData->{permissions}->{'admin'} = \1;
+    }
+    $outData->{data} = $c->get_all_stream_item($blockChainId, $streamId,-1,$deleted);
+  }
 
 	$c->debug('getcustomers');
  	$c->debug($outData);
@@ -562,13 +775,12 @@ sub getSubAds {
 	my $hash = $c->req->params->to_hash;
 	my $container;
 	my $method = $spec->{'x-mojo-function'};
+  my $outData;
 
 	## Move to Registration User Module when building the dapp
 	$c->create_stream($blockChainId, $streamId);
 	
-	my $outData = $c->get_all_stream_item($blockChainId, $streamId);
-	
-# 	$c->debug($outData);
+	$outData  =$c->get_all_stream_item($blockChainId, $streamId);
 	$c->render(json => $outData, status => 200);
 };
 
@@ -878,6 +1090,59 @@ sub buildSearch {
 			}			
 		}
 	}
+	$c->render(text => "Ok", status => 200);
+};
+
+sub buildUsers {
+	my $c = shift;
+	my $spec = $c->openapi->spec;
+	my $blockChainId = $c->param('blockChainId');
+	my $streamId = $spec->{'x-mojo-streamid'};
+	my $hash = $c->req->params->to_hash;
+	my $container;
+	my $method = $spec->{'x-mojo-function'};
+
+	my $processData = $c->get_all_stream_item($blockChainId, 'profiles');
+
+	delete $processData->{'count'};
+
+	$c->debug($processData);
+
+	foreach my $key (keys %{$processData}) {
+#		if (defined($ads->))
+		$c->debug("Build Users Index");
+
+		if (defined($processData->{$key}->{'cdata'}->{'userName'})) {
+			my $container = $processData->{$key};
+      my $file = "/home/node/search/profiles.txt";
+      my @array;
+	    push(@array, "CID$container->{containerid}");
+	    push(@array, Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'}));
+      push(@array, Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'}));
+	    my $index = join(' ', @array);
+      $c->debug($index);
+
+      if (not -e $file) {
+        open(my $fh, '>>', $file) or die "Could not open file '$file' $!";
+        say $fh $index;
+        close $fh;
+      } else {
+        $c->debug("Search $container->{'containerid'}");
+		    my $userName = Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'});
+		    my @matches = fgrep { /$userName/ } $file;
+#		    $c->debug(@matches[0]);
+#		    $c->debug(@matches[0]->{'count'});
+		    if (@matches[0]->{'count'} < 1) {
+          $c->debug("Search Entry Not Found");
+          open(my $fh, '>>', $file) or die "Could not open file '$file' $!";
+          say $fh $index;
+          close $fh;
+        } else {
+          $c->debug("User Exists $container->{'containerid'}");
+        }
+      }
+    }
+  }
 	$c->render(text => "Ok", status => 200);
 };
 
