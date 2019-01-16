@@ -572,7 +572,7 @@ sub _delete_stream_item {
 sub _get_stream_item {
 	my ($self, $blockChainId, $streamId, $containerid) = @_;
 	my $dataOut;
-	$self->app->debug("Stream Item");
+#	$self->app->debug("Stream Item");
 	my $config = "rpc_$blockChainId";
 	if (!$self->redis->exists($config)) {
 			$config = $self->get_rpc_config($blockChainId);
@@ -588,10 +588,10 @@ sub _get_stream_item {
 	foreach my $item (@{$query->{'result'}}) {
 		if($item->{'data'} ne 'ff') {
 			my $json = hex_to_ascii($item->{'data'});
-      $self->app->debug($json);
+#      $self->app->debug($json);
 			$json = decode_json($json);
-			$self->app->debug('Stream Item Data');
-			$self->app->debug($json);
+#			$self->app->debug('Stream Item Data');
+#			$self->app->debug($json);
 			if (defined($json->{'cdata'})) {
 				$dataOut->{$json->{'containerid'}}->{'containerid'} = $json->{'containerid'};
 				$dataOut->{$json->{'containerid'}}->{'cdata'} = $json->{'cdata'};
@@ -599,12 +599,12 @@ sub _get_stream_item {
 			}
 		}
 		if ($item->{'data'} eq 'ff') {
-			$self->app->debug("Item Deleted");
+#			$self->app->debug("Item Deleted");
 			delete $dataOut->{$item->{'key'}};
 		}
 	}
 	
-	$self->app->debug($dataOut);
+#	$self->app->debug($dataOut);
 	
 	return $dataOut;
 };

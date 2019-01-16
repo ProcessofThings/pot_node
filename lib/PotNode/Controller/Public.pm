@@ -206,6 +206,96 @@ sub registerUser {
   $c->render(openapi => { 'res' => $message }, status => $message->{status});
 };
 
+sub setupUser {
+	my $c = shift;
+	my $spec = $c->openapi->spec;
+	my $blockChainId = $c->param('blockChainId');
+	my $streamId = $spec->{'x-mojo-streamid'};
+	my $container = $c->req->json;
+  my $create_user = 'no';
+  my $message;
+  my $package_attribs;
+
+  $c->debug("setup user");
+  $c->debug($container);
+
+  if (!defined($container->{'cdata'}->{'groupid'})) {
+    $container->{'cdata'}->{'groupid'} =  $container->{'containerid'};
+  }
+
+  # Normalise Website
+  if (lc($container->{'cdata'}->{'website'}) !~ /^http/) {
+    $container->{'cdata'}->{'website'} = 'http://'.$container->{'cdata'}->{'website'};
+  }
+
+  #Remove package as this is only required for the slot, additional slots and packages will be created manually
+
+  ## Setup Packages Attributes
+  $package_attribs = {'package' => 'Starter', 'ad' => \1, 'pos3' => \0, 'banner' => \0, 'sub' => \0} if ($container->{'cdata'}->{'package'} =~ /^starter/);
+  $package_attribs = {'package' => 'Premier', 'ad' => \1, 'pos3' => \1, 'banner' => \0, 'sub' => \0} if ($container->{'cdata'}->{'package'} =~ /^premier/);
+  $package_attribs = {'package' => 'Gold', 'ad' => \1, 'pos3' => \1, 'banner' => \1, 'sub' => \0} if ($container->{'cdata'}->{'package'} =~ /^gold/);
+  $package_attribs = {'package' => 'Platinum', 'ad' => \1, 'pos3' => \1, 'banner' => \1, 'sub' => \1} if ($container->{'cdata'}->{'package'} =~ /^platinum/);
+
+  $c->debug($package_attribs);
+
+	my @array;
+	push(@array, "CID$container->{'containerid'}");
+	push(@array, Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userEmail'}));
+	push(@array, Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'}));
+	my $index = join(' ', @array);
+	$c->debug("Index : $index");
+	my $file = "/home/node/search/profiles.txt";
+	if (not -e $file) {
+		$c->debug("File Not found adding Index");
+    open(my $fh, '>>', $file) or die "Could not open file '$file' $!";
+      say $fh $index;
+    close $fh
+	} else {
+		$c->debug("Search");
+		my $userName = Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'});
+		my $userEmail = Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userEmail'});
+		$c->debug("$userName");
+		my @matches = fgrep { /$userName/ } $file;
+		$c->debug(@matches[0]);
+		$c->debug(@matches[0]->{'count'});
+		if (@matches[0]->{'count'} < 1) {
+			$c->debug("Search Entry Not Found");
+      open(my $fh, '>>', $file) or die "Could not open file '$file' $!";
+      say $fh $index;
+      close $fh
+		}
+	}
+    $c->debug("Create Company");
+
+    my $customer;
+    $customer->{'containerid'} = $container->{'containerid'};
+    $customer->{'groupid'} = $container->{'cdata'}->{'groupid'};
+    $customer->{'cdata'}->{'companyName'} = $container->{'cdata'}->{'companyName'};
+    $customer->{'cdata'}->{'companyWebsite'} = $container->{'cdata'}->{'website'};
+    ## Link Default Slot to Company Profile
+    $customer->{'cdata'}->{'slots'} = [$container->{'containerid'}];
+    $c->publish_stream($blockChainId, 'custh', $customer);
+    ## Create Default Slot
+    my $slot;
+    $slot->{'containerid'} = $container->{'containerid'};
+    $slot->{'cdata'}->{'title'} = $container->{'cdata'}->{'companyName'};
+    $slot->{'attribs'} = $package_attribs;
+
+    $c->create_stream($blockChainId, 'slotsh');
+    $c->publish_stream($blockChainId, 'slotsh', $slot);
+    #Setup Social Marketing Information If Ordered
+    $c->debug('Check Social');
+    if ($container->{'cdata'}->{'package'} =~ /social$/) {
+      $c->debug('Save Social');
+      $c->create_stream($blockChainId, 'socialh');
+      $c->publish_stream($blockChainId, 'socialh', $container);
+    }
+    ## Create User Index
+    $message = {'message' => 'customer_created', 'status' => 200};
+
+  $c->render(openapi => { 'res' => $message }, status => $message->{status});
+};
+
 sub userExists {
 	my $c = shift;
 	my $spec = $c->openapi->spec;
@@ -495,11 +585,15 @@ sub loginUser {
   my $outData;
   my $message;
   my $session;
-	
-  my ($session_key,undef) = $c->uuid();
+	my $session_key;
+
+  ($session_key,undef) = $c->uuid();
+
   $session_key = Encode::Base58::GMP::md5_base58($session_key);
+  $c->debug($session_key);
+
   $container->{'cdata'} = $hash;
-		$container->{cdata}->{userName} = Encode::Base58::GMP::md5_base58($hash->{'userName'});
+  $container->{cdata}->{userName} = Encode::Base58::GMP::md5_base58($hash->{'userName'});
 
  	$c->debug($container->{cdata}->{userName});
 	
@@ -522,17 +616,11 @@ sub loginUser {
         $c->debug($container->{cdata}->{userPassword});
         $c->debug($outData->{$result}->{cdata}->{userPassword});
         if ($outData->{$result}->{cdata}->{userPassword} eq $container->{cdata}->{userPassword}) {
-          if ($redis->exists("session_userid_".$result)) {
-            $c->debug("Delete Old Session");
-            my $old_session = $redis->get("session_userid_".$result);
-            $redis->del('session_'.$old_session);
-          }
           $session->{session_key} = $session_key;
           $session->{user_id} = $result;
           $session->{cdata} = $outData->{$result}->{cdata};
           $c->debug("Create New Session");
-          $redis->setex('session_'.$session_key,1800, encode_json($session));
-          $redis->setex('session_userid_'.$result,1800, $session_key);
+          $c->redis->setex('session_'.$session_key,1800, encode_json($session));
           $message = {'message' => 'success','sessionKey' => $session_key, 'status' => 200};
         } else {
           $message = {'message' => 'Problem with Email Address or Password', 'status' => 400};
@@ -543,6 +631,20 @@ sub loginUser {
 	#$c->render(text => "Ok", status => 200);
 };
 
+sub logoutUser {
+	my $c = shift;
+	my $hash = $c->req->params->to_hash;
+  my $message;
+
+  if ($redis->exists('session_'.$hash->{sessionKey})) {
+    $redis->del('session_' . $hash->{sessionKey});
+    $message = { 'message' => 'success', 'status' => 200 };
+  } else {
+    $message = { 'message' => 'failed', 'status' => 400 };
+  }
+  $c->render(openapi => { 'res' => $message }, status => $message->{status});
+
+};
 
 sub createCustomer {
 	my $c = shift;
@@ -757,8 +859,14 @@ sub getCustomers {
     $c->debug($admin);
     if ($c->redis->exists($admin)) {
       $outData->{permissions}->{'admin'} = \1;
+      $outData->{data} = $c->get_all_stream_item($blockChainId, $streamId,-1,$deleted);
+    } else {
+      $c->debug("Not Admin");
+      $outData->{permissions}->{'admin'} = \0;
+      $outData->{'data'} = $c->get_stream_item($blockChainId, $streamId, $session->{'user_id'});
+      $outData->{'data'}->{'count'} = '1';
     }
-    $outData->{data} = $c->get_all_stream_item($blockChainId, $streamId,-1,$deleted);
+
   }
 
 	$c->debug('getcustomers');
@@ -796,6 +904,7 @@ sub getSlots {
 	my $method = $spec->{'x-mojo-function'};
 	my $outData = {};
 	
+
 # 	$c->debug("GetSlots");
 # 	$c->debug($json);
 
@@ -808,6 +917,63 @@ sub getSlots {
 		}
 	}
  
+ 	$c->render(json => $outData, status => 200);
+};
+
+sub getSlot {
+
+	my $c = shift;
+	my $spec = $c->openapi->spec;
+	my $blockChainId = $c->param('blockChainId');
+	my $streamId = $spec->{'x-mojo-streamid'};
+	my $json = $c->req->json;
+	my $container;
+	my $method = $spec->{'x-mojo-function'};
+	my $outData = {};
+  my $xurl = $c->req->headers->header('X-Url');
+  my $session;
+
+
+ 	$c->debug("GetSlot");
+ 	$c->debug($json);
+
+  my $slot  = $c->get_stream_item($blockChainId, 'slotsh', $json->{'containerid'});
+  if ($c->redis->exists("session_$json->{sessionKey}")) {
+    $session = decode_json($c->redis->get('session_'.$json->{sessionKey}));
+  }
+
+  $c->debug($slot);
+
+  my $admin = $xurl.'_admin_'.$session->{'user_id'};
+  $c->debug($admin);
+  if ($c->redis->exists($admin)) {
+    $c->debug("Admin Detected");
+    $slot->{$json->{'containerid'}}->{'permissions'}->{'edit'} = \1;
+  } elsif ($c->redis->exists("session_$json->{sessionKey}")) {
+    my $customer  = $c->get_stream_item($blockChainId, 'custh', $session->{user_id});
+    $c->debug($customer);
+    foreach ( keys%{ $customer } ) {
+      $c->debug($_);
+
+      foreach my $item (@{$customer->{$_}->{'cdata'}->{'slots'}}) {
+        $c->debug($item);
+        if ($item eq $json->{'containerid'}) {
+          $slot->{$json->{'containerid'}}->{'permissions'}->{'edit'} = \1;
+        }
+      }
+    }
+  } else {
+    $c->debug("Session Not Found");
+    $slot->{$json->{'containerid'}}->{'permissions'}->{'edit'} = \0;
+  }
+
+  foreach ( keys%{ $slot } ){
+    $outData->{ $_ } = $slot->{ $_ } ;
+  }
+
+  $c->debug($outData);
+
+
  	$c->render(json => $outData, status => 200);
 };
 
