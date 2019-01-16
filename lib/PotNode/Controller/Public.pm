@@ -622,7 +622,7 @@ sub logoutUser {
     $redis->del('session_' . $hash->{sessionKey});
     $message = { 'message' => 'success', 'status' => 200 };
   } else {
-    $message = { 'message' => 'failed', 'status' => 400 };
+    $message = { 'message' => 'session no longer exists', 'status' => 200 };
   }
   $c->render(openapi => { 'res' => $message }, status => $message->{status});
 
