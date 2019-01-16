@@ -923,6 +923,12 @@ sub getSlot {
   if ($c->redis->exists("session_$json->{sessionKey}")) {
     $session = decode_json($c->redis->get('session_'.$json->{sessionKey}));
   }
+  foreach ( keys%{ $slot } ) {
+      $c->debug($_);
+      if (!defined($slot->{$_}->{'attribs'})) {
+         $slot->{$_}->{'attribs'} = {'package' => 'Starter', 'ad' => \1, 'pos3' => \0, 'banner' => \0, 'sub' => \0};
+      }
+  }
 
   $c->debug($slot);
 
@@ -1014,7 +1020,9 @@ sub updateSlot {
 		file => "/home/node/search/$blockChainId-$streamId.db",
 		type => DBM::Deep->TYPE_ARRAY
 	);
-	
+
+  $c->debug($json);
+
 	my @array = @$db;
 	
 	## Gets the Index of the any matching search container
