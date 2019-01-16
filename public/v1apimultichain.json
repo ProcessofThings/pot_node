@@ -1295,6 +1295,48 @@
         }
       }
     },
+    "/setupUser/{blockChainId}": {
+      "post": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#setupUser"
+        ],
+        "x-mojo-name": "setupUser",
+        "x-mojo-function": "liststreamkeyitems",
+        "x-mojo-streamid": "profiles",
+        "summary": "Get Login details from the blockchain",
+        "description": "This function is used to verify the password against the blockchain",
+        "operationId": "setupUser",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+					{
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/getCustomers/{blockChainId}": {
       "get": {
         "tags": [

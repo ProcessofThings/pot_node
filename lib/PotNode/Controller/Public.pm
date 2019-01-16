@@ -215,9 +215,13 @@ sub setupUser {
   my $create_user = 'no';
   my $message;
   my $package_attribs;
+  my $session_key;
 
   $c->debug("setup user");
   $c->debug($container);
+
+  $session_key = $container->{'config'}->{'sessionKey'};
+  delete $container->{'config'};
 
   if (!defined($container->{'cdata'}->{'groupid'})) {
     $container->{'cdata'}->{'groupid'} =  $container->{'containerid'};
@@ -227,7 +231,8 @@ sub setupUser {
   if (lc($container->{'cdata'}->{'website'}) !~ /^http/) {
     $container->{'cdata'}->{'website'} = 'http://'.$container->{'cdata'}->{'website'};
   }
-
+  $c->debug("Normalise Website");
+  $c->debug($container);
   #Remove package as this is only required for the slot, additional slots and packages will be created manually
 
   ## Setup Packages Attributes
@@ -238,60 +243,37 @@ sub setupUser {
 
   $c->debug($package_attribs);
 
-	my @array;
-	push(@array, "CID$container->{'containerid'}");
-	push(@array, Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userEmail'}));
-	push(@array, Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'}));
-	my $index = join(' ', @array);
-	$c->debug("Index : $index");
-	my $file = "/home/node/search/profiles.txt";
-	if (not -e $file) {
-		$c->debug("File Not found adding Index");
-    open(my $fh, '>>', $file) or die "Could not open file '$file' $!";
-      say $fh $index;
-    close $fh
-	} else {
-		$c->debug("Search");
-		my $userName = Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'});
-		my $userEmail = Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userEmail'});
-		$c->debug("$userName");
-		my @matches = fgrep { /$userName/ } $file;
-		$c->debug(@matches[0]);
-		$c->debug(@matches[0]->{'count'});
-		if (@matches[0]->{'count'} < 1) {
-			$c->debug("Search Entry Not Found");
-      open(my $fh, '>>', $file) or die "Could not open file '$file' $!";
-      say $fh $index;
-      close $fh
-		}
-	}
-    $c->debug("Create Company");
+  $c->debug("Create Company");
 
-    my $customer;
-    $customer->{'containerid'} = $container->{'containerid'};
-    $customer->{'groupid'} = $container->{'cdata'}->{'groupid'};
-    $customer->{'cdata'}->{'companyName'} = $container->{'cdata'}->{'companyName'};
-    $customer->{'cdata'}->{'companyWebsite'} = $container->{'cdata'}->{'website'};
-    ## Link Default Slot to Company Profile
-    $customer->{'cdata'}->{'slots'} = [$container->{'containerid'}];
-    $c->publish_stream($blockChainId, 'custh', $customer);
-    ## Create Default Slot
-    my $slot;
-    $slot->{'containerid'} = $container->{'containerid'};
-    $slot->{'cdata'}->{'title'} = $container->{'cdata'}->{'companyName'};
-    $slot->{'attribs'} = $package_attribs;
+  my $customer;
+  $customer->{'containerid'} = $container->{'containerid'};
+  $customer->{'groupid'} = $container->{'cdata'}->{'groupid'};
+  $customer->{'cdata'}->{'companyName'} = $container->{'cdata'}->{'companyName'};
+  $customer->{'cdata'}->{'companyWebsite'} = $container->{'cdata'}->{'website'};
+  ## Link Default Slot to Company Profile
+  $customer->{'cdata'}->{'slots'} = [$container->{'containerid'}];
+  $c->debug($customer);
 
-    $c->create_stream($blockChainId, 'slotsh');
-    $c->publish_stream($blockChainId, 'slotsh', $slot);
-    #Setup Social Marketing Information If Ordered
-    $c->debug('Check Social');
-    if ($container->{'cdata'}->{'package'} =~ /social$/) {
-      $c->debug('Save Social');
-      $c->create_stream($blockChainId, 'socialh');
-      $c->publish_stream($blockChainId, 'socialh', $container);
-    }
-    ## Create User Index
-    $message = {'message' => 'customer_created', 'status' => 200};
+  $c->publish_stream($blockChainId, 'custh', $customer);
+  ## Create Default Slot
+  $c->debug("Create Slot");
+  my $slot;
+  $slot->{'containerid'} = $container->{'containerid'};
+  $slot->{'groupid'} = $container->{'cdata'}->{'groupid'};
+  $slot->{'cdata'}->{'title'} = $container->{'cdata'}->{'companyName'};
+  $slot->{'attribs'} = $package_attribs;
+  $c->debug($slot);
+  $c->create_stream($blockChainId, 'slotsh');
+  $c->publish_stream($blockChainId, 'slotsh', $slot);
+  #Setup Social Marketing Information If Ordered
+  $c->debug('Check Social');
+  if ($container->{'cdata'}->{'package'} =~ /social$/) {
+    $c->debug('Save Social');
+    $c->create_stream($blockChainId, 'socialh');
+    $c->publish_stream($blockChainId, 'socialh', $container);
+  }
+  ## Create User Index
+  $message = {'message' => 'customer_created', 'status' => 200};
 
   $c->render(openapi => { 'res' => $message }, status => $message->{status});
 };
