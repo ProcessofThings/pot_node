@@ -589,7 +589,14 @@ sub _get_stream_item {
 		if($item->{'data'} ne 'ff') {
 			my $json = hex_to_ascii($item->{'data'});
 #      $self->app->debug($json);
-			$json = decode_json($json);
+      $json = eval { decode_json($json) };
+        if ($@)
+        {
+            $self->app->debug("decode_json failed, invalid json. error:$@ - $item->{'key'}");
+            my $container;
+            $container->{'containerid'} = $item->{'key'};
+#            $self->app->delete_stream_item($blockChainId,$streamId,$container);
+        }
 #			$self->app->debug('Stream Item Data');
 #			$self->app->debug($json);
 			if (defined($json->{'cdata'})) {

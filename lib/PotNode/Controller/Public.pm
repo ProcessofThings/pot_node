@@ -1015,7 +1015,7 @@ sub updateSlot {
 		type => DBM::Deep->TYPE_ARRAY
 	);
 
-  $c->debug($json);
+  $c->debug("Update Slot");
 
 	my @array = @$db;
 	
@@ -1033,7 +1033,58 @@ sub updateSlot {
 	} else {
 		push(@$db, "$json->{'containerid'} $json->{'cdata'}->{'sections'} $towns");
 	}
-	
+
+  ## Process Gallery
+  my ($tmpdir,undef) = $c->uuid();
+  my $path = "/tmp/$tmpdir";
+  mkdir $path;
+  my @filenames;
+
+  foreach my $item (@{$json->{'cdata'}->{'gallery'}}) {
+    my ($dataimage,$image) = split(/,/,$item->{'link'});
+	  if ($dataimage =~ /^data:image/) {
+      my $imagedecoded = b64_decode $image;
+      my ($file,undef) = $c->uuid();
+      my ($filetype,undef) = split(/;/,$dataimage);
+      $c->debug($filetype);
+      $filetype = 'jpg' if ($filetype =~ /jpeg$/);
+      $filetype = 'png' if ($filetype =~ /png$/);
+      $file .= '.'.$filetype;
+      $c->debug("Gallery Base64 File $file");
+      push(@filenames, $file);
+      $file = $path.'/'.$file;
+      open my $fh, '>', $file or die $!;
+		  binmode $fh;
+		  print $fh $imagedecoded;
+		  close $fh;
+    }
+  }
+  $c->debug('Gallery Files');
+  $c->debug(@filenames);
+
+  ## Save Images to IPFS network
+    $c->debug('Save IPFS');
+		my $command = "ipfs add -r -Q $path";
+		my $ipfsid = qx/$command/;
+		$ipfsid =~ s/\R//g;
+
+    my $counter = 0;
+    foreach my $item (@{$json->{'cdata'}->{'gallery'}}) {
+      my ($dataimage,undef) = split(/,/,$item->{'link'});
+	    if ($dataimage =~ /^data:image/) {
+        $item->{'link'} = './ipfs/' . $ipfsid . '/' . @filenames[$counter];
+        $counter++;
+      }
+    }
+
+    $c->debug("Update Gallery");
+    $c->debug($json->{'cdata'}->{'gallery'});
+
+  ## clean up folder remove temp files
+		my $command = "rm -rf $path";
+		qx/$command/;
+
+
 	## Image Management and Image Resizing images are uploaded using javascript base64
 	
 	my ($dataimage,$image) = split(/,/,$json->{'cdata'}->{'image'});
