@@ -50,10 +50,12 @@ sub startup {
   #Public Functions
   
   $r->any('/testapi')->to('public#test');
-
   $r->get('/node/join')->to('node#join')->name('node');
   $r->get('/node/alive')->to('node#alive')->name('node');
   $r->get('/ipfs/:ipfs')->to('public#load');
+
+  $r->get('/public/getCustomers/:blockChainId')->to('publicnew#getCustomers');
+
 
   my $auth = $r->under ( sub {
     my $c = shift;
@@ -64,6 +66,10 @@ sub startup {
 
   my $authPublic = $r->under ( sub {
     my $c = shift;
+    $c->app->log->debug("Check AuthPublic");
+    my $sessionKey = $c->req->headers->header('X-Session');
+    my $url = $c->req->headers->header('X-Url');
+    $c->app->log->debug("Session Key - $sessionKey");
     return 1 if $c->tx->local_port eq '9080';
     $c->app->log->debug("Requested Port Not Allowed ");
     return undef;

@@ -931,6 +931,7 @@ sub getSlot {
   if ($c->redis->exists($admin)) {
     $c->debug("Admin Detected");
     $slot->{$json->{'containerid'}}->{'permissions'}->{'edit'} = \1;
+    $slot->{$json->{'containerid'}}->{'permissions'}->{'admin'} = \1;
   } elsif ($c->redis->exists("session_$json->{sessionKey}")) {
     my $customer  = $c->get_stream_item($blockChainId, 'custh', $session->{user_id});
     $c->debug($customer);
@@ -941,6 +942,7 @@ sub getSlot {
         $c->debug($item);
         if ($item eq $json->{'containerid'}) {
           $slot->{$json->{'containerid'}}->{'permissions'}->{'edit'} = \1;
+          $slot->{$json->{'containerid'}}->{'permissions'}->{'edit'} = \0;
         }
       }
     }
