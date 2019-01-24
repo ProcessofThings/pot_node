@@ -770,6 +770,9 @@ sub createContainer {
 	my $json = $c->req->json;
   my $message;
   my $streamId;
+  my $create_user;
+
+  $c->debug("Create Container");
 
   if (defined($json->{'config'}->{'streamId'})) {
     $streamId = $json->{'config'}->{'streamId'};
@@ -792,11 +795,20 @@ sub createContainer {
     $json->{'cdata'}->{'userName'} = lc($json->{'cdata'}->{'userName'}) if (defined($json->{'cdata'}->{'userName'}));
     $json->{'cdata'}->{'website'} = lc($json->{'cdata'}->{'website'}) if (defined($json->{'cdata'}->{'website'}));
 
-    ## Create Container
-    $c->publish_stream($blockChainId, $streamId, $json);
+    $create_user = $c->create_index($streamId, $json);
 
-    $message = {'message' => 'created', 'status' => 200};
+    $c->debug($create_user);
 
+    if ($create_user->{'message'} eq 'Success') {
+      $c->debug("Create New User");
+      ## Subscribe to MailChimp
+      $c->mailchimp_subscribe($json);
+
+      ## Create Container
+      $c->publish_stream($blockChainId, $streamId, $json);
+
+      $message = { 'message' => 'created', 'status' => 200 };
+    }
   } else {
     $message = {'message' => 'no_streamId', 'info' => 'you must pass a config->streamId', 'status' => 400};
   }

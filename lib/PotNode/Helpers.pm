@@ -766,7 +766,7 @@ sub _create_index {
       close $fh;
       $message = {'message' => 'Success', 'status' => 200};
 		} else {
-      $message = {'message' => 'Problem adding to Index', 'status' => 400};
+      $message = {'message' => 'Found', 'status' => 400};
 		}
 	}
   return $message;
