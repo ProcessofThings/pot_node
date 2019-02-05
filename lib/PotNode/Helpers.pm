@@ -74,6 +74,7 @@ sub register {
 		$app->helper(get_all_stream_item => \&_get_all_stream_item);
     $app->helper(mailchimp_subscribe => \&_mailchimp_subscribe);
     $app->helper(create_index => \&_create_index);
+    $app->helper(delete_index => \&_delete_index);
 
 }
 
@@ -500,7 +501,7 @@ sub _create_stream {
 	my $url = "$config->{'rpcuser'}:$config->{'rpcpassword'}\@127.0.0.1:$config->{'rpcport'}";
 	
 	my $api =  PotNode::Multichain->new( url => $url );
-	
+	$self->app->debug("Create Stream Helper");
 	my @params = ["$streamId"];
 	my $stream = $api->liststreams( @params );
 	$self->app->debug($stream);
@@ -509,6 +510,7 @@ sub _create_stream {
 		my $createstream = $api->create( @params );
 		@params = ["$streamId"];
 		$api->subscribe( @params );
+    return 1;
 	}
 	
 	if (!$stream->{subscribed}) {
@@ -646,8 +648,7 @@ sub _get_all_stream_item {
 	$self->app->debug($query);
 	
 	if (scalar @{$query->{'result'}} == 0) {
-		$dataOut->{'00'}->{'containerid'} = "00";
-		$dataOut->{'00'}->{'cdata'}->{'companyName'} = "Empty";
+		$dataOut->{'nodata'} = "none";
 	} else {
 		foreach my $item (@{$query->{'result'}}) {
 			if($item->{'data'} ne 'ff') {
@@ -702,7 +703,7 @@ sub _get_all_stream_item {
 };
 
 sub _mailchimp_subscribe {
-  my ($self, $container) = @_;
+  my ($self, $blockChainId, $streamId,  $settings, $container) = @_;
   my $mailchimp;
   $mailchimp->{email_address} = $container->{'cdata'}->{'userEmail'};
   $mailchimp->{status} = 'subscribed';
@@ -737,15 +738,20 @@ sub _mailchimp_subscribe {
 };
 
 sub _create_index {
-  my ($c, $streamId, $container) = @_;
+  my ($c, $blockChainId, $streamId, $settings, $container) = @_;
   my @array;
   my $message;
+  my $create_index = 'no';
+
+  $c->app->debug("Index Add : $streamId ");
+
 	push(@array, "CID$container->{'containerid'}");
-	push(@array, Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userEmail'}));
-	push(@array, Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'}));
+  foreach my $item (@{$settings}) {
+    push(@array, Encode::Base58::GMP::md5_base58($container->{'cdata'}->{$item}));
+  }
 	my $index = join(' ', @array);
 	$c->app->debug("Index : $index");
-	my $file = "/home/node/search/$streamId.txt";
+	my $file = "/home/node/search/$blockChainId/$streamId.txt";
 	if (not -e $file) {
 		$c->app->debug("File Not found adding Index");
     open(my $fh, '>>', $file) or die "Could not open file '$file' $!";
@@ -754,24 +760,53 @@ sub _create_index {
     $message = {'message' => 'Success', 'status' => 200};
 	} else {
 		$c->app->debug("Search");
-		my $userName = Encode::Base58::GMP::md5_base58($container->{'cdata'}->{'userName'});
-		$c->app->debug("$userName");
-		my @matches = fgrep { /$userName/ } $file;
-		$c->app->debug(@matches[0]);
-		$c->app->debug(@matches[0]->{'count'});
-		if (@matches[0]->{'count'} < 1) {
-			$c->app->debug("Search Entry Not Found");
+    foreach my $item (@{$settings}) {
+      my $search = Encode::Base58::GMP::md5_base58($container->{'cdata'}->{$item});
+      $c->app->debug("Searching for $search");
+      my @matches = fgrep {/$search/} $file;
+      $c->app->debug(@matches[0]);
+      $c->app->debug(@matches[0]->{'count'});
+      if (@matches[0]->{'count'} < 1) {
+        $create_index = 'yes';
+      }
+    }
+
+    if ($create_index eq 'yes') {
+      $c->app->debug("Search Entry Not Found");
       open(my $fh, '>>', $file) or die "Could not open file '$file' $!";
       say $fh $index;
       close $fh;
-      $message = {'message' => 'Success', 'status' => 200};
-		} else {
-      $message = {'message' => 'Problem adding to Index', 'status' => 400};
-		}
+      $message = { 'message' => 'Success', 'status' => 200 };
+    } else {
+      $message = { 'message' => 'Problem adding to Index', 'status' => 400 };
+    }
 	}
   return $message;
 };
 
+sub  _delete_index {
+  my ($c, $blockChainId, $streamId,  $settings, $container) = @_;
+  my $message;
+
+  $c->app->debug("Index Delete : $streamId ");
+
+  foreach my $item (@{$settings}) {
+    my $search = Encode::Base58::GMP::md5_base58($container->{'cdata'}->{$item});
+    my $file = "/home/node/search/$blockChainId/$streamId.txt";
+    $c->app->debug("Searching for $search");
+    my @matches = fgrep {/$search/} $file;
+    $c->app->debug(@matches[0]);
+    $c->app->debug(@matches[0]->{'count'});
+    if (@matches[0]->{'count'} >= 1) {
+      my $command = "sed -i  \"/$search/d\" $file";
+      qx/$command/;
+      $message = { 'message' => 'Success', 'status' => 200 };
+    } else {
+      $message = { 'message' => 'Not Found', 'status' => 400 };
+    }
+  }
+  return $message;
+};
 
 
 1;

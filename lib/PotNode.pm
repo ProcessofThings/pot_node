@@ -55,6 +55,7 @@ sub startup {
   $r->get('/ipfs/:ipfs')->to('public#load');
 
   $r->get('/public/getCustomers/:blockChainId')->to('publicnew#getCustomers');
+  $r->any('/public/custom/:run/:blockChainId')->to('publicnew#run');
 
 
   my $auth = $r->under ( sub {
