@@ -1184,12 +1184,12 @@ sub updateSlot {
 		qx/$command/;
 	}
 	
-	$c->create_stream($blockChainId, 'subad');
+	$c->create_stream($blockChainId, 'subadb');
 	
 	if ($json->{'attribs'}->{'sub'}) {
-		$c->publish_stream($blockChainId, 'subad', $json);
+		$c->publish_stream($blockChainId, 'subadb', $json);
 	} else {
-		$c->delete_stream_item($blockChainId, 'subad', $json);
+		$c->delete_stream_item($blockChainId, 'subadb', $json);
 	}
 	
 	$c->create_stream($blockChainId, 'slotsh');

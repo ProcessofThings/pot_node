@@ -1389,7 +1389,7 @@
         ],
         "x-mojo-name": "getSubAds",
         "x-mojo-function": "publish",
-        "x-mojo-streamid": "subad",
+        "x-mojo-streamid": "subadb",
         "summary": "Get Login details from the blockchain",
         "description": "This function is used to verify the password against the blockchain",
         "operationId": "getSubAds",
