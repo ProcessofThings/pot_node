@@ -954,7 +954,6 @@ sub getSlot {
         $c->debug($item);
         if ($item eq $json->{'containerid'}) {
           $slot->{$json->{'containerid'}}->{'permissions'}->{'edit'} = \1;
-          $slot->{$json->{'containerid'}}->{'permissions'}->{'edit'} = \0;
         }
       }
     }
