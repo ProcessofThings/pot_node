@@ -2050,6 +2050,48 @@
         }
       }
     },
+    "/buildSubAds/{blockChainId}": {
+      "get": {
+        "tags": [
+				"Dapps"
+        ],
+        "x-mojo-to": [
+          "public#buildSubAds"
+        ],
+        "x-mojo-name": "buildSubAds",
+        "x-mojo-function": "publish",
+        "x-mojo-streamid": "subads",
+        "summary": "adfasdfasdfasdfasdf",
+        "description": "adfasdfasdfasdfasdf",
+        "operationId": "buildSubAds",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+					{
+            "name": "blockChainId",
+            "in": "path",
+            "description": "Information returned for the Blockchain ID passed",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/search/{blockChainId}": {
       "post": {
         "tags": [

@@ -75,6 +75,9 @@ sub register {
     $app->helper(mailchimp_subscribe => \&_mailchimp_subscribe);
     $app->helper(create_index => \&_create_index);
 
+    ## TODO: to be removed in final release bug fix only
+    $app->helper(rebuild_subads => \&_rebuild_subads);
+
 }
 
 sub _pid {
@@ -658,7 +661,7 @@ sub _get_all_stream_item {
             $self->app->debug("decode_json failed, invalid json. error:$@ - $item->{'key'}");
             my $container;
             $container->{'containerid'} = $item->{'key'};
-            $self->app->delete_stream_item($blockChainId,$streamId,$container);
+#            $self->app->delete_stream_item($blockChainId,$streamId,$container);
         }
         $self->app->debug($json);
 #				$json = decode_json($json);
@@ -700,6 +703,49 @@ sub _get_all_stream_item {
 	
  	return $dataOut;
 };
+
+sub _rebuild_subads {
+  my ($self, $blockChainId, $streamId, $newStreamId, $lessthan) = @_;
+	my $dataOut;
+  my @params;
+
+	$self->app->debug("Rebuild Ads");
+	my $config = "rpc_$blockChainId";
+	if (!$self->redis->exists($config)) {
+			$config = $self->get_rpc_config($blockChainId);
+	} else {
+			$config = decode_json($self->redis->get($config));
+	}
+
+	my $url = "$config->{'rpcuser'}:$config->{'rpcpassword'}\@127.0.0.1:$config->{'rpcport'}";
+	my $api =  PotNode::Multichain->new( url => $url );
+
+  my @oldparams = ["$streamId"];
+	my $queryold = $api->liststreamkeys( @oldparams );
+
+  my @getlist;
+
+  foreach my $item (@{$queryold->{'result'}}) {
+    $self->debug($item->{'key'});
+    my $count = int($item->{'items'});
+    if ($count <= int($lessthan)) {
+      push(@getlist, $item);
+    }
+  }
+
+  foreach my $container (@getlist) {
+    my @params = [ "$streamId", $container->{'key'} ];
+    my $query = $api->liststreamkeyitems(@params);
+    foreach my $item (@{$query->{'result'}}) {
+      if ($item->{'data'} ne 'ff') {
+        my @params = ["$newStreamId", $item->{'key'}, $item->{'data'}];
+	      $api->publish( @params );
+      }
+    }
+  }
+
+  return 1;
+}
 
 sub _mailchimp_subscribe {
   my ($self, $container) = @_;

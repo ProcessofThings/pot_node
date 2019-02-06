@@ -1047,6 +1047,7 @@ sub updateSlot {
 		push(@$db, "$json->{'containerid'} $json->{'cdata'}->{'sections'} $towns");
 	}
 
+
   ## Process Gallery
   my ($tmpdir,undef) = $c->uuid();
   my $path = "/tmp/$tmpdir";
@@ -1196,6 +1197,26 @@ sub updateSlot {
  	$c->publish_stream($blockChainId, 'slotsh', $json);
 
 	$c->render(json => {'message' => 'Ok'}, status => 200);
+};
+
+sub buildSubAds {
+  my $c = shift;
+	my $spec = $c->openapi->spec;
+	my $blockChainId = $c->param('blockChainId');
+	my $streamId = $spec->{'x-mojo-streamid'};
+	my $json = $c->req->json;
+	my $hash = $c->req->params->to_hash;
+	my $container;
+	my $method = $spec->{'x-mojo-function'};
+
+  $c->debug($hash);
+
+  $c->create_stream($blockChainId, $hash->{'new'});
+
+  $c->rebuild_subads($blockChainId, $hash->{'old'}, $hash->{'new'}, $hash->{'lessthan'});
+
+  $c->render(json => {'message' => 'ok'}, status => 200);
+
 };
 
 sub createSlot {
